@@ -56,7 +56,7 @@ export class DanmuGameLogic extends SummaryLogic {
     for (const e of this.world.entities)
       e.enter_frame({ id: Builtin_FrameId.Gone })
     const fighter_enter = (v: Entity) => {
-      v.is_key_role = v.is_gone_dead = true;
+      v.key_role = v.dead_gone = true;
       v.name = v.data.base.name;
       v.blinking = 120;
     }

@@ -30,7 +30,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
     )
     .use(BotStateEnum.Idle)
 
-  readonly is_bot_enemy_chaser = true;
+  readonly __is_bot_ctrl__ = true;
 
   /** 走攻触发范围X(敌人正对) */
   w_atk_f_x = Defines.AI_W_ATK_F_X;
@@ -348,24 +348,24 @@ export class BotController extends BaseController implements Required<IBotDataSe
   override update() {
     if (this.dummy) {
       dummy_updaters[this.dummy]?.update(this);
+    } else if (this.world.stage.is_chapter_finish) {
+      this.key_up(...KEY_NAME_LIST)
     } else if (this.world.stage.is_stage_finish) {
       this.key_down(GK.R).key_up(...KEY_NAME_LIST)
     } else if (this.entity.hp <= 0) {
       this.key_up(...KEY_NAME_LIST)
     } else {
+      this.chasings.del(({ entity }) => !this.should_chase(entity))
+      this.chasings.sort(this.entity)
+
+      this.avoidings.del(({ entity }) => !this.should_avoid(entity))
+      this.avoidings.sort(this.entity)
+
+      this.defends.del(({ entity }) => !this.should_defend(entity))
+      this.defends.sort(this.entity)
+
       this.fsm.update(1)
     }
-
-
-    this.chasings.del(({ entity }) => !this.should_chase(entity))
-    this.chasings.sort(this.entity)
-
-    this.avoidings.del(({ entity }) => !this.should_avoid(entity))
-    this.avoidings.sort(this.entity)
-
-    this.defends.del(({ entity }) => !this.should_defend(entity))
-    this.defends.sort(this.entity)
-
     return super.update();
   }
   lock_when_stand_and_rest() {

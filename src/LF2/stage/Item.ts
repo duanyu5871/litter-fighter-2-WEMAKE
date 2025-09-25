@@ -1,16 +1,19 @@
-import { Defines, Difficulty, EntityEnum, IEntityData, IStageObjectInfo } from "../defines";
+import { Defines, Difficulty, IEntityData, IStageObjectInfo } from "../defines";
 import { TeamEnum } from "../defines/TeamEnum";
 import { Entity } from "../entity/Entity";
 import { Factory } from "../entity/Factory";
 import IEntityCallbacks from "../entity/IEntityCallbacks";
 import { is_character, is_weapon } from "../entity/type_check";
+import { Randoming } from "../helper/Randoming";
 import { floor } from "../utils";
 import { is_num, is_str } from "../utils/type_check";
 import { Stage } from "./Stage";
 
 export default class Item {
-  readonly is_enemies: boolean = false;
   times: number | undefined;
+  data?: IEntityData | undefined;
+  randoming?: Randoming<Randoming<IEntityData>>;
+
   get lf2() {
     return this.stage.lf2;
   }
@@ -18,61 +21,63 @@ export default class Item {
     return this.stage.world;
   }
   readonly info: Readonly<IStageObjectInfo>;
-  readonly entities = new Set<Entity>();
+  readonly fighters = new Set<Entity>();
   readonly stage: Stage;
-  readonly get_oid: () => string;
-
-  private data_list: IEntityData[] = [];
-
-  readonly entity_callback: IEntityCallbacks = {
+  readonly entity_cb: IEntityCallbacks = {
     on_team_changed: (e) => {
-      this.entities.delete(e); // 被移除
+      this.fighters.delete(e); // 被移除
       if (e.team !== this.stage.team) {
-        this.entity_callback.on_disposed?.(e)
+        this.entity_cb.on_disposed?.(e)
       }
     },
     on_disposed: (e: Entity): void => {
-      e.callbacks.del(this.entity_callback);
+      e.callbacks.del(this.entity_cb);
       if (this.info.is_soldier) {
         if (this.stage.all_boss_dead()) {
           this.dispose();
-        } else if (!is_num(this.times) || this.times > 0) {
+        } else if (this.times === void 0 || this.times >= 1) {
           this.spawn();
         } else {
           this.dispose();
         }
-      } else if (this.times) {
+      } else if (this.times && this.times >= 1) {
         this.spawn();
       } else {
         this.dispose();
       }
-      if (this.stage.all_enemies_dead() && this.stage.phase_idx >= 0) {
+
+      if (this.stage.all_enemies_dead())
         this.stage.enter_phase(this.stage.phase_idx + 1);
-      }
+
     },
   };
-
   constructor(stage: Stage, info: IStageObjectInfo) {
     this.stage = stage;
     this.info = info;
-    this.times = info.times;
+    this.times = info.times ? floor(info.times) : void 0;
+    const data_list: IEntityData[] = [];
+    const randoming_list: Randoming<IEntityData>[] = []
     for (const oid of this.info.id) {
       const data = this.lf2.datas.find(oid);
       if (data) {
-        this.data_list.push(data);
+        data_list.push(data);
         continue;
       }
-      const { characters, weapons, entity } = this.lf2.datas.find_group(oid);
-      this.data_list.push(...characters, ...weapons, ...entity);
+      const randoming = this.lf2.datas.get_randoming_by_group(oid)
+      if (randoming.src.length) randoming_list.push(randoming);
     }
-    this.is_enemies = !this.data_list.find(
-      (v) => v.type !== EntityEnum.Fighter,
-    );
-    let waiting_data_list = [...this.data_list];
-    this.get_oid = () => {
-      if (!waiting_data_list.length) waiting_data_list = [...this.data_list];
-      return this.lf2.random_take(waiting_data_list)?.id!;
-    };
+    if (data_list.length === 1 && !randoming_list.length) {
+      this.data = data_list[0]
+    } else if (data_list.length && !randoming_list.length) {
+      randoming_list.push(new Randoming(data_list, this.lf2))
+    } else if (!data_list.length && randoming_list.length) {
+      this.randoming = new Randoming(randoming_list, stage.lf2)
+    } else if (data_list.length && randoming_list.length) {
+      randoming_list.push(new Randoming(data_list, this.lf2))
+      this.randoming = new Randoming(randoming_list, stage.lf2)
+    } else {
+      debugger;
+    }
   }
 
   spawn(
@@ -80,53 +85,40 @@ export default class Item {
     range_y: number = 0,
     range_z: number = 0,
   ): boolean {
-    const { lf2 } = this;
-    const oid = this.get_oid();
-    if (!oid) {
-      debugger;
-      return false;
-    }
-    const data = lf2.datas.find(oid);
-    if (!data) {
-      debugger;
-      return false;
-    }
+    const data = this.data || this.randoming?.take().take();
+    if (!data) { debugger; return false; }
     const creator = Factory.inst.get_entity_creator(data.type);
-    if (!creator) {
-      debugger;
-      return false;
-    }
+    if (!creator) { debugger; return false; }
 
-    let { hp, act, x, y, z, reserve } = this.info;
+    let { hp, act, x, y, z, reserve, hp_map, mp, mp_map } = this.info;
     if (this.times) this.times--;
     const e = creator(this.world, data);
     e.ctrl = Factory.inst.get_ctrl(e.data.id, "", e);
-    e.is_gone_dead = true;
+    e.dead_gone = true;
     e.reserve = reserve ?? 0;
     e.position.x = this.lf2.random_in(x, x + range_x);
     e.position.z = is_num(z)
       ? this.lf2.random_in(z - range_z, z + range_z)
       : this.lf2.random_in(this.stage.near, this.stage.far);
     if (this.info.join)
-      e.join_dead = {
+      e.dead_join = {
         hp: this.info.join,
         team: this.info.join_team ?? TeamEnum.Team_1
       }
 
-
-    if (is_num(hp)) {
+    let _hp = hp_map?.[this.lf2.difficulty]
+    if (!is_num(_hp) && is_num(hp)) {
       switch (this.lf2.difficulty) {
-        case Difficulty.Easy:
-          hp = floor(hp * 3 / 4)
-          break;
-        case Difficulty.Crazy:
-          hp = floor(hp * 3 / 2)
-          break;
-        case Difficulty.Normal:
-        case Difficulty.Difficult:
+        case Difficulty.Easy: _hp = floor(hp * 3 / 4); break;
+        case Difficulty.Crazy: _hp = floor(hp * 3 / 2); break;
       }
-      e.hp_max = e.hp_r = e.hp = hp;
     }
+    if (is_num(_hp)) e.hp = e.hp_r = e.hp_max = _hp;
+
+    let _mp = mp_map?.[this.lf2.difficulty]
+    if (is_num(mp) && !is_num(_mp)) _mp = mp;
+    if (is_num(_mp)) e.mp = e.mp_max = _mp;
+
     if (is_num(y)) e.position.y = y;
 
     if (is_character(e)) {
@@ -134,21 +126,21 @@ export default class Item {
     } else if (is_weapon(e) && !is_num(y)) {
       e.position.y = 450;
     }
-    this.entities.add(e);
     e.team = this.stage.team;
     e.attach();
-    e.callbacks.add(this.entity_callback);
+    e.callbacks.add(this.entity_cb);
 
     if (is_str(act)) e.enter_frame({ id: act });
     else e.enter_frame(Defines.NEXT_FRAME_AUTO);
 
+    if (is_character(e)) this.fighters.add(e);
     return true;
   }
 
   dispose(): void {
     this.stage.items.delete(this);
-    for (const e of this.entities) {
-      e.callbacks.del(this.entity_callback);
+    for (const e of this.fighters) {
+      e.callbacks.del(this.entity_cb);
     }
   }
 }

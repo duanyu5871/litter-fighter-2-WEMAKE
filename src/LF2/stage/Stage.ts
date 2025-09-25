@@ -24,15 +24,20 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
   private _bg: Background;
+  private _phase_idx: number = 0;
+  private _phase: IStagePhaseInfo | undefined;
+  readonly items = new Set<Item>();
+
   get bg(): Background { return this._bg; }
   get phases() { return this.data.phases }
   get id(): string { return this.data.name; }
   get name(): string { return this.data.name; }
-  get phase_idx(): number { return this.data.phases.indexOf(this.phase!); }
 
   get lf2() { return this.world.lf2; }
   get time() { return this.fsm.time; }
-  phase: IStagePhaseInfo | undefined;
+
+  get phase_idx(): number { return this._phase_idx };
+  get phase(): IStagePhaseInfo | undefined { return this._phase; };
 
   /** 左边界 */
   left: number;
@@ -149,10 +154,10 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     this._stop_bgm?.();
   }
 
-  set_phase(phase: IStagePhaseInfo | undefined) {
+  private set_phase(phase: IStagePhaseInfo | undefined) {
     if (phase === this.phase) return;
     const prev = this.phase
-    this.callbacks.emit("on_phase_changed")(this, this.phase = phase, prev);
+    this.callbacks.emit("on_phase_changed")(this, this._phase = phase, prev);
     this.player_l = 0
     this.player_r = this.bg.right
     if (!phase) return;
@@ -213,11 +218,9 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   }
 
   enter_phase(idx: number) {
-    const phase: IStagePhaseInfo | undefined = this.data.phases[idx]
-    this.set_phase(phase)
+    this.set_phase(this.data.phases[this._phase_idx = idx])
   }
 
-  readonly items = new Set<Item>();
   async spawn_object(obj_info: IStageObjectInfo) {
     let count = 0;
     for (const [, c] of this.world.slot_fighters)
@@ -247,36 +250,32 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   }
   kill_all_enemies() {
     for (const o of this.items) {
-      if (!o.is_enemies) continue;
-      for (const e of o.entities) {
-        if (is_character(e)) e.hp = 0;
+      for (const e of o.fighters) {
+        if (is_character(e) && e.team === this.team) e.hp = 0;
       }
     }
   }
   kill_soliders() {
     for (const o of this.items) {
-      if (!o.is_enemies) continue;
       if (!o.info.is_soldier) continue;
-      for (const e of o.entities) {
-        if (is_character(e)) e.hp = 0;
+      for (const e of o.fighters) {
+        if (is_character(e) && e.team === this.team) e.hp = 0;
       }
     }
   }
   kill_boss() {
     for (const o of this.items) {
-      if (!o.is_enemies) continue;
       if (!o.info.is_boss) continue;
-      for (const e of o.entities) {
-        if (is_character(e)) e.hp = 0;
+      for (const e of o.fighters) {
+        if (is_character(e) && e.team === this.team) e.hp = 0;
       }
     }
   }
   kill_others() {
     for (const o of this.items) {
-      if (!o.is_enemies) continue;
       if (o.info.is_boss || o.info.is_soldier) continue;
-      for (const e of o.entities) {
-        if (is_character(e)) e.hp = 0;
+      for (const e of o.fighters) {
+        if (is_character(e) && e.team === this.team) e.hp = 0;
       }
     }
   }
@@ -303,31 +302,11 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     this.callbacks.clear()
   }
   all_boss_dead(): boolean {
-    return !find(this.items, (i) => i.info.is_boss);
+    return !find(this.items, i => i.info.is_boss);
   }
   all_enemies_dead(): boolean {
-    return !find(this.items, (i) => i.is_enemies);
+    return !find(this.items, (i) => !i.fighters.size);
   }
-  handle_empty_stage_item(item: Item) {
-    const { times, is_soldier } = item.info;
-    if (is_soldier) {
-      if (this.all_boss_dead()) {
-        this.items.delete(item);
-        item.dispose();
-      } else if (!is_num(times) || times > 0) {
-        item.spawn();
-      }
-    } else if (times) {
-      item.spawn();
-    } else {
-      this.items.delete(item);
-      item.dispose();
-    }
-    if (this.all_enemies_dead()) {
-      this.enter_phase(this.phase_idx + 1);
-    }
-  }
-
   /** 章是否结束 */
   get is_chapter_finish(): boolean {
     if (!this.is_stage_finish) return false
@@ -336,12 +315,11 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   }
   /** 节是否结束 */
   get is_stage_finish(): boolean {
-    return this.phase_idx === -1;
+    return this._phase_idx >= this.phases.length && this.phases.length > 0;
   }
   /** 是否应该进入下一关 */
   get should_goto_next_stage(): boolean {
-    if (!this.next_stage) return false;
-    if (this.next_stage.chapter !== this.data.chapter)
+    if (!this.is_chapter_finish && this.is_stage_finish)
       return false;
     for (const e of this.world.entities) {
       if (is_character(e) && e.hp > 0 && e.position.x < this.cam_r) {

@@ -1,4 +1,5 @@
 import { ICamera } from "../../LF2/3d/ICamera";
+import { BuiltIn_OID } from "../../LF2/defines";
 import { Ditto } from "../../LF2/ditto";
 import type { IWorldRenderer } from "../../LF2/ditto/render/IWorldRenderer";
 import { is_character, type Entity } from "../../LF2/entity";
@@ -75,8 +76,8 @@ export class WorldRenderer implements IWorldRenderer {
     let shadow_renderer: EntityShadowRender | null = null
     let frame_indicators: FrameIndicators | null = null
 
-
-    if (is_character(entity)) {
+    // Criminal...?
+    if (is_character(entity) || entity.data.id === BuiltIn_OID.Criminal) {
       info_renderer = new EntityInfoRender(entity, this);
       info_renderer.on_mount()
     }

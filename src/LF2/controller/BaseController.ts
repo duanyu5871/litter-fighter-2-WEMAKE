@@ -31,7 +31,7 @@ export const CONFLICTS_KEY_MAP: Record<GK, GK | undefined> = {
  */
 export class BaseController {
   static readonly TAG: string = 'BaseController';
-  readonly is_base_controller = true;
+  readonly __is_base_ctrl__ = true;
   readonly player_id: string;
 
   private _time = new Times(10, Number.MAX_SAFE_INTEGER);

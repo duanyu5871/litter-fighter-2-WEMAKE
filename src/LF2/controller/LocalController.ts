@@ -13,7 +13,7 @@ type TCodeKeyMap = { [x in string]?: GK };
 export class LocalController
   extends BaseController
   implements IKeyboardCallback {
-  readonly is_local_controller = true;
+  readonly __is_local_ctrl__ = true;
   readonly player: PlayerInfo;
 
   private _key_code_map: TKeyCodeMap = {};

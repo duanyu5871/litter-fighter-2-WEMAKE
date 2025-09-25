@@ -53,6 +53,7 @@ export abstract class BotState_Base implements IState<BotStateEnum> {
   handle_defends(): boolean {
     const { ctrl: c } = this;
     if (c.defends.targets.length <= 0) return false;
+    if (c.action_desire() > c.d_desire) return false;
     const me = c.entity;
     if (c.defends.targets[0].defendable === 1) {
       const dx = c.defends.targets[0].entity.position.x - me.position.x

@@ -12,13 +12,13 @@ export const is_character = (v: any) => is_character_data(v?.data);
 export const is_ball = (v: any) => is_ball_data(v?.data);
 export const is_weapon = (v: any) => is_weapon_data(v?.data);
 export const is_base_ctrl = (v: any): v is BaseController =>
-  v?.is_base_controller === true;
+  v?.__is_base_ctrl__ === true;
 export const is_bot_ctrl = (v: any): v is BotController =>
-  v?.is_bot_enemy_chaser === true;
+  v?.__is_bot_ctrl__ === true;
 export const is_local_ctrl = (v: any): v is LocalController =>
-  v?.is_local_controller === true;
+  v?.__is_local_ctrl__ === true;
 export const is_ball_ctrl = (v: any): v is BallController =>
-  v?.is_ball_controller === true;
+  v?.__is_ball_ctrl__ === true;
 export const is_entity_data = (v: any): v is IEntityData =>
   v.type === EntityEnum.Entity ||
   is_character_data(v) ||

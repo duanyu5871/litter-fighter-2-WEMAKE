@@ -1,6 +1,6 @@
 import { LF2 } from "../LF2";
-import { BallController } from "../controller/BallController";
 import { BotController } from "../bot/BotController";
+import { BallController } from "../controller/BallController";
 import { InvalidController } from "../controller/InvalidController";
 import { IBgData, IDataLists, IStageInfo } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
@@ -17,8 +17,9 @@ import {
   is_entity_data,
   is_weapon_data,
 } from "../entity/type_check";
-import { is_str, is_non_blank_str } from "../utils/type_check";
-import { check_stage_info as check_stage_info } from "./check_stage_info";
+import { Randoming } from "../helper/Randoming";
+import { is_non_blank_str, is_str } from "../utils/type_check";
+import { check_stage_info } from "./check_stage_info";
 import { preprocess_bg_data } from "./preprocess_bg_data";
 import { preprocess_entity_data } from "./preprocess_entity_data";
 
@@ -163,16 +164,12 @@ export default class DatMgr {
   static readonly TAG: string = "DatMgr";
 
   find_group(group: string) {
+    const f = (v: IEntityData) => v.base.group?.some(g => g === group)
     return {
-      characters: this.characters.filter(
-        (v) => v.base.group && v.base.group.indexOf(group) >= 0,
-      ),
-      weapons: this.weapons.filter(
-        (v) => v.base.group && v.base.group.indexOf(group) >= 0,
-      ),
-      entity: this.entity.filter(
-        (v) => v.base.group && v.base.group.indexOf(group) >= 0,
-      ),
+      characters: this.characters.filter(f),
+      weapons: this.weapons.filter(f),
+      entity: this.entity.filter(f),
+      balls: this.balls.filter(f),
     };
   }
   private _inner_id: number = 0;
@@ -223,6 +220,23 @@ export default class DatMgr {
 
   find(id: number | string): IEntityData | undefined {
     return this._inner.data_map.get("" + id);
+  }
+
+  private randomings = new Map<string, Randoming<IEntityData>>();
+  get_randoming_by_group(group: string) {
+    let ret = this.randomings.get(group);
+    if (!ret) {
+      const { characters, weapons, entity, balls } = this.find_group(group);
+      this.randomings.set(
+        group,
+        ret = new Randoming([
+          ...characters, ...weapons, ...entity, ...balls
+        ], this.lf2)
+      );
+    }
+    return ret
+
+
   }
 
   find_weapon(id: string): IEntityData | undefined;

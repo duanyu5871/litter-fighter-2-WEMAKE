@@ -35,6 +35,10 @@ import { turn_face } from "./face_helper";
 import { IDebugging, make_debugging } from "./make_debugging";
 import { is_character, is_local_ctrl, is_weapon_data } from "./type_check";
 export type TData = IBaseData | IEntityData;
+export interface IDeadJoin {
+  hp?: number;
+  team?: string;
+}
 export class Entity implements IDebugging {
 
   static readonly TAG: string = 'Entity';
@@ -47,7 +51,6 @@ export class Entity implements IDebugging {
   update_id = new Times(0, Number.MAX_SAFE_INTEGER);
   variant: number = 0;
   transform_datas?: [IEntityData, IEntityData];
-
 
   protected _data: IEntityData;
   protected _reserve = 0;
@@ -116,17 +119,7 @@ export class Entity implements IDebugging {
   }
 
   private _fall_value = Defines.DEFAULT_FALL_VALUE_MAX;
-  get fall_value(): number {
-    class Recovering {
-      readonly resting = new Times().loop(0);
-      readonly value = new Times().loop(0);
-      add() {
-
-      }
-    }
-
-    return this._fall_value;
-  }
+  get fall_value(): number { return this._fall_value; }
   set fall_value(v: number) {
     const o = this._fall_value;
     if (o === v) return;
@@ -619,36 +612,33 @@ export class Entity implements IDebugging {
     this._ctrl?.dispose();
     this._ctrl = v;
   }
-  private _is_key_role: boolean | null = null;
-  private _is_gone_dead: boolean | null = null;
-  private _join_dead: {
-    hp?: number;
-    team?: string
-  } | null = null;
-  get is_key_role(): boolean {
-    if (this._is_key_role !== null) return this._is_key_role;
+  private _key_role: boolean | null = null;
+  private _dead_gone: boolean | null = null;
+  private _dead_join: IDeadJoin | null = null;
+  get key_role(): boolean {
+    if (this._key_role !== null) return this._key_role;
     const is_player = !!this.ctrl?.player_id;
     const is_key = !!intersection(this._data.base.group, [EntityGroup.Regular, EntityGroup.Boss]).length
-    return this._is_key_role = is_player || is_key;
+    return this._key_role = is_player || is_key;
   }
-  set is_key_role(v: boolean | null) {
-    if (this._is_key_role === v) return;
-    this._is_key_role = v;
+  set key_role(v: boolean | null) {
+    if (this._key_role === v) return;
+    this._key_role = v;
     this._callbacks.emit("on_name_changed")(this, this._name, this._name);
   }
-  get is_gone_dead(): boolean {
-    if (this._is_gone_dead !== null) return this._is_gone_dead;
-    return !this.is_key_role;
+  get dead_gone(): boolean {
+    if (this._dead_gone !== null) return this._dead_gone;
+    return !this.key_role;
   }
-  set is_gone_dead(v: boolean | null) {
-    if (this._is_gone_dead === v) return;
-    this._is_gone_dead = v;
+  set dead_gone(v: boolean | null) {
+    if (this._dead_gone === v) return;
+    this._dead_gone = v;
   }
-  get join_dead() {
-    return this._join_dead
+  get dead_join() {
+    return this._dead_join
   }
-  set join_dead(v) {
-    this._join_dead = v
+  set dead_join(v) {
+    this._dead_join = v
   }
 
   armor?: Readonly<IArmorInfo>
@@ -1042,7 +1032,7 @@ export class Entity implements IDebugging {
     const entity = create(this.world, data);
     entity.ctrl = Factory.inst.get_ctrl(entity._data.id, "", entity,) ?? entity.ctrl;
     entity.on_spawn(this, opoint, offset_velocity, facing).attach(opoint.is_entity);
-    entity.is_gone_dead = true;
+    entity.dead_gone = true;
     for (const [k, v] of this.v_rests) {
       /*
       Note: 继承v_rests，避免重复反弹ball...

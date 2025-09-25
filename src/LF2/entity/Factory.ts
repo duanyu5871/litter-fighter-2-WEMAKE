@@ -35,6 +35,7 @@ export class Factory {
   get_entity_creator<K extends keyof EntityCreators>(
     type: K,
   ): EntityCreators[K] | undefined {
+    
     return _entity_creators[type];
   }
   get_ctrl(id: string, ...args: Parameters<ControllerCreator>): BaseController | undefined {

@@ -3,7 +3,7 @@ import { BaseController } from "./BaseController";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 const { L, R, U, D, j, d } = GK
 export class BallController extends BaseController {
-  readonly is_ball_controller = true;
+  readonly __is_ball_ctrl__ = true;
   public target_position: IVector3 | null = null
   override update(): ControllerUpdateResult {
     if (this.entity.chasing) {

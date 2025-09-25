@@ -41,9 +41,10 @@ export function get_color_material(color: T.ColorRepresentation) {
 }
 export class EntityInfoRender implements IEntityCallbacks {
   readonly renderer_type: string = "Info";
+  protected reserve_node: IBillboardNode;
   protected name_node: IBillboardNode;
   protected bars_node: IObjectNode;
-  protected key_node: IObjectNode;
+  protected ctrl_node: IObjectNode;
   protected bars_bg: Bar;
 
   protected self_healing_hp_bar: Bar;
@@ -79,8 +80,13 @@ export class EntityInfoRender implements IEntityCallbacks {
     ])
 
     this.name_node = new Ditto.BillboardNode(lf2);
+    this.name_node.name = EntityInfoRender.name;
+    this.name_node.render_order = 0;
+
     this.bars_node = new Ditto.ObjectNode(lf2);
-    this.key_node = new Ditto.ObjectNode(lf2);
+    this.ctrl_node = new Ditto.ObjectNode(lf2);
+    this.reserve_node = new Ditto.BillboardNode(lf2);
+
     this.bars_bg = new Bar(lf2, "rgb(0,0,0)", BAR_BG_W, BAR_BG_H, 0.5, 0);
     this.self_healing_hp_bar = new Bar(
       lf2,
@@ -106,8 +112,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.defend_value_bar = new Bar(lf2, "rgb(0, 122, 71)", BAR_W, 1, 0.5, 1);
     this.toughness_value_bar = new Bar(lf2, "rgba(0, 204, 255, 1)", BAR_W, 1, 0.5, 1);
 
-    this.name_node.name = EntityInfoRender.name;
-    this.name_node.render_order = 0;
+
     this.entity = entity;
 
     let y = -1;
@@ -167,20 +172,20 @@ export class EntityInfoRender implements IEntityCallbacks {
         .then((p) => {
           node.set_texture(p)
         });
-      this.key_node.add(node)
+      this.ctrl_node.add(node)
     }
 
   }
 
   on_mount() {
     const { entity } = this;
-    const is_fighter = is_character(entity)
-    const { is_key_role } = entity
     entity.callbacks.add(this);
-    this.world_renderer.scene.add(this.bars_node, this.name_node, this.key_node);
-    this.bars_node.visible = is_fighter && entity.is_key_role
-    this.name_node.visible = is_fighter && (entity.is_key_role || is_key_role || !!entity.reserve)
+    this.world_renderer.scene.add(this.bars_node, this.name_node, this.ctrl_node, this.reserve_node);
+    this.bars_node.visible = entity.key_role
+    this.name_node.visible = entity.key_role
+    this.ctrl_node.visible = false
 
+    this.on_name_changed(entity)
     this.on_reserve_changed(entity)
   }
 
@@ -188,35 +193,21 @@ export class EntityInfoRender implements IEntityCallbacks {
     const { entity } = this;
     this.bars_node.del_self();
     this.name_node.del_self();
-    this.key_node.del_self();
+    this.ctrl_node.del_self();
+    this.reserve_node.del_self();
     entity.callbacks.del(this);
   }
 
   on_name_changed(entity: Entity): void {
-    this.on_reserve_changed(entity)
+    this.update_name_sprite(entity)
   }
   on_team_changed(entity: Entity): void {
-    this.on_reserve_changed(entity)
+    this.update_name_sprite(entity)
+    this.update_reverse_sprite(entity)
   }
   on_reserve_changed(entity: Entity): void {
-    const { reserve, is_key_role, ctrl } = entity;
-    if (is_local_ctrl(ctrl)) {
-      entity.name = ctrl.player.name || ' '
-    } else if (is_bot_ctrl(ctrl) && ctrl.player) {
-      entity.name = "com"
-    } else if (is_key_role) {
-      if (reserve > 1)
-        entity.name = entity.data.base.name + ' x' + reserve
-      else
-        entity.name = entity.data.base.name
-    } else if (reserve > 1) {
-      entity.name = 'x' + reserve
-    } else {
-      entity.name = 'com'
-    }
-    this.update_name_sprite(entity, entity.name, entity.team)
+    this.update_reverse_sprite(entity)
   }
-
   on_hp_changed(_e: Entity, value: number): void {
     this.hp_bar.val = value;
   }
@@ -250,8 +241,49 @@ export class EntityInfoRender implements IEntityCallbacks {
   on_toughness_max_changed(_e: Entity, value: number): void {
     this.toughness_value_bar.max = value;
   }
-
-  private update_name_sprite(e: Entity, text: string, team: string) {
+  private update_reverse_sprite(e: Entity) {
+    const { team, reserve } = e;
+    const fillStyle = get_team_text_color(team);
+    const strokeStyle = get_team_shadow_color(team);
+    const world = e.world;
+    const lf2 = world.lf2;
+    const text = reserve ? '' + reserve : void 0;
+    if (!text) {
+      this.reserve_node.visible = false;
+      this.reserve_node.clear_material().update_material();
+      return;
+    }
+    this.reserve_node.add_user_data('text', text)
+    lf2.images.load_text(text, {
+      fill_style: fillStyle,
+      back_style: {
+        stroke_style: strokeStyle,
+        line_width: 2
+      },
+      smoothing: false,
+    }).then((i) => {
+      return lf2.images.p_create_pic_by_img_key(i.key)
+    }).then((p) => {
+      if (this.reserve_node.get_user_data('text') !== text)
+        return;
+      this.reserve_node.visible = true;
+      this.reserve_node.name = "reserve sprite";
+      this.reserve_node.set_texture(p)
+      this.reserve_node.set_scale(p.w, p.h)
+    });
+  }
+  private update_name_sprite(e: Entity) {
+    const { key_role, ctrl, team } = e;
+    let text = ' ';
+    if (is_local_ctrl(ctrl)) {
+      text = ctrl.player.name || ' '
+    } else if (is_bot_ctrl(ctrl) && ctrl.player) {
+      text = "com"
+    } else if (key_role) {
+      text = e.data.base.name
+    } else {
+      text = 'com'
+    }
     const fillStyle = get_team_text_color(team);
     const strokeStyle = get_team_shadow_color(team);
     const world = e.world;
@@ -268,6 +300,7 @@ export class EntityInfoRender implements IEntityCallbacks {
         stroke_style: strokeStyle,
         line_width: 2
       },
+      disposable: true,
       smoothing: false,
     }).then((i) => {
       return lf2.images.p_create_pic_by_img_key(i.key)
@@ -280,9 +313,8 @@ export class EntityInfoRender implements IEntityCallbacks {
       this.name_node.name = "name sprite";
     });
   }
-
   render() {
-    const { invisible, position: { x, z, y }, frame: { centery }, hp, is_key_role } = this.entity;
+    const { invisible, position: { x, z, y }, frame: { centery }, hp, key_role: is_key_role } = this.entity;
     const is_fighter = is_character(this.entity)
 
     this.name_node.visible = is_fighter && is_key_role && !invisible
@@ -328,8 +360,11 @@ export class EntityInfoRender implements IEntityCallbacks {
     const old_y = this.bars_node.y
     const _y = y ?? old_y
     let __y = old_y === 0 ? _y : old_y + (_y - old_y) * 0.2
+
     this.bars_node.set_position(x, __y, z);
     if (!this.bars_node.parent) __y -= BAR_BG_H + 5
-    this.key_node.set_position(x, __y, z);
+
+    this.reserve_node.set_position(x, __y, z)
+    this.ctrl_node.set_position(x, __y, z);
   }
 }
