@@ -1,6 +1,7 @@
 import { ICollision } from "../base";
 import { IActionHandler } from "../base/IActionHandler";
 import { ActionType } from "../defines/ActionType";
+import { IAction_Fusion } from "../defines/IAction_Fusion";
 import { IAction_ReboundVX } from "../defines/IAction_ReboundVX";
 import { IAction_TurnFace } from "../defines/IAction_TurnFace";
 import { IAction_TurnTeam } from "../defines/IAction_TurnTeam";
@@ -36,5 +37,8 @@ export const collision_action_handlers: IActionHandler = {
   [ActionType.V_TURN_TEAM]: function (action: IAction_TurnTeam, collision: ICollision) {
     const { victim, attacker } = collision;
     victim.team = attacker.team;
+  },
+  [ActionType.FUSION]: function (action: IAction_Fusion, collision: ICollision) {
+    debugger;
   }
 };

@@ -37,4 +37,7 @@ export enum CollisionVal {
   ArmorWork = "armor_work",
   V_FrameBehavior = "v_frame_behavior",
   NoItrEffect = "no_itr_effect",
+  A_HP_P = "a_hp_p",
+  V_HP_P = "v_hp_p",
+  LF2_NET_ON = "lf2_net_on",
 }

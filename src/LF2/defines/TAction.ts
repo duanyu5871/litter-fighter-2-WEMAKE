@@ -1,5 +1,6 @@
 import { IAction_BrokenDefend } from "./IAction_BrokenDefend";
 import { IAction_Defend } from "./IAction_Defend";
+import { IAction_Fusion } from "./IAction_Fusion";
 import { IAction_NextFrame } from "./IAction_NextFrame";
 import { IAction_ReboundVX } from "./IAction_ReboundVX";
 import { IAction_SetProp } from "./IAction_SetProp";
@@ -15,4 +16,5 @@ export type TAction =
   IAction_BrokenDefend |
   IAction_ReboundVX |
   IAction_TurnFace |
-  IAction_TurnTeam;
+  IAction_TurnTeam |
+  IAction_Fusion;

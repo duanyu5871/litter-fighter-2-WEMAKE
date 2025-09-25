@@ -9,6 +9,10 @@ export class MersenneTwister {
   private mt: number[] = new Array(this.n);
   private index: number = this.n + 1;
 
+  constructor(seed: number = Date.now()) {
+    this.reset(seed)
+  }
+  
   reset(seed: number) {
     this.n = 624;
     this.m = 397;
@@ -23,9 +27,6 @@ export class MersenneTwister {
       this.mt[i] = (((((s & 0xFFFF0000) >>> 16) * 1812433253) << 16) + (s & 0x0000FFFF) * 1812433253) + i;
       this.mt[i]! >>>= 0; // 转换为32位无符号整数
     }
-  }
-  constructor(seed: number = Date.now()) {
-    this.reset(seed)
   }
 
   // 生成下一组624个值

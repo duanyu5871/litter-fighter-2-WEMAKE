@@ -1,5 +1,8 @@
-import { BotVal, GameKey as GK, IEntityData } from "../../defines";
-import { arithmetic_progression } from "../../utils";
+import { BotVal, BuiltIn_OID, Defines, GameKey as GK, HitFlag, IEntityData, ItrKind } from "../../defines";
+import { ActionType } from "../../defines/ActionType";
+import { CollisionVal as C_Val } from "../../defines/CollisionVal";
+import { arithmetic_progression, ensure } from "../../utils";
+import { CondMaker } from "../CondMaker";
 import { bot_ball_continuation } from "./bot_ball_continuation";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
@@ -14,6 +17,40 @@ import { frames } from "./frames";
  * @return {*} 
  */
 export function make_fighter_data_firen(data: IEntityData) {
+  [
+    data.frames["running_0"],
+    data.frames["running_1"],
+    data.frames["running_2"],
+    data.frames["running_3"]
+  ].filter(Boolean).map(frame => {
+    frame.itr = ensure(frame.itr, {
+      hit_flag: HitFlag.Fighter | HitFlag.Fighter,
+      kind: ItrKind.Normal,
+      z: -Defines.DAFUALT_QUBE_LENGTH / 2,
+      l: Defines.DAFUALT_QUBE_LENGTH,
+      x: 25,
+      y: 19,
+      w: 38,
+      h: 60,
+      actions: [{
+        type: ActionType.FUSION,
+        data: {
+          oid: BuiltIn_OID.Firzen,
+          // act
+        }
+      }],
+      test: new CondMaker<C_Val>()
+        .add(C_Val.VictimOID, '==', BuiltIn_OID.Freeze)
+        .add(C_Val.SameFacing, '==', 0)
+        .and(c => c
+          .add(C_Val.LF2_NET_ON, '==', 1)
+          .or(C_Val.V_HP_P, '<=', 33).and(C_Val.A_HP_P, '<', 33)
+        )
+        .done()
+    })
+  })
+
+
   BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(75, void 0, 50),
