@@ -1,4 +1,4 @@
-import { BotVal, BuiltIn_OID, Defines, GameKey as GK, HitFlag, IEntityData, ItrKind } from "../../defines";
+import { BotVal, BuiltIn_OID, Defines, GameKey as GK, HitFlag, IEntityData, ItrEffect, ItrKind } from "../../defines";
 import { ActionType } from "../../defines/ActionType";
 import { CollisionVal as C_Val } from "../../defines/CollisionVal";
 import { arithmetic_progression, ensure } from "../../utils";
@@ -25,28 +25,19 @@ export function make_fighter_data_firen(data: IEntityData) {
   ].filter(Boolean).map(frame => {
     frame.itr = ensure(frame.itr, {
       hit_flag: HitFlag.Fighter | HitFlag.Ally,
-      kind: ItrKind.Block,
+      code: 123,
+      kind: ItrKind.Normal,
+      effect: ItrEffect.Ignore,
       z: -Defines.DAFUALT_QUBE_LENGTH / 2,
       l: Defines.DAFUALT_QUBE_LENGTH,
-      x: 25,
+      x: 35,
       y: 19,
-      w: 38,
+      w: 10,
       h: 60,
-      actions: [{
-        type: ActionType.FUSION,
-        data: {
-          oid: BuiltIn_OID.Firzen,
-          // act
-        }
-      }],
       test: new CondMaker<C_Val>()
-        .add(C_Val.VictimOID, '==', BuiltIn_OID.Freeze)
+        .add(C_Val.BdyCode, '==', 123)
+        .and(C_Val.BdyHitFlag, '==', HitFlag.Fighter | HitFlag.Ally)
         .and(C_Val.SameFacing, '==', 0)
-        .and(c => c
-          .add(C_Val.V_HP_P, '<=', 33)
-          .and(C_Val.A_HP_P, '<', 33)
-          .or(C_Val.LF2_NET_ON, '==', 1)
-        )
         .done()
     })
   })

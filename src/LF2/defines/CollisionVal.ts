@@ -40,4 +40,10 @@ export enum CollisionVal {
   A_HP_P = "a_hp_p",
   V_HP_P = "v_hp_p",
   LF2_NET_ON = "lf2_net_on",
+  BdyHitFlag = "bdy_hit_flag",
+  ItrHitFlag = "itr_hit_flag",
+  BdyCode = "bdy_code",
+  ItrCode = "itr_code",
 }
+export const C_Val = CollisionVal;
+export type C_Val = CollisionVal;

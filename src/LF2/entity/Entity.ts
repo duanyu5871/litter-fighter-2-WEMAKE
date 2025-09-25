@@ -63,6 +63,9 @@ export class Entity implements IDebugging {
   readonly world: World;
   readonly position = new Ditto.Vector3(0, 0, 0);
   drink: DrinkInfo | undefined;
+  fuse_bys?: Entity[];
+  dismiss_time?: number;
+  dismiss_data?: IEntityData;
   get data(): IEntityData { return this._data };
   get group() { return this._data.base.group };
   get is_attach() { return this._is_attach }
@@ -1192,7 +1195,54 @@ export class Entity implements IDebugging {
     if (vym == SpeedMode.Fixed) this.velocity_1.y = 0
     if (vzm == SpeedMode.Fixed) this.velocity_1.z = 0
   }
+
+  dismiss_fusion(frame_id: string) {
+    if (!this.fuse_bys?.length) return;
+    const size = this.fuse_bys.length + 1
+    const hp = round(this.hp / size)
+    const hp_r = round(this.hp_r / size)
+    const mp = round(this.mp / size)
+    let facing = this.facing
+    this.hp = hp
+    this.mp = mp
+    this.hp_r = hp_r
+    for (const fighter of this.fuse_bys) {
+      fighter.hp = hp
+      fighter.mp = mp
+      fighter.hp_r = hp_r
+      fighter.facing = facing = turn_face(facing)
+      fighter.next_frame =
+        fighter.get_next_frame({ id: frame_id })?.frame ??
+        fighter.find_auto_frame()
+      fighter.invisible =
+        fighter.motionless =
+        fighter.invulnerable = 0;
+    }
+    if (this.dismiss_data)
+      this.transform(this.dismiss_data)
+    this.next_frame =
+      this.get_next_frame({ id: frame_id })?.frame ??
+      this.find_auto_frame()
+    this.dismiss_time = void 0;
+    this.dismiss_data = void 0;
+    this.fuse_bys = void 0
+  }
   self_update(): void {
+    if (this.fuse_bys?.length) {
+      const { x, y, z } = this.position
+      for (const fighter of this.fuse_bys) {
+        fighter.position.set(x, y, z)
+      }
+      if (this.dismiss_time) this.dismiss_time--;
+      const dismiss = (
+        this.dismiss_time !== void 0 &&
+        this.dismiss_time <= 0 ||
+        this.ctrl.sametime_keys_test('dja') ||
+        this.ctrl.sequence_keys_test('ja')
+      ) && y == 0;
+      if (dismiss) this.dismiss_fusion("112")
+    }
+
     if (this.next_frame) this.enter_frame(this.next_frame);
 
     if (this._hp > 0 && this._hp < this._hp_r) {

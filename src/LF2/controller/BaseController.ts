@@ -363,7 +363,8 @@ export class BaseController {
       }
     } while (0);
   }
-  private sequence_keys_test(str: string): boolean {
+  sequence_keys_test(str: string): boolean {
+    if (this._key_list[0] !== 'd') return false;
     for (let i = 0; i < str.length; i++) {
       let actual_key = this._key_list[i + 1]
       let expected_key = str[i]
@@ -376,7 +377,7 @@ export class BaseController {
     }
     return true;
   }
-  private sametime_keys_test(str: string): boolean {
+  sametime_keys_test(str: string): boolean {
     for (let k of str) {
       if (k === 'F')
         k = this.entity.facing > 0 ? GK.R : GK.L

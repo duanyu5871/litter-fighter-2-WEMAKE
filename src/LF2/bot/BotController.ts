@@ -41,6 +41,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
 
   /** 走攻触发范围Z */
   w_atk_z = Defines.AI_W_ATK_Z;
+  data_set: IBotDataSet | undefined;
   /** 走攻触发范围X */
   get w_atk_x() {
     const chasing = this.get_chasing()?.entity;
@@ -163,7 +164,6 @@ export class BotController extends BaseController implements Required<IBotDataSe
   constructor(player_id: string, entity: Entity) {
     super(player_id, entity);
     this.player = this.lf2.players.get(player_id)
-    Object.assign(this, entity.data.base.bot?.dataset)
   }
   manhattan_to(a: Entity) {
     const { x, z } = this.entity.position;
@@ -346,6 +346,10 @@ export class BotController extends BaseController implements Required<IBotDataSe
   }
 
   override update() {
+    if (this.data_set !== this.entity.data.base.bot?.dataset) {
+      this.data_set = this.entity.data.base.bot?.dataset
+      Object.assign(this, this.entity.data.base.bot?.dataset)
+    }
     if (this.dummy) {
       dummy_updaters[this.dummy]?.update(this);
     } else if (this.world.stage.is_chapter_finish) {

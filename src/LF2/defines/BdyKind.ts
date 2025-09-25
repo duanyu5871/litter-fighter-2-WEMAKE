@@ -47,6 +47,7 @@ export enum BdyKind {
    *      - 若bdy.break_act不存在，则视为被直接击中
    */
   Defend = 2000,
+  Ignore = 10000,
 }
 export const bdy_kind_name = (v: any) => {
   let ret = BdyKind[v];
@@ -60,5 +61,6 @@ export const BdyKindDescriptions: Record<BdyKind, string> = {
   [BdyKind.Normal]: "",
   [BdyKind.GotoMin]: "",
   [BdyKind.GotoMax]: "",
-  [BdyKind.Defend]: ""
+  [BdyKind.Defend]: "",
+  [BdyKind.Ignore]: ""
 }

@@ -21,6 +21,17 @@ export default class CharacterState_Falling extends CharacterState_Base {
       );
     }
     e.drop_holding();
+    if (e.hp <= 0 && e.fuse_bys?.length) {
+      let { x, y } = e.velocity;
+      for (const fighter of e.fuse_bys) {
+        fighter.velocity_0.x = (x *= -1)
+        if (fighter.position.y === 0)
+          fighter.position.y = 1;
+        fighter.velocity_0.y = y
+      }
+      e.dismiss_fusion(e.frame.id)
+      if (e.next_frame) e.enter_frame(e.next_frame)
+    }
   }
   is_bouncing_frame(e: Entity) {
     return !!this._bouncing_frames_map.get(e.data.id)?.has(e.frame.id);

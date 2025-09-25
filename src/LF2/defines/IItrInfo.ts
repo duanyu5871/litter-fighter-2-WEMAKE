@@ -124,4 +124,5 @@ export interface IItrInfo extends IQube {
    * @see {IItrInfo.test}
    */
   tester?: IExpression<any>;
+  code?: string | number,
 }

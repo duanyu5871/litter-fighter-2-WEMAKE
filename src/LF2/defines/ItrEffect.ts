@@ -112,6 +112,8 @@ export enum ItrEffect {
    *   - 使不被冰封的人被冰封。无法攻击，被冰封（state：13）的人。
    */
   Ice2 = 30,
+
+  Ignore = 10000,
 }
 
 
@@ -129,7 +131,8 @@ export const ItrEffectDescriptions: Record<ItrEffect, string> = {
   [ItrEffect.MFire2]: "",
   [ItrEffect.FireExplosion]: "",
   [ItrEffect.Explosion]: "",
-  [ItrEffect.Ice2]: ""
+  [ItrEffect.Ice2]: "",
+  [ItrEffect.Ignore]: ""
 }
 const descs: any = ItrEffectDescriptions;
 for (const key in descs) {

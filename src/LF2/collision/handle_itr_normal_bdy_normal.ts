@@ -9,8 +9,9 @@ import { handle_stiffness } from "./handle_stiffness";
 import { handle_armor } from "./handle_armor";
 
 export function handle_itr_normal_bdy_normal(collision: ICollision) {
-  if (handle_armor(collision)) return;
   const { itr, attacker, victim, a_cube, b_cube } = collision;
+  if (itr.effect == ItrEffect.Ignore) return;
+  if (handle_armor(collision)) return;
   switch (itr.effect) {
     case ItrEffect.Fire:
     case ItrEffect.MFire1:

@@ -845,5 +845,8 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   random_in(l: number, r: number) {
     return this._mt.in_range(l, r);
   }
+  random_int() {
+    return this._mt.int();
+  }
 }
 (window as any).LF2 = LF2;

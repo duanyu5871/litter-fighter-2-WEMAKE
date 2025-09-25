@@ -1,4 +1,8 @@
-import { EntityVal, IEntityData } from "../../defines";
+import { BdyKind, BuiltIn_OID, Defines, EntityVal, HitFlag, IEntityData, ItrEffect, ItrKind } from "../../defines";
+import { ActionType } from "../../defines/ActionType";
+import { C_Val } from "../../defines/CollisionVal";
+import { ensure } from "../../utils";
+import { CondMaker } from "../CondMaker";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
@@ -13,6 +17,38 @@ import { frames } from "./frames";
  * @return {IEntityData} 
  */
 export function make_fighter_data_freeze(data: IEntityData): IEntityData {
+  [
+    data.frames["running_0"],
+    data.frames["running_1"],
+    data.frames["running_2"],
+    data.frames["running_3"]
+  ].filter(Boolean).map(frame => {
+    frame.bdy = ensure(frame.bdy, {
+      hit_flag: HitFlag.Fighter | HitFlag.Ally,
+      code: 123,
+      kind: BdyKind.Normal,
+      z: -Defines.DAFUALT_QUBE_LENGTH / 2,
+      l: Defines.DAFUALT_QUBE_LENGTH,
+      x: 35,
+      y: 19,
+      w: 10,
+      h: 60,
+      actions: [{
+        type: ActionType.FUSION,
+        data: { oid: BuiltIn_OID.Firzen, act: { id: "290" }, time: 9000 }//
+      }],
+      test: new CondMaker<C_Val>()
+        .add(C_Val.ItrCode, '==', 123)
+        .and(C_Val.ItrHitFlag, '==', HitFlag.Fighter | HitFlag.Ally)
+        .and(C_Val.SameFacing, '==', 0)
+        .and(c => c
+          .add(C_Val.V_HP_P, '<=', 33)
+          .and(C_Val.A_HP_P, '<', 33)
+          .or(C_Val.LF2_NET_ON, '==', 1)
+        )
+        .done()
+    })
+  })
   BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(100, void 0, 50)(e => {

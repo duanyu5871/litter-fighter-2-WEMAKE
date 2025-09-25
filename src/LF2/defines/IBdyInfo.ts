@@ -42,21 +42,24 @@ export interface IBdyInfo extends IQube {
   test?: string;
 
   tester?: IExpression<any>;
+  code?: string | number,
 }
 
+let order = -1;
 export const BdyKeyOrders: Record<keyof IBdyInfo, number> = {
-  kind: 0,
-  kind_name: 1,
-  x: 2,
-  y: 3,
-  w: 4,
-  h: 5,
-  z: 6,
-  l: 7,
-  hit_flag: 8,
-  prefab_id: 9,
-  actions: 10,
-  test: 11,
-  tester: 9998,
-  indicator_info: 9999,
+  code: ++order,
+  kind: ++order,
+  kind_name: ++order,
+  x: ++order,
+  y: ++order,
+  w: ++order,
+  h: ++order,
+  z: ++order,
+  l: ++order,
+  hit_flag: ++order,
+  prefab_id: ++order,
+  actions: ++order,
+  test: ++order,
+  tester: ++order,
+  indicator_info: ++order,
 }
