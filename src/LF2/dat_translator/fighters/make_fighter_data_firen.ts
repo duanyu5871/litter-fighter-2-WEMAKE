@@ -24,8 +24,8 @@ export function make_fighter_data_firen(data: IEntityData) {
     data.frames["running_3"]
   ].filter(Boolean).map(frame => {
     frame.itr = ensure(frame.itr, {
-      hit_flag: HitFlag.Fighter | HitFlag.Fighter,
-      kind: ItrKind.Normal,
+      hit_flag: HitFlag.Fighter | HitFlag.Ally,
+      kind: ItrKind.Block,
       z: -Defines.DAFUALT_QUBE_LENGTH / 2,
       l: Defines.DAFUALT_QUBE_LENGTH,
       x: 25,
@@ -43,8 +43,9 @@ export function make_fighter_data_firen(data: IEntityData) {
         .add(C_Val.VictimOID, '==', BuiltIn_OID.Freeze)
         .and(C_Val.SameFacing, '==', 0)
         .and(c => c
-          .add(C_Val.LF2_NET_ON, '==', 1)
-          .or(C_Val.V_HP_P, '<=', 33).and(C_Val.A_HP_P, '<', 33)
+          .add(C_Val.V_HP_P, '<=', 33)
+          .and(C_Val.A_HP_P, '<', 33)
+          .or(C_Val.LF2_NET_ON, '==', 1)
         )
         .done()
     })

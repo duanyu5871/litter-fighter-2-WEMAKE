@@ -2,6 +2,9 @@ import { type IBdyInfo } from "./IBdyInfo";
 import { type IItrInfo } from "./IItrInfo";
 export type __KEEP_IBdyInfo = IBdyInfo;
 export type __KEEP_IItrInfo = IItrInfo;
+/**
+ * @link https://www.lf-empire.de/en/lf2-empire/data-changing/reference-pages/181-effects
+ */
 export enum ItrEffect {
   /**
    * 普通效果
