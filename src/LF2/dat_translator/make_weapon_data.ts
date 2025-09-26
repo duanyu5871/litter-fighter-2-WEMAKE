@@ -89,7 +89,7 @@ export function make_weapon_data(
   if (sound_2) info.drop_sounds = [sound_2.replace(/\\/g, '/') + ".mp3"];
 
   const sound_3 = take(info, "weapon_hit_sound");
-  if (sound_3) info.hit_sounds = [sound_3];
+  if (sound_3) info.hit_sounds = [sound_3.replace(/\\/g, '/') + ".mp3"];
 
 
 
