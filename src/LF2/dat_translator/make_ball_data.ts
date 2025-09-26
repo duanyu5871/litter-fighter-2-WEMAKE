@@ -33,20 +33,20 @@ export function make_ball_data(
 
   let weapon_broken_sound = take_str(info, "weapon_broken_sound");
   if (weapon_broken_sound) {
-    weapon_broken_sound += ".mp3";
-    info.dead_sounds = [weapon_broken_sound.replace(/\\/g, '/')];
+    weapon_broken_sound = (weapon_broken_sound + ".mp3").replace(/\\/g, '/');
+    info.dead_sounds = [weapon_broken_sound];
   }
 
   let weapon_drop_sound = take_str(info, "weapon_drop_sound");
   if (weapon_drop_sound) {
-    weapon_drop_sound += ".mp3";
-    info.drop_sounds = [weapon_drop_sound.replace(/\\/g, '/')];
+    weapon_drop_sound = (weapon_drop_sound + ".mp3").replace(/\\/g, '/');
+    info.drop_sounds = [weapon_drop_sound];
   }
 
   let weapon_hit_sound = take_str(info, "weapon_hit_sound");
   if (weapon_hit_sound) {
-    weapon_hit_sound += ".mp3";
-    info.hit_sounds = [weapon_hit_sound.replace(/\\/g, '/')];
+    weapon_hit_sound += (weapon_hit_sound + ".mp3").replace(/\\/g, '/');
+    info.hit_sounds = [weapon_hit_sound];
   }
 
 
