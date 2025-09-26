@@ -16,8 +16,15 @@ export function preprocess_frame(lf2: LF2, data: IEntityData, frame: IFrameInfo,
   if (frame.sound && !lf2.sounds.has(frame.sound))
     jobs.push(lf2.sounds.load(frame.sound, frame.sound))
 
-  traversal(frame.hit?.sequences, (k, v, o) => { if (v) o[k] = preprocess_next_frame(v) });
-  traversal(frame.hit, (k, v, o) => { if (k !== 'sequences' && v) o[k] = preprocess_next_frame(v) });
+  if (frame.seqs) {
+    frame.seq_map = new Map();
+    traversal(frame.seqs, (k, v, o) => {
+      if (!v) return;
+      const nf = preprocess_next_frame(v)
+      frame.seq_map!.set(k, o[k] = nf)
+    });
+  }
+  traversal(frame.hit, (k, v, o) => { if (v) o[k] = preprocess_next_frame(o[k]!) });
   traversal(frame.hold, (k, v, o) => { if (v) o[k] = preprocess_next_frame(v) });
   traversal(frame.key_down, (k, v, o) => { if (v) o[k] = preprocess_next_frame(v) });
   traversal(frame.key_up, (k, v, o) => { if (v) o[k] = preprocess_next_frame(v) });

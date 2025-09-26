@@ -1,4 +1,4 @@
-import type { IFrameInfo, IHitKeyCollection, LGK } from "../defines";
+import type { IFrameInfo, IHitKeyCollection, LGK, TNextFrame } from "../defines";
 import { GK, StateEnum } from "../defines";
 import type { Entity } from "../entity/Entity";
 import { Times } from "../ui/utils/Times";
@@ -322,47 +322,39 @@ export class BaseController {
         }
       }
     }
-    this.check_hit_seqs(hit?.sequences, ret);
+    frame?.seq_map && this.check_hit_seqs(frame.seq_map, ret);
     /** 这里不想支持过长的指令 */
     if (this._key_list && this._key_list.length >= 10) this._key_list = '';
     return ret;
   }
 
-  private check_hit_seqs(
-    seqs: IHitKeyCollection["sequences"],
-    ret: ControllerUpdateResult,
-  ) {
-    if (!seqs) return;
-    do {
-      /** 同时按键 判定 */
-      if (this.keys.d.is_hit()) {
-        const seq = Object.keys(seqs).find((v) => this.sametime_keys_test(v));
-        if (seq && seqs[seq]) {
-          for (let k of seq) this.keys[k as GK]?.use();
-          ret.set(seqs[seq], this.time, void 0, this._key_list);
-          this._key_list = '';
-          break;
-        } else {
-          ret.key_list = this._key_list;
-        }
+  private check_hit_seqs(seqs: Map<string, TNextFrame>, result: ControllerUpdateResult) {
+    /** 同时按键 判定 */
+    if (this.keys.d.is_hit()) {
+      for (const [seq, nf] of seqs) {
+        if (!seq || !nf) continue;
+        if (!this.sametime_keys_test(seq)) continue;
+        for (let k of seq) this.keys[k as GK]?.use();
+        result.set(nf, this.time, void 0, this._key_list);
+        this._key_list = '';
+        return;
       }
+    }
 
-      /** 顺序按键 判定 */
-      if (this._key_list.length >= 3) {
-        const seq = Object.keys(seqs).find(v => this.sequence_keys_test(v));
-        if (seq) {
-          ret.set(seqs[seq], this.time, void 0, this._key_list);
-          for (let k of this._key_list)
-            this.keys[k as GK]?.use();
-
-          this._key_list = '';
-        }
-        break;
-      } else {
-        ret.key_list = this._key_list;
+    /** 顺序按键 判定 */
+    if (this._key_list.length >= 3) {
+      for (const [seq, nf] of seqs) {
+        if (!seq || !nf) continue;
+        if (!this.sequence_keys_test(seq)) continue;
+        result.set(nf, this.time, void 0, this._key_list);
+        for (let k of seq) this.keys[k as GK]?.use();
+        this._key_list = '';
+        return;
       }
-    } while (0);
+    }
+    result.key_list = this._key_list;
   }
+  
   sequence_keys_test(str: string): boolean {
     if (this._key_list[0] !== 'd') return false;
     for (let i = 0; i < str.length; i++) {

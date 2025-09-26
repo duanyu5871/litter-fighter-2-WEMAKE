@@ -110,18 +110,18 @@ export function make_character_data(
       if (next === "0" || next === 0) return;
 
       if (!frame.hit) frame.hit = {};
-      if (!frame.hit.sequences) frame.hit.sequences = {};
+      if (!frame.seqs) frame.seqs = {};
       const nf = get_next_frame_by_raw_id(next, "hit", frame_mp_hp_map);
 
       if (k === "Fa" || k === "Fj") {
-        frame.hit.sequences["L" + k[1]] = {
+        frame.seqs["L" + k[1]] = {
           ...nf,
           facing:
             nf.facing === FacingFlag.Backward
               ? FacingFlag.Right
               : FacingFlag.Left,
         };
-        frame.hit.sequences["R" + k[1]] = {
+        frame.seqs["R" + k[1]] = {
           ...nf,
           facing:
             nf.facing === FacingFlag.Backward
@@ -129,7 +129,7 @@ export function make_character_data(
               : FacingFlag.Right,
         };
       } else {
-        frame.hit.sequences[k] = nf;
+        frame.seqs[k] = nf;
       }
     });
 
@@ -833,14 +833,15 @@ function cook_transform_begin_expression_to_hit<
         .done();
     };
     for (const k in frames) {
-      const { hit } = frames[k];
+      const frame = frames[k];
+      const { hit } = frame;
       if (!hit) continue;
       cook_hit_next_frame_to_transform(hit.a);
       cook_hit_next_frame_to_transform(hit.j);
       cook_hit_next_frame_to_transform(hit.d);
-      if (hit.sequences)
-        for (const k2 in hit.sequences)
-          cook_hit_next_frame_to_transform(hit.sequences[k2]);
+      if (frame.seqs)
+        for (const k2 in frame.seqs)
+          cook_hit_next_frame_to_transform(frame.seqs[k2]);
     }
   }
 }

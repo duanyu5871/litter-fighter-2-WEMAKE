@@ -21,7 +21,7 @@ export function make_figther_data_louis(data: IEntityData): IEntityData {
     toughness: 30,
   };
   for (const k in data.frames) {
-    const ja = data.frames[k].hit?.sequences?.["ja"];
+    const ja = data.frames[k].seqs?.["ja"];
     if (!ja || !("id" in ja) || ja.id !== "300") continue;
     ja.expression = new CondMaker()
       .add(EntityVal.HP_P, "<=", 33)

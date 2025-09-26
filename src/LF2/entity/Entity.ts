@@ -230,7 +230,7 @@ export class Entity implements IDebugging {
     this._defend_ratio = v;
   }
 
-  throwinjury: number = 0;
+  throwinjury?: number;
 
   get catching() {
     return this._catching;
@@ -1495,10 +1495,10 @@ export class Entity implements IDebugging {
       this.state?.on_landing?.(this);
       this.play_sound(this._data.base.drop_sounds);
 
-      if (this.throwinjury) {
+      if (this.throwinjury !== void 0) {
         this.hp -= this.throwinjury;
         this.hp_r -= round(this.throwinjury * (1 - this.world.hp_recoverability))
-        this.throwinjury = 0;
+        this.throwinjury = void 0;
       }
       this._landing_frame = this.frame
     }
@@ -1850,9 +1850,9 @@ export class Entity implements IDebugging {
 
 
   enter_frame(which: TNextFrame): void {
-    if (this.frame.id === Builtin_FrameId.Gone) 
+    if (this.frame.id === Builtin_FrameId.Gone)
       return;
-    
+
     const result = this.get_next_frame(which);
     if (!result) {
       this.next_frame = void 0;

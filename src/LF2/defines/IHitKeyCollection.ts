@@ -1,10 +1,6 @@
 import type { TNextFrame } from "./INextFrame";
 
 export interface IHitKeyCollection {
-  sequences?: {
-    [x in string]?: TNextFrame;
-  };
-
   /** 攻击键 */
   a?: TNextFrame;
 

@@ -98,6 +98,8 @@ export interface IFrameInfo {
   hit?: IHitKeyCollection;
   key_down?: IHoldKeyCollection;
   key_up?: IHoldKeyCollection;
+  seqs?: { [x in string]?: TNextFrame; };
+  seq_map?: Map<string, TNextFrame>;
   bdy?: IBdyInfo[];
   itr?: IItrInfo[];
   wpoint?: IWpointInfo;
@@ -105,7 +107,7 @@ export interface IFrameInfo {
   opoint?: IOpointInfo[];
   cpoint?: ICpointInfo;
   indicator_info?: IQubePair;
-  
+
   /**
    * 隐身多少帧
    * 

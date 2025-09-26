@@ -32,7 +32,6 @@ export async function preprocess_entity_data(lf2: LF2, data: IEntityData, jobs: 
   if (jobs.length) await Promise.all(jobs);
 
   traversal(frames, (k, v, o) => o[k] = preprocess_frame(lf2, data, v, jobs));
-  traversal(frames, (k, v, o) => o[k] = preprocess_frame(lf2, data, v, jobs));
   traversal(frames, (_, v) => {
     const errors: string[] = []
     check_frame(data, v, errors)
