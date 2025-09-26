@@ -16,6 +16,7 @@ export interface IButtonProps
   show_shortcut?: boolean;
   actived?: boolean;
   _ref?: React.Ref<HTMLButtonElement>;
+  styles?: { inner?: React.CSSProperties };
 }
 export function _Button(props: IButtonProps, ref: React.ForwardedRef<HTMLButtonElement>) {
   const {
@@ -29,6 +30,7 @@ export function _Button(props: IButtonProps, ref: React.ForwardedRef<HTMLButtonE
     variants,
     size,
     _ref,
+    styles: _styles,
     ..._p
   } = props;
 
@@ -52,7 +54,7 @@ export function _Button(props: IButtonProps, ref: React.ForwardedRef<HTMLButtonE
 
   return (
     <button className={root_cls_name} {..._p} type={type} ref={on_ref}>
-      <Text size={size}>
+      <Text size={size} style={_styles?.inner}>
         {children}
         {shortcut && _show_shortcut ? `(${shortcut})` : null}
       </Text>

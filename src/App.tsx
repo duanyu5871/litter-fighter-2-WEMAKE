@@ -856,7 +856,8 @@ function App() {
       <div className={styles.app} ref={set_ele_root} />
       {game_cell_view}
       {pannel_cell_view}
-      <DatViewer open={dat_viewer_open} onClose={() => set_dat_viewer_open(false)} />
+      {dat_viewer_open ? <DatViewer open={dat_viewer_open} onClose={() => set_dat_viewer_open(false)} /> : void 0}
+
       <EditorView
         open={editor_open}
         onClose={() => set_editor_open(false)}

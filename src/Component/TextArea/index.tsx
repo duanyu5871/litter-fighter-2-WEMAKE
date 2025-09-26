@@ -1,7 +1,12 @@
+import classNames from "classnames";
 import React, { useEffect, useMemo, useRef } from "react";
+import { TVariant } from "../StyleBase/Variant";
+import styles from "./styles.module.scss";
+import { useStyleBase } from "../StyleBase/useStyleBase";
 
 export interface ITextAreaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
-  onChange?(value: string | undefined): void
+  onChange?(value: string | undefined): void;
+  variants?: TVariant | TVariant[];
 }
 export interface ITextAreaRef {
   readonly textarea: HTMLTextAreaElement | null;
@@ -9,10 +14,9 @@ export interface ITextAreaRef {
 }
 
 function _TextArea(props: ITextAreaProps, forwarded_Ref: React.ForwardedRef<ITextAreaRef>) {
-
-  const { onChange, ..._p } = props
+  const { onChange, className, variants, ..._p } = props
+  const { className: classname } = useStyleBase(variants, styles.lfui_textarea, className)
   const ref_textarea = useRef<HTMLTextAreaElement>(null);
-
   useMemo<ITextAreaRef>(() => {
     const ret: ITextAreaRef = {
       get textarea() { return ref_textarea.current },
@@ -36,6 +40,6 @@ function _TextArea(props: ITextAreaProps, forwarded_Ref: React.ForwardedRef<ITex
     ref_textarea.current.value = defaultValue;
   }, [defaultValue, has_value])
 
-  return <textarea {..._p} onChange={e => onChange?.(e.target.value)} ref={ref_textarea} />;
+  return <textarea {..._p} className={classname} onChange={e => onChange?.(e.target.value)} ref={ref_textarea} />;
 }
 export const TextArea = React.forwardRef<ITextAreaRef, ITextAreaProps>(_TextArea);

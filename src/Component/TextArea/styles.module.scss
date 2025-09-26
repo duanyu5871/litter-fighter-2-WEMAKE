@@ -1,0 +1,7 @@
+@use "../../styles/lfui_hoverable_border.module.scss"as *;
+@use "../../styles/lfui_values.module.scss"as *;
+@use "../../styles/lfui_input_like.module.scss"as *;
+
+.lfui_textarea {
+  @extend .lfui_input_like;
+}

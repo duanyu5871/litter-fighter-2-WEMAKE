@@ -1,15 +1,16 @@
 import json5 from "json5";
-import List from "rc-virtual-list";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Slot } from "splittings/dist/es/splittings";
 import { Button } from "../../Component/Buttons/Button";
 import { Flex } from "../../Component/Flex";
+import Frame from "../../Component/Frame";
 import { ITextAreaRef, TextArea } from "../../Component/TextArea";
 import dat_to_json from "../../LF2/dat_translator/dat_2_json";
 import decode_lf2_dat from "../../LF2/dat_translator/decode_lf2_dat";
 import { read_indexes } from "../../LF2/dat_translator/read_indexes";
 import { IDataLists } from "../../LF2/defines";
 import { open_dir, read_file } from "../../Utils/open_file";
+import { FilesView } from "./FilesView";
 import { useWorkspaces } from "./useWorkspaces";
 
 export interface IDatViewerProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -67,9 +68,21 @@ export function DatViewer(props: IDatViewerProps) {
         case 'files':
           return <FilesView files={files} onClick={on_click_file} />
         case 'dat_txt':
-          return <TextArea ref={_ref_textarea_dat} wrap="off" style={{ resize: 'none', width: '100%', height: '100%' }} />
+          return (
+            <TextArea
+              variants={['no_border', 'no_shadow', 'no_round']}
+              ref={_ref_textarea_dat}
+              wrap="off"
+              style={{ resize: 'none', width: '100%', height: '100%' }} />
+          )
         case 'json5_txt':
-          return <TextArea ref={_ref_textarea_json} wrap="off" style={{ resize: 'none', width: '100%', height: '100%' }} />
+          return (
+            <TextArea
+              variants={['no_border', 'no_shadow', 'no_round']}
+              ref={_ref_textarea_json}
+              wrap="off"
+              style={{ resize: 'none', width: '100%', height: '100%' }} />
+          )
       }
       return <>{slot.id}</>
     }, [files]),
@@ -81,70 +94,46 @@ export function DatViewer(props: IDatViewerProps) {
     if (!workspace) return
     workspace.add(0, 0, { id: 'files' })
     workspace.add('files', "right", { id: 'dat_txt' })
-    workspace.add('dat_txt', "right", { id: 'json5_txt' })
+    workspace.add('dat_txt', "down", { id: 'json5_txt' })
     workspace.confirm()
-    return () => workspace.root.release(true)
+    return () => {
+      workspace.del('files')
+      workspace.del('dat_txt')
+      workspace.del('json5_txt')
+    }
   }, [workspace])
 
   if (!open) return <></>;
   return (
-    <Flex direction="column" gap={10} {..._p}>
-      <Flex gap={5}>
-        <Button onClick={onClose} disabled={loading}>
+    <Flex direction="column" align='stretch' {..._p}>
+      <Frame
+        variants={['no_shadow', 'no_round']}
+        style={{
+          padding: 0,
+          borderTop: `none`,
+          borderLeft: `none`,
+          borderRight: `none`,
+          borderBottom: `1px solid #5555CC55`,
+          boxSizing: 'border-box'
+        }}>
+        <Button
+          variants={['no_border', 'no_shadow', 'no_round']}
+          onClick={onClose}
+          disabled={loading}>
           ✕
         </Button>
-        <Button onClick={() => on_click_open_dir().catch(console.warn)} disabled={loading}>
+        <Button
+          variants={['no_border', 'no_shadow', 'no_round']}
+          onClick={() => on_click_open_dir().catch(console.warn)}
+          disabled={loading}>
           打开目录
         </Button>
-      </Flex>
-      <div style={{ flex: 1, overflow: 'hidden' }} ref={ref_container} />
+      </Frame>
+      <Frame
+        variants={['no_border', 'no_shadow', 'no_round']}
+        style={{ flex: 1, overflow: 'hidden', boxSizing: 'border-box' }}
+        ref={ref_container} />
       {context}
-      {/* <Flex style={{ resize: 'horizontal', width: 100, display: 'block', overflow: 'hidden' }}>
-      </Flex>
-      <TextArea ref={_ref_textarea_dat} wrap="off" style={{ height: '100%', resize: 'horizontal' }} />
-      <TextArea ref={_ref_textarea_json} wrap="off" style={{ height: '100%', resize: 'horizontal' }} /> */}
     </Flex>
   );
-}
-
-interface IFilesViewProps {
-  files: File[];
-  onClick?: (file: File) => void;
-}
-export function FilesView(props: IFilesViewProps) {
-  const { files } = props;
-  const ref_el = useRef<HTMLDivElement>(null);
-  const [height, set_height] = useState(0)
-  useEffect(() => {
-    const el = ref_el.current;
-    if (!el) return;
-    const on_resize = () => {
-      set_height(el.getBoundingClientRect().height || 0)
-    }
-    const ob = new ResizeObserver(on_resize)
-    ob.observe(el)
-    on_resize();
-    return () => ob.disconnect()
-  }, [])
-  return (
-    <div style={{ height: '100%', width: '100%' }} ref={ref_el}>
-      <List
-        data={files}
-        height={height}
-        itemHeight={32}
-        itemKey="name"
-        virtual
-        style={{ resize: 'horizontal', width: '100%' }}>
-        {(file) => (
-          <Button variants={['no_border', 'no_shadow', 'no_round']} onClick={e => {
-            props.onClick?.(file);
-            e.stopPropagation();
-            e.preventDefault();
-          }}>
-            {file.name}
-          </Button>
-        )}
-      </List>
-    </div >
-  )
 }

@@ -36,7 +36,7 @@
     "react-router-dom": "6.27.0",
     "spark-md5": "3.0.2",
     "splittings": "^1.2.0",
-    "splittings-dom": "^1.2.0",
+    "splittings-dom": "^1.2.1",
     "three": "^0.178.0",
     "use-immer": "^0.11.0"
   },
