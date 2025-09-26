@@ -48,12 +48,12 @@ export default function dat_to_json(
     }
     reg_result = info_str.match(/head:\s*(\S*)/);
     if (reg_result) {
-      base.head = reg_result[1].replace(/.bmp$/, ".png");
+      base.head = reg_result[1].replace(/.bmp$/, ".png").replace(/\\/g, '/');
       continue;
     }
     reg_result = info_str.match(/small:\s*(\S*)/);
     if (reg_result) {
-      base.small = reg_result[1].replace(/.bmp$/, ".png");
+      base.small = reg_result[1].replace(/.bmp$/, ".png").replace(/\\/g, '/');
       continue;
     }
     if (info_str.startsWith("file(")) {
