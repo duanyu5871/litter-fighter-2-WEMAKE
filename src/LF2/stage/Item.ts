@@ -111,6 +111,7 @@ export default class Item {
       switch (this.lf2.difficulty) {
         case Difficulty.Easy: _hp = floor(hp * 3 / 4); break;
         case Difficulty.Crazy: _hp = floor(hp * 3 / 2); break;
+        default: _hp = hp;
       }
     }
     if (is_num(_hp)) e.hp = e.hp_r = e.hp_max = _hp;
