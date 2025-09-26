@@ -74,7 +74,7 @@ export function make_bg_data(
     layers: [],
   };
   ret.base.name = ret.base.name.replace(/_/g, " ");
-  ret.base.shadow = ret.base.shadow.replace(/.bmp$/, ".png");
+  ret.base.shadow = ret.base.shadow.replace(/.bmp$/, ".png").replace(/\\/g, '/');
   const { blocks, remains } = take_blocks(full_str, "layer:", "layer_end");
   full_str = remains
 
@@ -97,7 +97,7 @@ export function make_bg_data(
     const color = take(fields, "rect");
     const layer: IBgLayerInfo = {
       ...fields,
-      file: file.replace(/.bmp$/, ".png"),
+      file: file.replace(/.bmp$/, ".png").replace(/\\/g, '/'),
       y: Defines.CLASSIC_SCREEN_HEIGHT - y,
       z: ret.layers.length - blocks.length,
     };
