@@ -32,14 +32,10 @@ function push_next_frame(
   if (Array.isArray(src)) return [...src, ...list];
   return [src, ...list];
 }
-const set_hit_turn_back = (frame: IFrameInfo, back_frame_id: string = "") => {
+const set_hit_turn_back = (frame: IFrameInfo, back_frame_id?: string) => {
   frame.key_down = frame.key_down || {};
   frame.key_down.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
 };
-// const set_hold_turn_back = (frame: IFrameInfo, back_frame_id: string = "") => {
-//   frame.hold = frame.hold || {};
-//   frame.hold.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
-// };
 export function make_character_data(
   info: IEntityInfo,
   frames: Record<string, IFrameInfo>,

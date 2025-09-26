@@ -163,10 +163,10 @@ export function make_ball_data(
         switch (datIndex.id) {
           case BuiltIn_OID.FirzenChasef:
           case BuiltIn_OID.FirzenChasei:
-            frame.on_hit_ground = { id: "60" };
+            frame.on_landing = { id: "60" };
             break;
           case BuiltIn_OID.JanChase:
-            frame.on_hit_ground = { id: "10" };
+            frame.on_landing = { id: "10" };
             break;
         }
         break;

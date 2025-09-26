@@ -230,8 +230,7 @@ export class Entity implements IDebugging {
     this._defend_ratio = v;
   }
 
-
-  throwinjury?: number;
+  throwinjury: number = 0;
 
   get catching() {
     return this._catching;
@@ -1364,8 +1363,6 @@ export class Entity implements IDebugging {
       }
     }
 
-    this.state?.pre_update?.(this);
-
     for (const pair of this._opoints) {
       const [opoint, time] = pair
       if (time === opoint.interval) {
@@ -1375,6 +1372,9 @@ export class Entity implements IDebugging {
         pair[1] = time + 1;
       }
     }
+
+
+    this.state?.pre_update?.(this);
   }
 
   update_resting() {
@@ -1481,33 +1481,24 @@ export class Entity implements IDebugging {
         if (result) this.next_frame = result;
       }
     }
-    if (this.frame.on_hit_ground && this.frame.itr && this.velocity.y < 0) {
-      for (const itr of this.frame.itr) {
-        const { bottom } = this.world.get_bounding(this, this.frame, itr);
-        if (bottom > 0) continue;
-        const result = this.get_next_frame(this.frame.on_hit_ground);
-        if (result) this.enter_frame(result.which);
-        break;
-      }
-    }
-    if (
-      this.position.y <= 0 &&
-      this.velocity.y < 0 &&
-      !this.shaking &&
-      !this.motionless
-    ) {
-      this.position.y = 0;
-      this.play_sound(this._data.base.drop_sounds);
-      this.velocity_0.y = 0;
+
+    // 落地
+    if (this.velocity.y < 0 && this.position.y <= 0 && !this.shaking && !this.motionless) {
+
       if (this.frame.on_landing) {
         const result = this.get_next_frame(this.frame.on_landing);
         if (result) this.enter_frame(result.which);
       }
+
+      this.position.y = 0;
+      this.velocity_0.y = 0;
       this.state?.on_landing?.(this);
-      if (this.throwinjury !== void 0) {
+      this.play_sound(this._data.base.drop_sounds);
+
+      if (this.throwinjury) {
         this.hp -= this.throwinjury;
         this.hp_r -= round(this.throwinjury * (1 - this.world.hp_recoverability))
-        delete this.throwinjury;
+        this.throwinjury = 0;
       }
       this._landing_frame = this.frame
     }
@@ -1859,9 +1850,9 @@ export class Entity implements IDebugging {
 
 
   enter_frame(which: TNextFrame): void {
-    if (this.frame.id === Builtin_FrameId.Gone) {
+    if (this.frame.id === Builtin_FrameId.Gone) 
       return;
-    }
+    
     const result = this.get_next_frame(which);
     if (!result) {
       this.next_frame = void 0;
@@ -1965,10 +1956,7 @@ export class Entity implements IDebugging {
     if (id) {
       frame = this.find_frame_by_id(this.lf2.random_get(id));
       if (!frame) return void 0;
-    } else {
-      // frame = this.frame;
     }
-
     if (!this.world.lf2.infinity_mp && frame) {
       if (this.frame.next === which) {
         // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
