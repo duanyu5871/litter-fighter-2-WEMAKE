@@ -1,10 +1,11 @@
-import React from "react"
+import React from "react";
 export interface IFlexProps extends React.HTMLAttributes<HTMLDivElement> {
   inline?: boolean,
   direction?: React.CSSProperties['flexDirection'],
   align?: React.CSSProperties['alignItems'],
   justify?: React.CSSProperties['justifyContent'],
   gap?: React.CSSProperties['gap'],
+  _ref?: React.Ref<HTMLDivElement>,
 }
 export function Flex(props: IFlexProps) {
   const {
@@ -14,8 +15,10 @@ export function Flex(props: IFlexProps) {
     justify,
     gap,
     style,
+    _ref,
     ..._p
   } = props;
+
   const _style: React.CSSProperties = {
     display: inline ? 'inline-flex' : 'flex',
     flexDirection: direction,
@@ -24,5 +27,5 @@ export function Flex(props: IFlexProps) {
     ...style,
     gap
   }
-  return <div {..._p} style={_style} />
+  return <div {..._p} style={_style} ref={_ref} />
 }

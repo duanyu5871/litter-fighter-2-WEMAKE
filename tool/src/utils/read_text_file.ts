@@ -4,7 +4,7 @@ export const read_text_file = (path: string) =>
   fs
     .readFile(path)
     .then((v) => v.toString())
-    .then((v) => v?.replace(/\r/g, "").replace(/\\/g, "/"))
+    .then((v) => v?.replace(/\r/g, ""))
     .catch((e) => {
       console.error(e);
       return null;

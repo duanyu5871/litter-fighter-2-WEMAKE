@@ -1,4 +1,4 @@
-import { Builtin_FrameId, IEntityInfo, StateEnum, WeaponType } from "../defines";
+import { Builtin_FrameId, IDatIndex, IEntityInfo, StateEnum, WeaponType } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import { IEntityData } from "../defines/IEntityData";
 import { IFrameIndexes } from "../defines/IFrameIndexes";
@@ -50,19 +50,46 @@ export function make_weapon_data(
   info: IEntityInfo,
   full_str: string,
   frames: Record<string, IFrameInfo>,
+  datIndex: IDatIndex,
 ): IEntityData {
+  info.name = datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, "");
+  switch ('' + datIndex.type) {
+    case "1":
+      info.bounce = 0.2;
+      info.type = {
+        "120": WeaponType.Knife, // Knife
+        "124": WeaponType.Knife, // Boomerang
+      }["" + datIndex.id] ?? WeaponType.Stick;
+      break;
+    case "2":
+      info.type = WeaponType.Heavy;
+      switch (datIndex.id) {
+        case "150": info.bounce = 0.2; break;
+        default: info.bounce = 0.1; break;
+      }
+      break;
+    case "4":
+      info.type = WeaponType.Baseball;
+      info.bounce = 0.45;
+      break;
+    case "6":
+      info.type = WeaponType.Drink;
+      info.bounce = 0.45;
+      break;
+  }
+
   const itr_prefabs = make_itr_prefabs(full_str);
   const indexes =
     indexes_map[info.type as WeaponType] ??
     indexes_map[WeaponType.None];
   const sound_1 = take(info, "weapon_broken_sound");
-  if (sound_1) info.dead_sounds = [sound_1 + ".mp3"];
+  if (sound_1) info.dead_sounds = [sound_1.replace(/\\/g, '/') + ".mp3"];
 
   const sound_2 = take(info, "weapon_drop_sound");
-  if (sound_2) info.drop_sounds = [sound_2 + ".mp3"];
+  if (sound_2) info.drop_sounds = [sound_2.replace(/\\/g, '/') + ".mp3"];
 
   const sound_3 = take(info, "weapon_hit_sound");
-  if (sound_3) info.hit_sounds = [sound_3 + ".mp3"];
+  if (sound_3) info.hit_sounds = [sound_3.replace(/\\/g, '/') + ".mp3"];
 
   const drop_hurt = take(info, "weapon_drop_hurt");
   if (drop_hurt && Number(drop_hurt)) info.drop_hurt = Number(drop_hurt);

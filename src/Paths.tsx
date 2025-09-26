@@ -21,6 +21,7 @@ export namespace Paths {
     component_demos_Input = "/component_demos/Input",
     component_demos_Icon = "/component_demos/Icon",
     component_demos_Tag = "/component_demos/Tag",
+    dat_viewer = "/dat_viewer",
   }
   export const Components: Record<All, React.ComponentType | null> = {
     [All._]: null,
@@ -42,7 +43,7 @@ export namespace Paths {
     [All.bdy_editor]: React.lazy(() => import("./EditorView/FrameEditorView/BdyEditor")),
     [All.itr_editor]: React.lazy(() => import("./EditorView/FrameEditorView/ItrEditor")),
     [All.frame_editor]: React.lazy(() => import("./EditorView/FrameEditorView")),
-
+    [All.dat_viewer]: React.lazy(() => import("./pages/dat_viewer")),
   }
   export const Relations: { [x in All]?: All[] } = {
     [All._]: [
@@ -56,6 +57,7 @@ export namespace Paths {
       All.bdy_editor,
       All.itr_editor,
       All.frame_editor,
+      All.dat_viewer,
     ],
     [All.component_demos]: [
       All.component_demos_InputNumber,

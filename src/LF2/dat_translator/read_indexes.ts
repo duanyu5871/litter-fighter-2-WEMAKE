@@ -8,7 +8,6 @@ export function read_indexes(
   text: string | undefined | null,
 ): IDataLists | undefined {
   if (!text) return void 0;
-
   const objects = match_block_once(text, "<object>", "<object_end>")
     ?.split(/\n|\r/)
     .filter((v) => v)

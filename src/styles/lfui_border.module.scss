@@ -4,11 +4,11 @@
 }
 
 @mixin lfui_no_border {
-  border-width: 0px !important
+  border-width: 0px !important;
 }
 
 @mixin lfui_no_round {
-  border-radius: 0px
+  border-radius: 0px !important;
 }
 
 .lfui_no_shadow {

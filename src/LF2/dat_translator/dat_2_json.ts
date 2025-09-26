@@ -68,7 +68,7 @@ export default function dat_to_json(
       };
       for (const [key, value] of match_colon_value(info_str)) {
         if (key.startsWith("file")) {
-          file.path = value.replace(/.bmp$/, ".png");
+          file.path = value.replace(/.bmp$/, ".png").replace(/\\/g, "/");
         } else if (key === "w") {
           file.cell_w = Number(value);
         } else if (key === "h") {
@@ -114,49 +114,22 @@ export default function dat_to_json(
       ret = make_character_data(base, make_frames(full_str, base.files));
       break;
     case "1":
-      base.type =
-        {
-          "120": WeaponType.Knife, // Knife
-          "124": WeaponType.Knife, // Boomerang
-        }["" + datIndex.id] ?? WeaponType.Stick;
-      base.bounce = 0.2;
-      base.name =
-        datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, "");
-      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files), datIndex);
       break;
     case "2":
-      base.type = WeaponType.Heavy;
-      switch (datIndex.id) {
-        case "150":
-          base.bounce = 0.2;
-          break;
-        default:
-          base.bounce = 0.1;
-          break;
-      }
-      base.name =
-        datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, "");
-      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files), datIndex);
       break;
     case "3":
       ret = make_ball_data(base, make_frames(full_str, base.files), datIndex);
       break;
     case "4":
-      base.type = WeaponType.Baseball;
-      base.bounce = 0.45;
-      base.name =
-        datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, "");
-      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files), datIndex);
       break;
     case "5":
       ret = make_entity_data(base, make_frames(full_str, base.files));
       break;
     case "6":
-      base.type = WeaponType.Drink;
-      base.bounce = 0.45;
-      base.name =
-        datIndex.hash ?? datIndex.file.replace(/[^a-z|A-Z|0-9|_]/g, "");
-      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files));
+      ret = make_weapon_data(base, full_str, make_frames(full_str, base.files), datIndex);
       break;
     default:
       console.warn(

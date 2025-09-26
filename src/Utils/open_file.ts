@@ -2,12 +2,28 @@ export interface i_opts_open_file {
   accept?: string;
   multiple?: boolean;
 }
-export default function open_file(opts?: i_opts_open_file) {
+export function open_file(opts?: i_opts_open_file) {
   return new Promise<File[]>((resolve, reject) => {
     const input = document.createElement("input");
     input.type = "file";
     if (typeof opts?.multiple === "boolean") input.multiple = opts.multiple;
     if (typeof opts?.accept === "string") input.accept = opts.accept;
+    input.click();
+    input.oncancel = () => reject("cancel");
+    input.onchange = () => {
+      if (!input.files) reject("[open_file] files got null!");
+      else if (!input.files.length) reject("[open_file] files is empty!");
+      else resolve(Array.from(input.files));
+    };
+  });
+}
+
+export function open_dir() {
+  return new Promise<File[]>((resolve, reject) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.setAttribute("directory", "true")
+    input.setAttribute("webkitdirectory", "true")
     input.click();
     input.oncancel = () => reject("cancel");
     input.onchange = () => {

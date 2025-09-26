@@ -36,5 +36,5 @@ export async function read_lf2_dat_file(path: string): Promise<string> {
   decode_dat(buf, buf.length);
   const ret = Buffer.alloc(buf.length - head_placeholder_length);
   buf.copy(ret, 0, head_placeholder_length, buf.length);
-  return ret.toString().replace(/\\/g, "/").replace(/\r/g, "");
+  return ret.toString().replace(/\r/g, "");
 }

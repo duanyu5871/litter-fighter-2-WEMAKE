@@ -16,7 +16,7 @@ import Show from "./Component/Show";
 import Titled from "./Component/Titled";
 import { useShortcut } from "./Component/useShortcut";
 import { DanmuOverlay } from "./DanmuOverlay";
-import DatViewer from "./DatViewer";
+import { DatViewer } from "./pages/dat_viewer/DatViewer";
 import { __Pointings } from "./DittoImpl";
 import { Indicating, INDICATINGS } from "./DittoImpl/renderer/FrameIndicators";
 import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
@@ -36,7 +36,7 @@ import { Loading } from "./LoadingImg";
 import { Log } from "./Log";
 import { PlayerRow } from "./PlayerRow";
 import SettingsRows from "./SettingsRows";
-import open_file from "./Utils/open_file";
+import { open_file } from "./Utils/open_file";
 import img_btn_0_3 from "./assets/btn_0_3.png";
 import img_btn_1_0 from "./assets/btn_1_0.png";
 import img_btn_1_1 from "./assets/btn_1_1.png";
@@ -55,6 +55,7 @@ import {
   useLocalNumber,
   useLocalString,
 } from "./useLocalStorage";
+import { useWorkspaces } from "./pages/dat_viewer/useWorkspaces";
 
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
@@ -391,6 +392,8 @@ function App() {
     (lf2.pointings as __Pointings).set_element(ele_game_canvas);
     (lf2.world.renderer as WorldRenderer).scene.set_canvas(ele_game_canvas);
   }, [lf2, ele_game_canvas])
+
+  useWorkspaces({ container: ele_root })
 
   useEffect(() => {
     if (!ele_root) return;

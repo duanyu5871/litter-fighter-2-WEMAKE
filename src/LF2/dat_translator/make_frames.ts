@@ -139,7 +139,7 @@ export function make_frames(
     if (!frame.cpoint) delete frame.cpoint;
 
     const sound = take(frame, "sound");
-    if (sound) frame.sound = sound + ".mp3";
+    if (sound) frame.sound = sound.replace(/\\/g, '/') + ".mp3";
     frames[frame_id] = frame;
 
     const dircontrol = take(cpoint_list[0], "dircontrol");

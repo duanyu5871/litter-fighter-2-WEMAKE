@@ -24,7 +24,7 @@ import { ILf2Callback } from "../LF2/ILf2Callback";
 import { LF2 } from "../LF2/LF2";
 import { traversal } from "../LF2/utils/container_help/traversal";
 import { is_num } from "../LF2/utils/type_check";
-import open_file from "../Utils/open_file";
+import { open_file } from "../Utils/open_file";
 import { shared_ctx } from './Context';
 import { EditorShapeEnum } from "./EditorShapeEnum";
 import { EntityBaseDataView } from "./EntityBaseDataView";
