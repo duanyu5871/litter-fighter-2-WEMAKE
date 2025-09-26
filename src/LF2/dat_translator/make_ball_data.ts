@@ -45,7 +45,7 @@ export function make_ball_data(
 
   let weapon_hit_sound = take_str(info, "weapon_hit_sound");
   if (weapon_hit_sound) {
-    weapon_hit_sound += (weapon_hit_sound + ".mp3").replace(/\\/g, '/');
+    weapon_hit_sound = (weapon_hit_sound + ".mp3").replace(/\\/g, '/');
     info.hit_sounds = [weapon_hit_sound];
   }
 
