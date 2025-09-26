@@ -4,6 +4,7 @@ import { join } from "path";
 import { file_md5_str } from "./file_md5_str";
 import { is_dir } from "./is_dir";
 import { write_file } from "./write_file";
+import { Defines } from "../../../src/LF2/defines";
 
 export interface IZipFileInfo {
   url: string;
@@ -11,6 +12,7 @@ export interface IZipFileInfo {
   time: string;
   type: string;
   infos?: { [x in string]?: any };
+  version: number;
 }
 /**
  * 压缩源目录，生成zip文件与“信息json文件”
@@ -88,6 +90,7 @@ export async function make_zip_and_json(
     md5: await file_md5_str(zip_path),
     infos: await read_sub_info_json(src_dir),
     time: new Date().toISOString(),
+    version: Defines.DATA_VERSION
   };
   inf = edit_info ? await edit_info(inf) : inf;
   await write_file(inf_path, JSON.stringify(inf));

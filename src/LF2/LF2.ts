@@ -64,7 +64,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   static readonly TAG = "LF2";
   static readonly instances: LF2[] = []
   lang: string = '';
-  static readonly DATA_VERSION: number = 9;
+  static readonly DATA_VERSION: number = 10;
   static readonly DATA_TYPE: string = 'DataZip';
   static get instance() { return LF2.instances[0] }
   static get ui() { return LF2.instances[0].ui }
