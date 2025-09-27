@@ -1342,17 +1342,13 @@ export class Entity implements IDebugging {
         const weight = this._data.base.weight || 1
         let { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
-          const throwings = this._data.indexes?.throwings;
-          const on_hands = this._data.indexes?.on_hands;
-          if (throwings?.length && on_hands?.length) {
-            const on_hand_idx = on_hands.indexOf(this.frame.id)
-            const throwing_idx = (on_hand_idx + 1) % throwings.length;
-            this.enter_frame({ id: throwings[throwing_idx] });
-          } else if (throwings?.length) {
-            this.enter_frame({ id: throwings[0] });
-          } else {
-            this.enter_frame(this.find_auto_frame());
-          }
+          const nf = this.find_align_frame(
+            this.frame.id,
+            this.data.indexes?.on_hands,
+            this.data.indexes?.throwings
+          )
+          this.enter_frame(nf);
+
           const vz = this.holder.ctrl
             ? this.holder.ctrl.UD * (dvz || 0)
             : 0;
@@ -1385,6 +1381,21 @@ export class Entity implements IDebugging {
     this.state?.pre_update?.(this);
   }
 
+  find_align_frame(
+    frame_id: string,
+    src: string[] | undefined | null,
+    dst: string[] | undefined | null
+  ): INextFrame {
+    if (dst?.length && src?.length) {
+      const src_idx = src.indexOf(frame_id)
+      const dst_idx = (src_idx + 1) % dst.length;
+      return { id: dst[dst_idx] };
+    } else if (dst?.length) {
+      return { id: dst[0] };
+    } else {
+      return this.find_auto_frame()
+    }
+  }
   update_resting() {
     if (this.resting <= 0) {
       if (this.toughness_resting > 0) {

@@ -14,15 +14,10 @@ export function handle_weapon_hit_other(collision: ICollision): void {
     attacker.velocity_0.z = 0;
   }
 
-  const in_the_skys = attacker.data.indexes?.in_the_skys;
-  const throwings = attacker.data.indexes?.throwings;
-  if (in_the_skys?.length && throwings?.length) {
-    const throwings_idx = throwings.indexOf(attacker.frame.id)
-    const in_the_skys_idx = (throwings_idx + 1) % in_the_skys.length;
-    attacker.next_frame = ({ id: in_the_skys[in_the_skys_idx] });
-  } else if (in_the_skys?.length) {
-    attacker.next_frame = { id: in_the_skys[0] };
-  } else {
-    attacker.next_frame = attacker.find_auto_frame();
-  }
+  const nf = attacker.find_align_frame(
+    attacker.frame.id,
+    attacker.data.indexes?.throwings,
+    attacker.data.indexes?.in_the_skys
+  )
+  attacker.next_frame = nf
 }
