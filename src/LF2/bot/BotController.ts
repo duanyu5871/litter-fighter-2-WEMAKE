@@ -354,8 +354,6 @@ export class BotController extends BaseController implements Required<IBotDataSe
       dummy_updaters[this.dummy]?.update(this);
     } else if (this.world.stage.is_chapter_finish) {
       this.key_up(...KEY_NAME_LIST)
-    } else if (this.world.stage.is_stage_finish) {
-      this.key_down(GK.R).key_up(...KEY_NAME_LIST)
     } else if (this.entity.hp <= 0) {
       this.key_up(...KEY_NAME_LIST)
     } else {

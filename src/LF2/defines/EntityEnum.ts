@@ -15,3 +15,5 @@ export const ALL_ENTITY_ENUM: TEntityEnum[] = [
   EntityEnum.Ball,
   EntityEnum.Entity,
 ];
+export const E_E = EntityEnum;
+export type E_E = EntityEnum;

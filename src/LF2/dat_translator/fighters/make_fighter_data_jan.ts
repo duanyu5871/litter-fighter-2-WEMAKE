@@ -1,10 +1,11 @@
-import { IEntityData } from "../../defines";
+import { Defines, IEntityData } from "../../defines";
 import { bot_explosion_dua } from "./bot_explosion_dua";
 import { bot_explosion_duj } from "./bot_explosion_duj";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
 export function make_fighter_data_jan(data: IEntityData) {
+  data.base.strength = Defines.FIGHTER_STREAGTH_WEAK
   data.base.files['0'].variants = ['2']
   data.base.files['1'].variants = ['3']
   BotBuilder.make(data).set_actions(

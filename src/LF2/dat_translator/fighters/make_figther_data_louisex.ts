@@ -1,4 +1,4 @@
-import { EntityGroup, IEntityData } from "../../defines";
+import { Defines, EntityGroup, IEntityData } from "../../defines";
 import { arithmetic_progression, ensure } from "../../utils";
 import { bot_ball_continuation } from "./bot_ball_continuation";
 import { bot_ball_dfa } from "./bot_ball_dfa";
@@ -11,6 +11,7 @@ import { frames } from "./frames";
  * @returns 
  */
 export function make_figther_data_louisex(data: IEntityData): IEntityData {
+  data.base.strength = Defines.FIGHTER_STREAGTH_STRONG
   data.base.group = ensure(data.base.group, EntityGroup.Boss);
   BotBuilder.make(data).set_actions(
     // d>a

@@ -6,7 +6,8 @@ import { BotState_Base } from "./BotState";
 import { BotStateEnum } from "../../defines/BotStateEnum";
 export class BotState_Avoiding extends BotState_Base {
   readonly key = BotStateEnum.Avoiding;
-  override update() {
+  override update(dt: number) {
+    super.update(dt)
     if (this.handle_defends()) return;
     if (this.handle_bot_actions()) return;
     this.random_jumping()

@@ -1,4 +1,4 @@
-import { BotVal, GameKey, IEntityData, StateEnum } from "../../defines";
+import { BotVal, Defines, GameKey, IEntityData, StateEnum } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { probability } from "../../utils/math/probability";
 import { bot_ball_continuation } from "./bot_ball_continuation";
@@ -11,6 +11,7 @@ import { frames } from "./frames";
 
 
 export function make_fighter_data_deep(data: IEntityData) {
+  data.base.strength = Defines.FIGHTER_STREAGTH_STRONG
   BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(75, void 0, 50, 200),

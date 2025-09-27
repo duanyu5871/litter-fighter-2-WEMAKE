@@ -10,6 +10,7 @@ import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
 export function make_fighter_data_julian(data: IEntityData) {
+  data.base.strength = Defines.FIGHTER_STREAGTH_STRONG
   data.base.group = ensure(data.base.group, EntityGroup.Boss);
   data.base.mp_r_ratio = 2;
   data.base.ce = 3;

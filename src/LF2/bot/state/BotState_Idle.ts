@@ -8,7 +8,8 @@ export class BotState_Idle extends BotState_Base {
   override enter(): void {
     this.ctrl.key_up(...KEY_NAME_LIST)
   }
-  override update() {
+  override update(dt: number) {
+    super.update(dt)
     if (this.handle_defends()) return;
     if (this.handle_bot_actions()) return;
     this.random_jumping()

@@ -238,6 +238,7 @@ export interface IEntityInfo {
   armor?: IArmorInfo;
 
   weight?: number
+  strength?: number
 
   /**
    * BOT数据

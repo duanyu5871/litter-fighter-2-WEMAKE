@@ -814,9 +814,9 @@ export class Entity implements IDebugging {
       speedz: o_speedz = this.get_opoint_speed_z(emitter, opoint)
     } = opoint;
 
-    const { weight } = this._data.base
-    o_dvx /= (weight || 1);
-    o_dvy /= (weight || 1);
+    const weight = this._data.base.weight || 1
+    o_dvx /= weight;
+    o_dvy /= weight;
 
     let ud = emitter.ctrl?.UD || 0;
     let { x: ovx, y: ovy, z: ovz } = offset_velocity;
@@ -825,8 +825,6 @@ export class Entity implements IDebugging {
     } else {
       o_dvx = o_dvx + abs(ovz / 2);
     }
-
-
 
     if (is_num(opoint.max_hp)) this.hp = this.hp_r = this.hp_max = opoint.max_hp;
     if (is_num(opoint.hp)) this.hp = this.hp_r = opoint.hp;
@@ -1340,17 +1338,17 @@ export class Entity implements IDebugging {
       this.follow_holder();
       const { wpoint } = this.holder.frame;
       if (wpoint) {
-        const { weight } = this._data.base
+        const strength = this._data.base.strength || 1
+        const weight = this._data.base.weight || 1
         let { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
-
           this.enter_frame({ id: this._data.indexes?.throwing });
           const vz = this.holder.ctrl
             ? this.holder.ctrl.UD * (dvz || 0)
             : 0;
 
-          dvx = (dvx || 0) / (weight || 1);
-          dvy = (dvy || 0) / (weight || 1);
+          dvx = strength * (dvx || 0) / weight;
+          dvy = strength * (dvy || 0) / weight;
           const vx = (dvx - abs(vz / 2)) * this.facing;
           this.velocity_0.set(vx, dvy, vz);
           this.holder.holding = void 0;

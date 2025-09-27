@@ -1,8 +1,9 @@
 import type { IState } from "../../base/FSM";
-import { GK, LGK, StateEnum } from "../../defines";
-import { random_get } from "../../utils";
+import { GK, ItrKind, LGK, StateEnum } from "../../defines";
+import { find, random_get } from "../../utils";
 import type { BotController } from "../BotController";
 import type { BotStateEnum } from "../../defines/BotStateEnum";
+import { KEY_NAME_LIST } from "../../controller";
 
 export abstract class BotState_Base implements IState<BotStateEnum> {
   abstract key: BotStateEnum;
@@ -47,7 +48,16 @@ export abstract class BotState_Base implements IState<BotStateEnum> {
         c.key_up(GK.j);
     }
   }
-  update?(dt: number): BotStateEnum | undefined | void;
+  update(dt: number): BotStateEnum | undefined | void {
+    const c = this.ctrl
+    const me = c.entity;
+    if (c.world.stage.is_stage_finish) {
+      c.key_down(GK.R).key_up(...KEY_NAME_LIST);
+      if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
+        c.start(GK.a).end(GK.a);
+      }
+    }
+  }
   enter?(): void;
   leave?(): void;
   handle_defends(): boolean {

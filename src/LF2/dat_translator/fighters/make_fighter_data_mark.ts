@@ -1,4 +1,4 @@
-import { BotVal, GK, IEntityData } from "../../defines";
+import { BotVal, Defines, GK, IEntityData } from "../../defines";
 import { arithmetic_progression } from "../../utils";
 import { foreach } from "../../utils/container_help/foreach";
 import { bot_ball_dfa } from "./bot_ball_dfa";
@@ -8,6 +8,7 @@ import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
 
 export function make_fighter_data_mark(data: IEntityData) {
+  data.base.strength = Defines.FIGHTER_STREAGTH_STRONG
   BotBuilder.make(data).set_actions(
     // d>a
     bot_ball_dfa(0, void 0, 0, 80, 0.1)(a => {

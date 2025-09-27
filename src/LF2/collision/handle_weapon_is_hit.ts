@@ -1,5 +1,6 @@
 import { ICollision } from "../base";
-import { Defines, WeaponType } from "../defines";
+import { Defines, W_T } from "../defines";
+import { floor } from "../utils";
 import { handle_injury } from "./handle_injury";
 import { handle_rest } from "./handle_rest";
 import { handle_stiffness } from "./handle_stiffness";
@@ -17,24 +18,16 @@ export function handle_weapon_is_hit(collision: ICollision): void {
   const is_fly = itr.fall && itr.fall >= Defines.DEFAULT_FALL_VALUE_CRITICAL;
   const spark_frame_name = is_fly ? "slient_critical_hit" : "slient_hit";
   victim.world.spark(...collision.victim.spark_point(a_cube, b_cube), spark_frame_name);
-  victim.data.base.hit_sounds
 
-  if (victim.data.base.type === WeaponType.Heavy) {
-    if (is_fly) {
-      const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
-      const vy = itr.dvy ? itr.dvy : 3;
-      victim.velocity_0.x = vx;
-      victim.velocity_0.y = vy;
-      victim.team = attacker.team;
+  const weight = victim.data.base.weight || 1;
+  const vx = floor((itr.dvx ? itr.dvx * attacker.facing : 0) / weight);
+  const vy = floor((itr.dvy ? itr.dvy : Defines.DEFAULT_IVY_D) / weight);
 
-      victim.next_frame = { id: victim.lf2.random_get(victim.data.indexes?.in_the_skys) };
-    }
-  } else {
-    const vx = itr.dvx ? itr.dvx * attacker.facing : 0;
-    const vy = itr.dvy ? itr.dvy : 3;
+  if (victim.data.base.type !== W_T.Heavy || is_fly) {
     victim.velocity_0.x = vx;
     victim.velocity_0.y = vy;
     victim.team = attacker.team;
     victim.next_frame = { id: victim.lf2.random_get(victim.data.indexes?.in_the_skys) };
+
   }
 }

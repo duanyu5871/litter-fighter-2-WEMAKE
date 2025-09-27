@@ -485,6 +485,15 @@ export namespace Defines {
    * @link https://lf-empire.de/forum/showthread.php?tid=11204
    */
   export const DEFAULT_IVY_D: number = 3.5;
+
+  export const WEAPON_WEIGHT_HEAVY = 1.1;
+  export const WEAPON_WEIGHT_ARROW = 0.74;
+  export const WEAPON_WEIGHT_HOE = 1;
+  export const WEAPON_WEIGHT_NOMRAL = 0.9;
+  export const WEAPON_WEIGHT_LIGHT = 0.74;
+  export const FIGHTER_STREAGTH_STRONG = 1.2;
+  export const FIGHTER_STREAGTH_NORMAL = 1;
+  export const FIGHTER_STREAGTH_WEAK = 0.8;
 }
 
 export default Defines;
