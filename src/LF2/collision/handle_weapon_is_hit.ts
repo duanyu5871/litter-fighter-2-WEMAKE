@@ -1,5 +1,5 @@
 import { ICollision } from "../base";
-import { Defines, W_T } from "../defines";
+import { BuiltIn_OID, Defines, W_T } from "../defines";
 import { floor } from "../utils";
 import { handle_injury } from "./handle_injury";
 import { handle_rest } from "./handle_rest";
@@ -19,15 +19,30 @@ export function handle_weapon_is_hit(collision: ICollision): void {
   const spark_frame_name = is_fly ? "slient_critical_hit" : "slient_hit";
   victim.world.spark(...collision.victim.spark_point(a_cube, b_cube), spark_frame_name);
 
-  const weight = victim.data.base.weight || 1;
-  const vx = floor((itr.dvx ? itr.dvx * attacker.facing : 0) / weight);
-  const vy = floor((itr.dvy ? itr.dvy : Defines.DEFAULT_IVY_D) / weight);
+  let weight_x = victim.data.base.weight || 1;
+  let weight_y = victim.data.base.weight || 1;
+  let vx = floor((itr.dvx ? itr.dvx * attacker.facing : 0) / weight_x);
+  let vy = floor((itr.dvy ? itr.dvy : Defines.DEFAULT_IVY_D) / weight_y);
+
 
   if (victim.data.base.type !== W_T.Heavy || is_fly) {
     victim.velocity_0.x = vx;
     victim.velocity_0.y = vy;
     victim.team = attacker.team;
     victim.next_frame = { id: victim.lf2.random_get(victim.data.indexes?.in_the_skys) };
-
   }
+
+  if (
+    attacker.data.id === BuiltIn_OID.Weapon_Stick &&
+    (
+      victim.data.id === BuiltIn_OID.Weapon_baseball ||
+      victim.data.id === BuiltIn_OID.Weapon_milk ||
+      victim.data.id === BuiltIn_OID.Weapon_Beer
+    )
+  ) {
+    const s = attacker.data.base.strength || 1
+    vx = attacker.facing * s * 20
+    victim.next_frame = { id: victim.lf2.random_get(victim.data.indexes?.throwings) }
+  }
+
 }

@@ -22,6 +22,9 @@ export interface IFrameIndexes {
   picking_light?: string;
 
   in_the_skys?: string[];
+  throwings?: string[];
+  on_hands?: string[];
+
   falling?: TFrameIdListPair;
 
   /**
@@ -50,7 +53,6 @@ export interface IFrameIndexes {
   fire?: string[];
   ice?: string;
 
-  throwing?: string;
 
   on_ground?: string;
 

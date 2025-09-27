@@ -1342,7 +1342,17 @@ export class Entity implements IDebugging {
         const weight = this._data.base.weight || 1
         let { dvx, dvy, dvz } = wpoint;
         if (dvx !== void 0 || dvy !== void 0 || dvz !== void 0) {
-          this.enter_frame({ id: this._data.indexes?.throwing });
+          const throwings = this._data.indexes?.throwings;
+          const on_hands = this._data.indexes?.on_hands;
+          if (throwings?.length && on_hands?.length) {
+            const on_hand_idx = on_hands.indexOf(this.frame.id)
+            const throwing_idx = (on_hand_idx + 1) % throwings.length;
+            this.enter_frame({ id: throwings[throwing_idx] });
+          } else if (throwings?.length) {
+            this.enter_frame({ id: throwings[0] });
+          } else {
+            this.enter_frame(this.find_auto_frame());
+          }
           const vz = this.holder.ctrl
             ? this.holder.ctrl.UD * (dvz || 0)
             : 0;
@@ -1839,7 +1849,7 @@ export class Entity implements IDebugging {
     this.position.set(
       round(x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x)),
       round(y + centery_a - wpoint_a.y - centery_b + wpoint_b.y),
-      round(z - wpoint_a.cover / 2),
+      round(z - wpoint_a.cover),
     );
   }
 

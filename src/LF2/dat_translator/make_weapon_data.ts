@@ -12,37 +12,31 @@ const indexes_map: Record<WeaponType, IFrameIndexes> = {
     on_ground: "",
     just_on_ground: "",
     throw_on_ground: "",
-    throwing: "",
   },
   [WeaponType.Stick]: {
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
-    throwing: "40",
   },
   [WeaponType.Heavy]: {
     on_ground: "20",
     just_on_ground: "21",
     throw_on_ground: "71",
-    throwing: "0",
   },
   [WeaponType.Knife]: {
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
-    throwing: "40",
   },
   [WeaponType.Baseball]: {
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
-    throwing: "40",
   },
   [WeaponType.Drink]: {
     on_ground: "60",
     just_on_ground: "70",
     throw_on_ground: "71",
-    throwing: "40",
   },
 };
 
@@ -100,13 +94,27 @@ export function make_weapon_data(
   if (weapon_hp && Number(weapon_hp)) info.hp = Number(weapon_hp);
 
   const in_the_skys: string[] = []
+  const throwings: string[] = []
+  const on_hands: string[] = []
   traversal(frames, (k, v) => {
     if (
       v.state === StateEnum.Weapon_InTheSky ||
       v.state === StateEnum.HeavyWeapon_InTheSky
     ) in_the_skys.push(k)
+    if (
+      v.state === StateEnum.Weapon_Throwing ||
+      v.state === StateEnum.HeavyWeapon_InTheSky
+    ) throwings.push(k)
+    if (
+      v.state === StateEnum.Weapon_OnHand ||
+      v.state === StateEnum.HeavyWeapon_OnHand
+    ) on_hands.push(k)
   })
-  indexes.in_the_skys = in_the_skys
+
+  indexes.in_the_skys = in_the_skys.length ? in_the_skys : void 0
+  indexes.throwings = in_the_skys.length ? throwings : void 0;
+  indexes.on_hands = on_hands.length ? on_hands : void 0;
+
   return {
     id: "",
     on_dead: { id: Builtin_FrameId.Gone },
