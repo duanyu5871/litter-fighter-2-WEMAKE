@@ -159,6 +159,8 @@ export enum ItrKind {
 
   Freeze = 16,
 }
+export const I_K = ItrKind
+export type I_K = ItrKind
 export const ItrKindDescriptions: Record<ItrKind, string> = {
   [ItrKind.Normal]: "普通（可配合effect）",
   [ItrKind.Catch]: "抓起眩晕的角色",

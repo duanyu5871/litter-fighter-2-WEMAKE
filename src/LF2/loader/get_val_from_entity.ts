@@ -1,4 +1,4 @@
-import { CheatType, ItrKind } from "../defines";
+import { CheatType, I_K, ItrKind } from "../defines";
 import { E_Val } from "../defines/EntityVal";
 import { IValGetter, IValGetterGetter } from "../defines/IExpression";
 import { Entity } from "../entity/Entity";
@@ -29,11 +29,9 @@ export const entity_val_getters: Record<E_Val, (e: Entity) => any> = {
       if (itr.kind !== ItrKind.SuperPunchMe) continue;
       // 小于0时，眩晕者在攻击者左侧，否则在右侧
       const diff_x = e.position.x - attacker.position.x;
-      if (
-        (between(diff_x, -20, 20)) ||
+      if ((between(diff_x, -20, 20)) ||
         (diff_x < -20 && e.facing === 1) ||
-        (diff_x > 20 && e.facing === -1)
-      ) return 1;
+        (diff_x > 20 && e.facing === -1)) return 1;
     }
     return 0;
   },
@@ -56,19 +54,25 @@ export const entity_val_getters: Record<E_Val, (e: Entity) => any> = {
   [E_Val.FrameState]: e => e.frame.state,
   [E_Val.Shaking]: e => e.shaking,
   [E_Val.Holding]: e => e.holding ? 1 : 0,
-  [E_Val.HpRecoverable]: e => e.hp_r - e.hp
+  [E_Val.HpRecoverable]: e => e.hp_r - e.hp,
+  [E_Val.LastestCollidedItrKind]: e => e.lastest_collided?.itr.kind
 }
-export const entity_world_val_getters = new Map<string, IValGetter<Entity>>();
+export const entity_world_val_getters = new Map<string, undefined | IValGetter<Entity>>();
 
 export const get_val_getter_from_entity: IValGetterGetter<Entity> = (word: string): IValGetter<Entity> | undefined => {
   const val_getter = entity_val_getters[word as E_Val]
   if (val_getter) return val_getter;
-  let fallback = entity_world_val_getters.get(word);
-  if (!fallback) {
-    const val_getter = get_val_from_world(word);
-    fallback = val_getter ? (e, ...arg) => val_getter(e.world, ...arg) : () => word
-    entity_world_val_getters.set(word, fallback)
+
+  if (entity_world_val_getters.has(word)) {
+    return entity_world_val_getters.get(word)
   }
+  const world_val_getter = get_val_from_world(word);
+  if (!world_val_getter) {
+    entity_world_val_getters.set(word, world_val_getter)
+    return void 0
+  }
+  const fallback: IValGetter<Entity> = (e, ...arg) => world_val_getter(e.world, ...arg)
+  entity_world_val_getters.set(word, fallback)
   return fallback;
 };
 

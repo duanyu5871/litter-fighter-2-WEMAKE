@@ -1334,8 +1334,8 @@ export class Entity implements IDebugging {
       }
     }
 
+    this.follow_holder();
     if (this.holder) {
-      this.follow_holder();
       const { wpoint } = this.holder.frame;
       if (wpoint) {
         const strength = this._data.base.strength || 1
@@ -1502,6 +1502,7 @@ export class Entity implements IDebugging {
     }
 
     this.world.restrict(this);
+    this.holding?.follow_holder();
     this.collision_list.length = 0;
     this.collided_list.length = 0;
     this.update_id.add()

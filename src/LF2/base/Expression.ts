@@ -24,7 +24,7 @@ export const predicate_maps: Record<BinOp, (a: any, b: any) => boolean> = {
   ">": (a, b) => a > b,
   "{{": a_included_b,
   "}}": (a: any[], b: any[]) => a_included_b(b, a),
-  "!{": (a: any[], b: any[]) => a_included_b(a, b),
+  "!{": (a: any[], b: any[]) => !a_included_b(a, b),
   "!}": (a: any[], b: any[]) => !a_included_b(b, a),
 };
 
@@ -38,7 +38,7 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
   result?: boolean | undefined;
   before: string = "";
   not: boolean = false;
-  
+
   op: any;
   val_1: any;
   val_2: any;
@@ -123,7 +123,12 @@ export class Expression<T1, T2 = T1> implements IExpression<T1, T2> {
     const getter_2 = this.get_val_getter(word_2);
     let val_1: any = word_1;
     let val_2: any = word_2;
-    if (op === "{{" || op === "}}" || op === "!{" || op === "!}") {
+    if (
+      op === BinOp.Include ||
+      op === BinOp.IncludedBy ||
+      op === BinOp.NotInclude ||
+      op === BinOp.IncludedBy
+    ) {
       if (!getter_1) val_1 = word_1.split(",");
       if (!getter_2) val_2 = word_2.split(",");
     }

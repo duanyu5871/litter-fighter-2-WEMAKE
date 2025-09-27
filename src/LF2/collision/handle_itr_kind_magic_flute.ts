@@ -2,8 +2,10 @@ import { StateEnum } from "../defines";
 import { EntityEnum } from "../defines/EntityEnum";
 import { ICollision } from "../base/ICollision";
 import { handle_injury } from "./handle_injury";
+import { handle_rest } from "./handle_rest";
 
 export function handle_itr_kind_magic_flute(collision: ICollision): void {
+  handle_rest(collision)
   const { victim } = collision;
   victim.merge_velocities();
   if (victim.velocity_0.y < 3) victim.velocity_0.y += 3;

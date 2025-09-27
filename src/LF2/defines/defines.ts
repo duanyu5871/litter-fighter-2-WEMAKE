@@ -491,7 +491,7 @@ export namespace Defines {
   export const WEAPON_WEIGHT_HOE = 1;
   export const WEAPON_WEIGHT_NOMRAL = 0.9;
   export const WEAPON_WEIGHT_LIGHT = 0.74;
-  export const FIGHTER_STREAGTH_STRONG = 1.2;
+  export const FIGHTER_STREAGTH_STRONG = 1.5;
   export const FIGHTER_STREAGTH_NORMAL = 1;
   export const FIGHTER_STREAGTH_WEAK = 0.8;
 }

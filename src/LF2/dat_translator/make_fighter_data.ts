@@ -1,6 +1,7 @@
-import { FacingFlag, IEntityInfo, IFrameInfo, StateEnum, TNextFrame, WeaponType } from "../defines";
+import { FacingFlag, IEntityInfo, IFrameInfo, ItrKind, StateEnum, TNextFrame, WeaponType } from "../defines";
 import { ActionType } from "../defines/ActionType";
 import { BdyKind } from "../defines/BdyKind";
+import { BinOp } from "../defines/BinOp";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
 import { IEntityData } from "../defines/IEntityData";
@@ -432,6 +433,8 @@ export function make_character_data(
           id: "100",
           expression: new CondMaker<EntityVal>()
             .add(EntityVal.HP, ">", 0)
+            .and(EntityVal.LastestCollidedItrKind, "!=", ItrKind.MagicFlute)
+            .and(EntityVal.LastestCollidedItrKind, "!=", ItrKind.MagicFlute2)
             .done(),
         });
         break;

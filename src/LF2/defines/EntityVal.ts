@@ -83,7 +83,8 @@ export enum EntityVal {
   FrameState = "frame_state",
   Shaking = "shaking",
   Holding = "holding",
-  HpRecoverable = "hp_recoverable"
+  HpRecoverable = "hp_recoverable",
+  LastestCollidedItrKind = "lastest_collided_itr_kind"
 }
 
 export const E_Val = EntityVal
