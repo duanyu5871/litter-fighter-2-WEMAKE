@@ -92,7 +92,7 @@ export function make_weapon_special(data: IEntityData) {
       data.base.brokens = broken_pieces_opoints(k_hoe, k_hoe, s_hoe, s_hoe);
       break;
     case BuiltIn_OID.Weapon_baseball:
-      data.base.weight = Defines.WEAPON_WEIGHT_LIGHT;
+      data.base.weight = Defines.WEAPON_WEIGHT_BASEBALL;
       data.base.brokens = broken_pieces_opoints(
         ...make_arr(5, () => baseball)
       );
