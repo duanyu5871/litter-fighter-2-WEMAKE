@@ -47,7 +47,7 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       const cond_maker = new CondMaker<C_Val>()
       switch (itr.effect) {
         case ItrEffect.Fire:
-          cond_maker.and((c) => c
+          cond_maker.and(c => c
             .add(C_Val.VictimState, "!=", StateEnum.Burning)
             .or(C_Val.AttackerState, "!=", StateEnum.BurnRun)
           );
@@ -55,13 +55,13 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
         case ItrEffect.MFire1:
           cond_maker
             .and(C_Val.VictimType, "!=", EntityEnum.Fighter)
-            .or((c) => c
+            .or(c => c
               .add(C_Val.VictimState, "!=", StateEnum.BurnRun)
               .and(C_Val.VictimState, "!=", StateEnum.Burning)
             );
           break;
         case ItrEffect.MFire2:
-          cond_maker.and((c) => c
+          cond_maker.and(c => c
             .add(C_Val.VictimState, "!=", StateEnum.BurnRun)
             .and(C_Val.VictimState, "!=", StateEnum.Burning),
           );
@@ -70,10 +70,9 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
           cond_maker.and(C_Val.VictimType, "!=", EntityEnum.Fighter);
           break;
         case ItrEffect.Ice2:
-          cond_maker.and((c) =>
-            c
-              .add(C_Val.VictimState, "!=", StateEnum.Frozen)
-              .and(C_Val.VictimFrameId, "!=", C_Val.VictimFrameIndex_ICE),
+          cond_maker.and(c => c
+            .add(C_Val.VictimState, "!=", StateEnum.Frozen)
+            .and(C_Val.VictimFrameId, "!=", C_Val.VictimFrameIndex_ICE),
           );
           break;
       }
@@ -121,11 +120,10 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.shaking = 0;
       itr.test = new CondMaker<C_Val>()
         .add(C_Val.VictimType, "==", EntityEnum.Fighter)
-        .or((c) =>
-          c
-            .add(C_Val.VictimType, "==", EntityEnum.Weapon)
-            .and(C_Val.VictimOID, "!=", BuiltIn_OID.HenryArrow1)
-            .and(C_Val.VictimOID, "!=", BuiltIn_OID.RudolfWeapon),
+        .or(c => c
+          .add(C_Val.VictimType, "==", EntityEnum.Weapon)
+          .and(C_Val.VictimOID, "!=", BuiltIn_OID.HenryArrow1)
+          .and(C_Val.VictimOID, "!=", BuiltIn_OID.RudolfWeapon),
         )
         .done();
       return;
@@ -195,10 +193,9 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.dvz = 0;
       itr.test = new CondMaker<C_Val>()
         .add(C_Val.VictimType, "==", EntityEnum.Fighter)
-        .and((c) =>
-          c
-            .add(C_Val.SameTeam, "==", 0)
-            .or(C_Val.VictimState, "==", StateEnum.Frozen),
+        .and(c => c
+          .add(C_Val.SameTeam, "==", 0)
+          .or(C_Val.VictimState, "==", StateEnum.Frozen),
         )
         .done();
       break;
@@ -213,20 +210,17 @@ export function cook_itr(itr?: Partial<IItrInfo>) {
       itr.dvy = 0;
       itr.dvz = 0;
       itr.test = new CondMaker<C_Val>()
-        .wrap((c) =>
-          c
-            .add(C_Val.VictimType, "==", EntityEnum.Weapon)
-            .and(C_Val.VictimOID, "!=", BuiltIn_OID.HenryArrow1)
-            .and(C_Val.VictimOID, "!=", BuiltIn_OID.Rudolf),
+        .wrap(c => c
+          .add(C_Val.VictimType, "==", EntityEnum.Weapon)
+          .and(C_Val.VictimOID, "!=", BuiltIn_OID.HenryArrow1)
+          .and(C_Val.VictimOID, "!=", BuiltIn_OID.Rudolf),
         )
-        .or((c) =>
-          c
-            .add(C_Val.VictimType, "==", EntityEnum.Fighter)
-            .and((c) =>
-              c
-                .add(C_Val.SameTeam, "==", 0)
-                .or(C_Val.VictimState, "==", StateEnum.Frozen),
-            ),
+        .or(c => c
+          .add(C_Val.VictimType, "==", EntityEnum.Fighter)
+          .and(c => c
+            .add(C_Val.SameTeam, "==", 0)
+            .or(C_Val.VictimState, "==", StateEnum.Frozen),
+          ),
         )
         .done();
       break;

@@ -24,6 +24,7 @@ export async function convert_dat_file(
     indexes.backgrounds.find((v) => index_file_value === v.file);
 
   const txt = await read_lf2_dat_file(src_path);
+  console.log("convert", src_path, "=>", dst_path);
   const ret = dat_to_json(txt, index_info!);
   {
     let dirty = ret as Partial<IEntityData>;
@@ -37,7 +38,6 @@ export async function convert_dat_file(
     await fs.copyFile(src_path, dst_path);
     return void 0;
   }
-  console.log("convert", src_path, "=>", dst_path);
   await fs.writeFile(dst_path, JSON5.stringify(ret, { space: 2, quote: '"' }));
   return ret;
 }

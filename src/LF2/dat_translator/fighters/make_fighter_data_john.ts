@@ -18,14 +18,18 @@ export function make_fighter_data_john(data: IEntityData) {
     // dvj
     bot_idle_action('dvj', [GK.Defend, GK.Down, GK.Jump], 350)((a, c) => {
       a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
-      a.expression = c.add(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
+      a.expression = c.and(E_Val.HpRecoverable, '>=', 100)
+        .and(BotVal.Safe, '==', 1)
+        .done()
       return a;
     }),
     // d^j
     bot_idle_action('d^j', [GK.Defend, GK.Up, GK.Jump], 350)((a, c) => {
       // todo, need ally test
       a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
-      a.expression = c.add(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
+      a.expression = c
+        .add(E_Val.HpRecoverable, '>=', 100)
+        .and(BotVal.Safe, '==', 1).done()
       return a;
     }),
 
@@ -35,13 +39,13 @@ export function make_fighter_data_john(data: IEntityData) {
       return a;
     }),
     //s_punch+d>a
-    bot_chasing_action('s_punch+d>a', [GK.Defend, 'F', GK.Attack])((a, c) => {
-      a.expression = c.add(BotVal.EnemyState, '==', StateEnum.Falling).done()
+    bot_chasing_action('s_punch+d>a', [GK.Defend, 'F', GK.Attack], 100)((a, c) => {
+      a.expression = c.and(BotVal.EnemyState, '==', StateEnum.Falling).done()
       return a;
     }),
     //s_punch+d>j
-    bot_chasing_action('s_punch+d>j', [GK.Defend, 'F', GK.Jump])((a, c) => {
-      a.expression = c.add(BotVal.EnemyState, '==', StateEnum.BrokenDefend).done()
+    bot_chasing_action('s_punch+d>j', [GK.Defend, 'F', GK.Jump], 100)((a, c) => {
+      a.expression = c.and(BotVal.EnemyState, '==', StateEnum.BrokenDefend).done()
       return a;
     })
   ).set_frames(
