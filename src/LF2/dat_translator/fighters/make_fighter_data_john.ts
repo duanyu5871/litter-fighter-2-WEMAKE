@@ -28,14 +28,14 @@ export function make_fighter_data_john(data: IEntityData) {
       // todo, need ally test
       a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
       a.expression = c
-        .add(E_Val.HpRecoverable, '>=', 100)
+        .and(E_Val.HpRecoverable, '>=', 100)
         .and(BotVal.Safe, '==', 1).done()
       return a;
     }),
 
     //s_punch+j
     bot_chasing_action('s_punch+j', [GK.Jump])((a, c) => {
-      a.expression = c.add(BotVal.EnemyState, '==', StateEnum.Falling).done()
+      a.expression = c.and(BotVal.EnemyState, '==', StateEnum.Falling).done()
       return a;
     }),
     //s_punch+d>a
