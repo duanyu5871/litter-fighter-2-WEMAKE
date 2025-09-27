@@ -137,7 +137,7 @@ export class CollisionKeeper {
     }
   }
 }
-export const collisions_keeper = new CollisionKeeper();
+export const collisions_keeper = (window as any).collisions_keeper = new CollisionKeeper();
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
   [ItrKind.Catch],
@@ -272,7 +272,13 @@ collisions_keeper.add(
   arithmetic_progression(BdyKind.GotoMin, BdyKind.GotoMax, 1) as BdyKind[],
   handle_body_goto,
 );
-
+collisions_keeper.add(
+  [EntityEnum.Weapon],
+  [ItrKind.WeaponSwing, ItrKind.Normal],
+  ALL_ENTITY_ENUM,
+  arithmetic_progression(BdyKind.GotoMin, BdyKind.GotoMax, 1) as BdyKind[],
+  handle_body_goto,
+);
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
   [ItrKind.Heal],

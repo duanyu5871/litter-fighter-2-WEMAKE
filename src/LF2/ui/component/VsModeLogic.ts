@@ -1,4 +1,4 @@
-import { Defines, type IStagePhaseInfo } from "../../defines";
+import { Defines, GONE_FRAME_INFO, type IStagePhaseInfo } from "../../defines";
 import type { Entity } from "../../entity";
 import type IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
@@ -33,6 +33,9 @@ export class VsModeLogic extends UIComponent
     for (const [, f] of this.world.slot_fighters) {
       this.on_fighter_add(f)
     }
+  }
+  override on_stop(): void {
+    this.world.entities.forEach(v => v.enter_frame(GONE_FRAME_INFO))
   }
   override on_resume(): void {
     this.lf2.world.stage.callbacks.add(this);

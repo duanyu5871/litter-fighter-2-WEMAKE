@@ -1,5 +1,6 @@
 import type { IFrameInfo, IHitKeyCollection, LGK, TNextFrame } from "../defines";
 import { GK, StateEnum } from "../defines";
+import { is_bot_ctrl } from "../entity";
 import type { Entity } from "../entity/Entity";
 import { Times } from "../ui/utils/Times";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
@@ -340,7 +341,7 @@ export class BaseController {
         return;
       }
     }
-
+    if (is_bot_ctrl(this)) return;
     /** 顺序按键 判定 */
     if (this._key_list.length >= 3) {
       for (const [seq, nf] of seqs) {
@@ -354,7 +355,7 @@ export class BaseController {
     }
     result.key_list = this._key_list;
   }
-  
+
   sequence_keys_test(str: string): boolean {
     if (this._key_list[0] !== 'd') return false;
     for (let i = 0; i < str.length; i++) {

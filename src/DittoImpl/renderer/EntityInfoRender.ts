@@ -247,7 +247,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     const strokeStyle = get_team_shadow_color(team);
     const world = e.world;
     const lf2 = world.lf2;
-    const text = reserve ? '' + reserve : void 0;
+    const text = reserve ? 'x' + reserve : void 0;
     if (!text) {
       this.reserve_node.visible = false;
       this.reserve_node.clear_material().update_material();
@@ -340,7 +340,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.set_bars_position(bar_x, bar_y, bar_z);
 
     const name_y = floor(-z / 2 - this.name_node.scale_y);
-    this.set_name_position(_x, name_y, bar_z);
+    this.set_name_position(_x, name_y, z);
 
     for (const [k, { node }] of this.key_nodes) {
       node.visible = !this.entity.ctrl.is_end(k)
@@ -356,7 +356,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.name_node.set_position(round(x), round(y), round(z));
   }
 
-  set_bars_position(x?: number, y?: number, z?: number) {
+  set_bars_position(x: number, y: number, z: number) {
     const old_y = this.bars_node.y
     const _y = y ?? old_y
     let __y = old_y === 0 ? _y : old_y + (_y - old_y) * 0.2
@@ -364,7 +364,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.bars_node.set_position(x, __y, z);
     if (!this.bars_node.parent) __y -= BAR_BG_H + 5
 
-    this.reserve_node.set_position(x, __y, z)
+    this.reserve_node.set_position(x + BAR_BG_W / 2, __y, z)
     this.ctrl_node.set_position(x, __y, z);
   }
 }

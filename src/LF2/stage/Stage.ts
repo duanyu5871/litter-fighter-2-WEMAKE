@@ -27,6 +27,13 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   private _phase_idx: number = 0;
   private _phase: IStagePhaseInfo | undefined;
   readonly items = new Set<Item>();
+  private _is_stage_finish: boolean = false;
+  private _is_chapter_finish: boolean = false;
+
+  /** 节是否结束 */
+  get is_stage_finish(): boolean { return this._is_stage_finish; }
+  /** 章是否结束 */
+  get is_chapter_finish(): boolean { return this._is_chapter_finish }
 
   get bg(): Background { return this._bg; }
   get phases() { return this.data.phases }
@@ -122,7 +129,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   readonly fsm = new FSM<Status>().add({
     key: Status.Running,
     update: () => {
-      if (this.is_stage_finish) return Status.Completed;
+      if (this._is_stage_finish) return Status.Completed;
     }
   }, {
     key: Status.Completed,
@@ -219,6 +226,9 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
 
   enter_phase(idx: number) {
     this.set_phase(this.data.phases[this._phase_idx = idx])
+    this._is_stage_finish = this.data.phases.length > 0 && this._phase_idx >= this.data.phases.length
+    this._is_chapter_finish = this._is_stage_finish && this.next_stage?.chapter !== this.data.chapter
+    return
   }
 
   async spawn_object(obj_info: IStageObjectInfo) {
@@ -305,28 +315,15 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     return !find(this.items, i => i.info.is_boss);
   }
   all_enemies_dead(): boolean {
-    return !find(this.items, (i) => !i.fighters.size);
+    return !find(this.items, i => i.fighters.size);
   }
-  /** 章是否结束 */
-  get is_chapter_finish(): boolean {
-    if (!this.is_stage_finish) return false
-    if (!this.next_stage) return true;
-    return this.next_stage.chapter !== this.data.chapter
-  }
-  /** 节是否结束 */
-  get is_stage_finish(): boolean {
-    return this._phase_idx >= this.phases.length && this.phases.length > 0;
-  }
+
+
   /** 是否应该进入下一关 */
   get should_goto_next_stage(): boolean {
-    if (!this.is_chapter_finish && this.is_stage_finish)
+    if (this.is_chapter_finish || !this.is_stage_finish)
       return false;
-    for (const e of this.world.entities) {
-      if (is_character(e) && e.hp > 0 && e.position.x < this.cam_r) {
-        return false;
-      }
-    }
-    return true
+    return !find(this.world.entities, e => is_character(e) && e.hp > 0 && e.position.x < this.cam_r)
   }
 
   update() {

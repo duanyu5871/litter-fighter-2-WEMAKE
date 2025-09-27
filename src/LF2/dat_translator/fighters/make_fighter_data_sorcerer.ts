@@ -1,7 +1,6 @@
-import { BotStateEnum, BotVal, EntityVal as E_Val, GK, IEntityData, StateEnum } from "../../defines";
+import { BotStateEnum, BotVal, EntityVal as E_Val, GK, IEntityData } from "../../defines";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
-import { bot_chasing_action } from "./bot_chasing_action";
 import { bot_idle_action } from "./bot_idle_action";
 import { BotBuilder } from "./BotBuilder";
 import { frames } from "./frames";
@@ -16,14 +15,14 @@ export function make_fighter_data_sorcerer(data: IEntityData) {
     // dvj
     bot_idle_action('dvj', [GK.Defend, GK.Down, GK.Jump], 350)((a, c) => {
       a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
-      a.expression = c.add(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
+      a.expression = c.and(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
       return a;
     }),
     // d^j
     bot_idle_action('d^j', [GK.Defend, GK.Up, GK.Jump], 350)((a, c) => {
       // todo, need ally test
       a.status = [BotStateEnum.Idle, BotStateEnum.Chasing, BotStateEnum.Avoiding]
-      a.expression = c.add(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
+      a.expression = c.and(E_Val.HpRecoverable, '>=', 50).and(BotVal.Safe, '==', 1).done()
       return a;
     }),
   ).set_frames(
