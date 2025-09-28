@@ -180,8 +180,10 @@ export class BotState_Chasing extends BotState_Base {
       } else {
         c.key_up(GK.U, GK.D);
       }
-    } else if (me.facing === en.facing) {
-      c.key_down(me.facing > 0 ? GK.L : GK.R)
+    } else if (me.facing > 0 && my_x > en_x) {
+      c.key_down(GK.L)
+    } else if (me.facing < 0 && my_x < en_x) {
+      c.key_down(GK.R)
     } else {
       c.key_up(GK.L, GK.R, GK.U, GK.D);
     }
