@@ -19,16 +19,14 @@ export class BotState_Idle extends BotState_Base {
     const en = c.get_chasing()?.entity
     const av = c.get_avoiding()?.entity
 
-    if (!en && !av)
-      return BotStateEnum.Idle
-    else if (!en)
+    if (en && av && manhattan_xz(me, av) < manhattan_xz(me, en))
       return BotStateEnum.Avoiding;
-    else if (!av)
+    else if (en)
       return BotStateEnum.Chasing;
-    else if (manhattan_xz(me, av) < manhattan_xz(me, en))
+    else if (av)
       return BotStateEnum.Avoiding;
-    else
-      return BotStateEnum.Chasing;
+
+    this.ctrl.key_up(...KEY_NAME_LIST)
   }
 }
 

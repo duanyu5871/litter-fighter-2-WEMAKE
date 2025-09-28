@@ -218,10 +218,6 @@ export class BaseController {
       !this.entity.motionless &&
       this.queue.length
     ) {
-
-      if (is_local_ctrl(this) && this.queue.length) {
-        console.log(this.queue.join())
-      }
       for (const [status, k] of this.queue) {
         switch (status) {
           case 0:

@@ -1,9 +1,9 @@
 
 import { GK, ItrKind, StateEnum } from "../../defines";
+import { BotStateEnum } from "../../defines/BotStateEnum";
 import { manhattan_xz } from "../../helper/manhattan_xz";
 import { find } from "../../utils";
 import { BotState_Base } from "./BotState";
-import { BotStateEnum } from "../../defines/BotStateEnum";
 export class BotState_Avoiding extends BotState_Base {
   readonly key = BotStateEnum.Avoiding;
   override update(dt: number) {
@@ -18,13 +18,13 @@ export class BotState_Avoiding extends BotState_Base {
     const av = c.get_avoiding()?.entity
     const { state } = me.frame;
 
-    if (av && en && manhattan_xz(me, av) > manhattan_xz(me, en)) {
-      return BotStateEnum.Chasing
-    } else if (!av && en) {
+    if (en && av && manhattan_xz(me, av) < manhattan_xz(me, en))
+      return BotStateEnum.Avoiding;
+    else if (en)
       return BotStateEnum.Chasing;
-    } else if (!av) {
-      return BotStateEnum.Idle;
-    }
+    else if (!av)
+      return BotStateEnum.Idle
+
     switch (state) {
       case StateEnum.Normal:
       case StateEnum.Standing:

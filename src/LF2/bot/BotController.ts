@@ -182,16 +182,23 @@ export class BotController extends BaseController implements Required<IBotDataSe
    * @memberof BotController
    */
   should_chase(e?: Entity | null): boolean {
-    return !!(
+
+    const ret = !!(
       this.entity.hp > 0 &&
       e?.is_attach &&
       e.hp > 0 &&
       e.frame.state !== StateEnum.Lying &&
       !e.invisible &&
       !e.blinking &&
-      !e.invulnerable &&
-      e.frame.bdy?.length
+      !e.invulnerable
     )
+    if (!ret) return false;
+
+    if ('stay' === this.behavior) {
+      const vx = abs(this.entity.position.x - e.position.x)
+      return vx < 200
+    }
+    return true;
   }
 
   /**

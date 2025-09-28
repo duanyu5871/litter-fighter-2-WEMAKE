@@ -72,7 +72,7 @@ export default class FSM<
     if (!curr_state) return;
 
     const next_state_key = curr_state.update?.(dt);
-    if (!next_state_key) return;
+    if (next_state_key === void 0 || next_state_key === null) return;
 
     const next_state = this._state_map.get(next_state_key);
     if (!next_state) return;

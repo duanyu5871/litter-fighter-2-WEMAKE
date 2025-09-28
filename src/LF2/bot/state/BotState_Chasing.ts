@@ -17,10 +17,10 @@ export class BotState_Chasing extends BotState_Base {
     const me = c.entity;
     const en = c.get_chasing()?.entity
     const av = c.get_avoiding()?.entity
-    if (av && en && manhattan_xz(me, av) < manhattan_xz(me, en))
-      return BotStateEnum.Avoiding
-    else if (!en && av) return BotStateEnum.Avoiding;
-    else if (!en) return BotStateEnum.Idle;
+    if (en && av && manhattan_xz(me, av) < manhattan_xz(me, en))
+      return BotStateEnum.Avoiding;
+    else if (!en)
+      return BotStateEnum.Idle;
 
     const { facing: a_facing } = me
     const { x: my_x, z: my_z, y: my_y } = me.position;
@@ -159,7 +159,6 @@ export class BotState_Chasing extends BotState_Base {
         c.key_up(...KEY_NAME_LIST);
 
     }
-
     if (my_x < en_x - c.w_atk_x) {
       c.key_down(GK.R).key_up(GK.L);
     } else if (my_x > en_x + c.w_atk_x) {
