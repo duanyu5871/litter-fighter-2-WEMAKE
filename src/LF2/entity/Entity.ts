@@ -66,6 +66,7 @@ export class Entity implements IDebugging {
   fuse_bys?: Entity[];
   dismiss_time?: number;
   dismiss_data?: IEntityData;
+  doppelgangers = new Set<Entity>();
   get data(): IEntityData { return this._data };
   get group() { return this._data.base.group };
   get is_attach() { return this._is_attach }
@@ -1032,7 +1033,10 @@ export class Entity implements IDebugging {
     const entity = create(this.world, data);
     entity.ctrl = Factory.inst.get_ctrl(entity._data.id, "", entity,) ?? entity.ctrl;
     entity.on_spawn(this, opoint, offset_velocity, facing).attach(opoint.is_entity);
+    if (entity.data.id === this.data.id) this.doppelgangers.add(entity)
+    entity.key_role = false;
     entity.dead_gone = true;
+
     for (const [k, v] of this.v_rests) {
       /*
       Note: 继承v_rests，避免重复反弹ball...
@@ -1637,8 +1641,7 @@ export class Entity implements IDebugging {
       } else if (throwinjury === -1) {
         // TODO：变成抓住的人
         if (is_character(this) && is_character(this._catching)) {
-          this.transform_datas = [this._data, this._catching._data as any];
-          this.transform(this._catching._data);
+          this.transfrom_to_another(this._catching._data);
           return this.find_auto_frame();
         }
       } else {
@@ -1702,16 +1705,31 @@ export class Entity implements IDebugging {
     return { id: Builtin_FrameId.Auto };
   }
 
-  transfrom_to_another() {
-    const { transform_datas } = this;
-    if (!transform_datas?.length) return;
-    const curr_idx = transform_datas.indexOf(this._data)
-    const next_idx = (curr_idx + 1) % transform_datas.length;
-    this.transform(transform_datas[next_idx]!);
+  transfrom_to_another(data?: IEntityData) {
+    const datas = this.transform_datas = data ?
+      [this._data, data] :
+      this.transform_datas;
+    if (!datas?.length) return;
+    const curr_idx = datas.indexOf(this._data)
+    const next_idx = (curr_idx + 1) % datas.length;
+    const next_data = datas[next_idx]
+    this.transform(next_data);
     if (next_idx === 0) {
       const nf = this.get_next_frame({ id: "245" })?.frame ?? this.find_auto_frame()
       this.next_frame = nf;
     }
+    if (this.doppelgangers.size) {
+      const gones = []
+      for (const d of this.doppelgangers) {
+        if (!d.is_attach) gones.push(d)
+        else d.transform(next_data)
+      }
+      for (const d of gones) {
+        this.doppelgangers.delete(d)
+      }
+    }
+
+
   }
 
   /**
