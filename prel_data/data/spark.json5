@@ -29,7 +29,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 1,
@@ -50,7 +50,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 1,
@@ -70,7 +70,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 1,
@@ -90,7 +90,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 2,
@@ -110,7 +110,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 3,
@@ -130,7 +130,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 4,
@@ -150,7 +150,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 5,
@@ -170,7 +170,7 @@
         w: 0,
         h: 0,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: "gone",
@@ -191,7 +191,7 @@
         w: 59,
         h: 51,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 11,
@@ -212,7 +212,7 @@
         w: 59,
         h: 51,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 11,
@@ -232,7 +232,7 @@
         w: 59,
         h: 51,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 11,
@@ -252,7 +252,7 @@
         w: 59,
         h: 51,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 12,
@@ -272,7 +272,7 @@
         w: 59,
         h: 51,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 13,
@@ -292,7 +292,7 @@
         w: 59,
         h: 51,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 14,
@@ -312,7 +312,7 @@
         w: 59,
         h: 51,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 15,
@@ -332,7 +332,7 @@
         w: 0,
         h: 0,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: "gone",
@@ -353,7 +353,7 @@
         w: 59,
         h: 48,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 21,
@@ -373,7 +373,7 @@
         w: 59,
         h: 48,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 22,
@@ -393,7 +393,7 @@
         w: 59,
         h: 48,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 23,
@@ -413,7 +413,7 @@
         w: 59,
         h: 48,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 24,
@@ -433,7 +433,7 @@
         w: 59,
         h: 48,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 25,
@@ -453,7 +453,7 @@
         w: 0,
         h: 0,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: "gone",
@@ -474,7 +474,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 31,
@@ -494,7 +494,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 32,
@@ -514,7 +514,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 33,
@@ -534,7 +534,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 34,
@@ -554,7 +554,7 @@
         w: 100,
         h: 73,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: 35,
@@ -574,7 +574,7 @@
         w: 0,
         h: 0,
       },
-      state: 9997,
+      state: 15,
       wait: 1,
       next: {
         id: "gone",

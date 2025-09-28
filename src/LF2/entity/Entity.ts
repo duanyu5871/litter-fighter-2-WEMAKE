@@ -24,7 +24,7 @@ import { Ditto } from "../ditto";
 import { ENTITY_STATES, States } from "../state";
 import { State_Base } from "../state/State_Base";
 import { Times } from "../ui/utils/Times";
-import { abs, find, floor, intersection, max, min, round } from "../utils";
+import { abs, clamp, find, floor, intersection, max, min, round } from "../utils";
 import { cross_bounding } from "../utils/cross_bounding";
 import { is_num, is_positive, is_str } from "../utils/type_check";
 import { DrinkInfo } from "./DrinkInfo";
@@ -1906,7 +1906,16 @@ export class Entity implements IDebugging {
     }
     if (frame) {
       if (frame.sound) {
-        const { x, y, z } = this.position;
+        let { x, y, z } = this.position;
+        if (frame.state === StateEnum.Message) {
+          let { centerx, pic: { w = 0 } = {} } = frame;
+          let { cam_x } = this.world.renderer;
+          let cam_r = cam_x + this.world.screen_w;
+          const offset_x = this.facing === 1 ? centerx : w - centerx;
+          cam_r -= w - offset_x
+          cam_x += offset_x
+          x = clamp(x, cam_x, cam_r)
+        }
         this.world.lf2.sounds.play(frame.sound, x, y, z);
       }
       this.set_frame(frame);

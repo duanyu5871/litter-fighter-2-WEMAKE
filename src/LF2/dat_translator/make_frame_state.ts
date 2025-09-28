@@ -101,5 +101,8 @@ export function make_frame_state(frame: IFrameInfo) {
     case StateEnum.Frozen:
       foreach(frame.bdy, bdy => bdy.hit_flag = HitFlag.AllBoth)
       break;
+    case StateEnum.Message:
+      frame.no_shadow = 1;
+      break;
   }
 }

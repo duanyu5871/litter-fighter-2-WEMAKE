@@ -1,10 +1,10 @@
 import type { IMeshNode } from "../../LF2/3d";
 import type { IEntityData, IPicture, ITexturePieceInfo } from "../../LF2/defines";
-import { Builtin_FrameId } from "../../LF2/defines";
+import { Builtin_FrameId, StateEnum } from "../../LF2/defines";
 import { Ditto } from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
-import { abs, floor, round } from "../../LF2/utils";
+import { abs, clamp, floor, round } from "../../LF2/utils";
 import * as THREE from "../3d/_t";
 import { WorldRenderer } from "./WorldRenderer";
 export const EMPTY_PIECE: ITexturePieceInfo = {
@@ -107,7 +107,8 @@ export class EntityRender {
   render(dt: number) {
     const { entity, entity_mesh } = this;
     if (entity.frame.id === Builtin_FrameId.Gone) return;
-    const { frame, position: { x, y, z }, facing } = entity;
+    const { frame, facing } = entity;
+    let { position: { x, y, z } } = entity;
     if (entity.data !== this._prev_data) {
       this.set_entity(entity);
     }
@@ -116,13 +117,22 @@ export class EntityRender {
       this.apply_tex(entity, this._prev_tex = tex)
     }
 
-    const { centerx, centery } = frame;
+    const { centerx, centery, state } = frame;
     const offset_x = entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx;
+
+    if (state === StateEnum.Message) {
+      let { cam_x } = this.entity.world.renderer;
+      let cam_r = cam_x + this.entity.world.screen_w;
+      cam_r -= entity_mesh.scale_x - offset_x
+      cam_x += offset_x
+      x = clamp(x, cam_x, cam_r)
+    }
     entity_mesh.set_position(
       round(x - offset_x),
       round(y - z / 2 + centery),
       round(z),
     );
+
     const is_visible = !entity.invisible;
     const is_blinking = !!entity.blinking;
     entity_mesh.visible = is_visible;

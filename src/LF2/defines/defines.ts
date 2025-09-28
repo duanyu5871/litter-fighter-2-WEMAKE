@@ -16,7 +16,7 @@ export type TFace = -1 | 1;
 export type TTrend = -1 | 0 | 1;
 export type BOOL = 1 | 0;
 export namespace Defines {
-  export const DATA_VERSION: number = 10;
+  export const DATA_VERSION: number = 11;
   export const TeamEnum = _TeamEnum;
   export type TeamEnum = _TeamEnum;
   export const CLASSIC_SCREEN_WIDTH = 794;
