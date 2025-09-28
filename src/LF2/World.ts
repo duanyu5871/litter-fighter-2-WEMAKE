@@ -5,7 +5,8 @@ import {
   Builtin_FrameId, Defines,
   HitFlag,
   IBdyInfo, IBounding, IEntityData,
-  IFrameInfo, IItrInfo, ItrKind, StateEnum,
+  IFrameInfo, IItrInfo, ItrKind,
+  StateEnum,
   WeaponType
 } from "./defines";
 import { Ditto } from "./ditto";
@@ -87,8 +88,32 @@ export class World extends WorldDataset {
 
   cam_speed = 0;
   lock_cam_x: number | undefined = void 0;
-  public renderer: IWorldRenderer
+  public renderer: IWorldRenderer;
 
+  team_come(_team: string, x: number, y: number, z: number) {
+    for (const e of this.entities) {
+      const { ctrl, team } = e;
+      if (_team === team && is_bot_ctrl(ctrl)) {
+        ctrl.goto(x, y, z)
+      }
+    }
+  }
+  team_move(_team: string) {
+    for (const e of this.entities) {
+      const { ctrl, team } = e;
+      if (_team === team && is_bot_ctrl(ctrl)) {
+        ctrl.move()
+      }
+    }
+  }
+  team_stay(_team: string) {
+    for (const e of this.entities) {
+      const { ctrl, team } = e;
+      if (_team === team && is_bot_ctrl(ctrl)) {
+        ctrl.stay()
+      }
+    }
+  }
   constructor(lf2: LF2) {
     super()
     this.lf2 = lf2;

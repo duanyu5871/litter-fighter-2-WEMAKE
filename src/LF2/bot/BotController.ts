@@ -21,6 +21,7 @@ import { BotState_Avoiding, BotState_Chasing, BotState_Idle } from "./state";
 import { is_ray_hit } from "./utils/is_ray_hit";
 
 export class BotController extends BaseController implements Required<IBotDataSet> {
+
   readonly player: PlayerInfo | undefined;
   readonly fsm = new FSM<BotStateEnum>()
     .add(
@@ -42,6 +43,8 @@ export class BotController extends BaseController implements Required<IBotDataSe
   /** 走攻触发范围Z */
   w_atk_z = Defines.AI_W_ATK_Z;
   data_set: IBotDataSet | undefined;
+  behavior?: 'stay' | 'move';
+  following?: [number, number, number];
   /** 走攻触发范围X */
   get w_atk_x() {
     const chasing = this.get_chasing()?.entity;
@@ -416,5 +419,15 @@ export class BotController extends BaseController implements Required<IBotDataSe
       return v
     })
     return ks;
+  }
+
+  move() {
+    this.behavior = 'move'
+  }
+  stay() {
+    this.behavior = 'stay'
+  }
+  goto(x: number, y: number, z: number) {
+    this.following = [x, y, z]
   }
 }

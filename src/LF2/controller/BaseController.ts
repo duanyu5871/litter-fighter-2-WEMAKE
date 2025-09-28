@@ -1,13 +1,13 @@
 import type { IFrameInfo, IHitKeyCollection, LGK, TNextFrame } from "../defines";
 import { GK, StateEnum } from "../defines";
-import { is_bot_ctrl } from "../entity";
+import { is_bot_ctrl, is_local_ctrl } from "../entity";
 import type { Entity } from "../entity/Entity";
 import { Times } from "../ui/utils/Times";
 import { ControllerUpdateResult } from "./ControllerUpdateResult";
 import DoubleClick from "./DoubleClick";
 import { KeyStatus } from "./KeyStatus";
+import { SeqKeys } from "./SeqKeys";
 export type TKeys = Record<GK, string>;
-
 export const KEY_NAME_LIST = [
   GK.d,
   GK.L,
@@ -204,6 +204,11 @@ export class BaseController {
     else return this.keys[key].is_hld();
   }
 
+  // too stupid.
+  protected dddd = new SeqKeys([GK.d, GK.d, GK.d, GK.d])
+  protected dada = new SeqKeys([GK.d, GK.a, GK.d, GK.a])
+  protected djdj = new SeqKeys([GK.d, GK.j, GK.d, GK.j])
+
   protected result = new ControllerUpdateResult();
   readonly queue: (readonly [0 | 1 | 2, LGK])[] = []
   update(): ControllerUpdateResult {
@@ -213,6 +218,10 @@ export class BaseController {
       !this.entity.motionless &&
       this.queue.length
     ) {
+
+      if (is_local_ctrl(this) && this.queue.length) {
+        console.log(this.queue.join())
+      }
       for (const [status, k] of this.queue) {
         switch (status) {
           case 0:
@@ -221,6 +230,32 @@ export class BaseController {
             break;
           case 1:
             if (!this.is_end(k)) break;
+            if (is_local_ctrl(this)) {
+              if (!this.dddd.hit) {
+                this.dddd.test(k, this.time)
+              }
+              if (this.dddd.hit) {
+                this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "2")
+                this.world.team_stay(this.entity.team)
+                this.dddd.reset()
+              }
+              if (!this.dada.hit) {
+                this.dada.test(k, this.time)
+              }
+              if (this.dada.hit) {
+                this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "4")
+                this.world.team_move(this.entity.team)
+                this.dada.reset()
+              }
+              if (!this.djdj.hit) {
+                this.djdj.test(k, this.time)
+              }
+              if (this.djdj.hit) {
+                this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "0")
+                this.world.team_come(this.entity.team, this.entity.position.x, this.entity.position.y, this.entity.position.z)
+                this.djdj.reset()
+              }
+            }
             if (k === GK.d) {
               this._key_list = k;
             } else if (this._key_list[0] === GK.d) {
