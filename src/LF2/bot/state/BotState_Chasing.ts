@@ -56,6 +56,8 @@ export class BotState_Chasing extends BotState_Base {
     const x_reach = abs_dx <= c.w_atk_x;
     const z_reach = abs_dz <= c.w_atk_z;
 
+    const out_of_range = abs_dx > Defines.AI_STAY_CHASING_RANGE && c.behavior === 'stay'
+
     switch (state) {
       case StateEnum.Normal:
         if (this.defend_test()) return;
@@ -65,10 +67,10 @@ export class BotState_Chasing extends BotState_Base {
         if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
           c.start(GK.a).end(GK.a)
         }
-        if (a_facing > 0 && abs_dx < c.w_atk_x) {
+        if (a_facing > 0 && (abs_dx < c.w_atk_x || out_of_range)) {
           // 避免跑过头停下
           c.key_down(GK.L).key_up(GK.R, GK.L)
-        } else if (a_facing < 0 && abs_dx < c.w_atk_x) {
+        } else if (a_facing < 0 && (abs_dx < c.w_atk_x || out_of_range)) {
           // 避免跑过头停下
           c.key_down(GK.R).key_up(GK.R, GK.L)
         } else if (
@@ -111,13 +113,15 @@ export class BotState_Chasing extends BotState_Base {
         if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
           c.start(GK.a).end(GK.a)
         }
-        const { r_desire } = c;
-        if (r_desire > 0) {
-          c.db_hit(GK.R).end(GK.R);
-        } else if (r_desire < 0) {
-          c.db_hit(GK.L).end(GK.L);
-        } else {
-          break;
+        if (!out_of_range) {
+          const { r_desire } = c;
+          if (r_desire > 0) {
+            c.db_hit(GK.R).end(GK.R);
+          } else if (r_desire < 0) {
+            c.db_hit(GK.L).end(GK.L);
+          } else {
+            break;
+          }
         }
         return;
       }
@@ -143,15 +147,17 @@ export class BotState_Chasing extends BotState_Base {
         ) {
           // 跳攻
           c.key_down(GK.a).key_up(GK.a)
-        } else if (my_x < en_x && abs_dx > c.w_atk_x) {
-          // 转向
-          c.key_down(GK.R).key_up(GK.L);
-        } else if (my_x > en_x && abs_dx > c.w_atk_x) {
-          // 转向
-          c.key_down(GK.L).key_up(GK.R);
-        } else {
-          c.key_up(GK.L, GK.R);
-          break;
+        } else if (!out_of_range) {
+          if (my_x < en_x && abs_dx > c.w_atk_x) {
+            // 转向
+            c.key_down(GK.R).key_up(GK.L);
+          } else if (my_x > en_x && abs_dx > c.w_atk_x) {
+            // 转向
+            c.key_down(GK.L).key_up(GK.R);
+          } else {
+            c.key_up(GK.L, GK.R);
+            break;
+          }
         }
         return
       }
@@ -159,19 +165,25 @@ export class BotState_Chasing extends BotState_Base {
         c.key_up(...KEY_NAME_LIST);
 
     }
-    if (my_x < en_x - c.w_atk_x) {
-      c.key_down(GK.R).key_up(GK.L);
-    } else if (my_x > en_x + c.w_atk_x) {
-      c.key_down(GK.L).key_up(GK.R);
+    if (!out_of_range) {
+      if (my_x < en_x - c.w_atk_x) {
+        c.key_down(GK.R).key_up(GK.L);
+      } else if (my_x > en_x + c.w_atk_x) {
+        c.key_down(GK.L).key_up(GK.R);
+      } else {
+        c.key_up(GK.L, GK.R);
+      }
+      if (my_z < en_z - c.w_atk_z) {
+        c.key_down(GK.D).key_up(GK.U);
+      } else if (my_z > en_z + c.w_atk_z) {
+        c.key_down(GK.U).key_up(GK.D);
+      } else {
+        c.key_up(GK.U, GK.D);
+      }
+    } else if (me.facing === en.facing) {
+      c.key_down(me.facing > 0 ? GK.L : GK.R)
     } else {
-      c.key_up(GK.L, GK.R);
-    }
-    if (my_z < en_z - c.w_atk_z) {
-      c.key_down(GK.D).key_up(GK.U);
-    } else if (my_z > en_z + c.w_atk_z) {
-      c.key_down(GK.U).key_up(GK.D);
-    } else {
-      c.key_up(GK.U, GK.D);
+      c.key_up(GK.L, GK.R, GK.U, GK.D);
     }
     if (
       between(dist_en_x, 0, c.w_atk_x) &&

@@ -495,6 +495,11 @@ export namespace Defines {
   export const FIGHTER_STREAGTH_STRONG = 1.5;
   export const FIGHTER_STREAGTH_NORMAL = 1;
   export const FIGHTER_STREAGTH_WEAK = 0.8;
+
+  /**
+   * stay下敌人距离多近才追击
+   */
+  export const AI_STAY_CHASING_RANGE = 255;
 }
 
 export default Defines;
