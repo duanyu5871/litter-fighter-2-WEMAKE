@@ -1708,8 +1708,10 @@ export class Entity implements IDebugging {
     const curr_idx = transform_datas.indexOf(this._data)
     const next_idx = (curr_idx + 1) % transform_datas.length;
     this.transform(transform_datas[next_idx]!);
-    if (next_idx === 0)
-      this.next_frame = this.get_next_frame({ id: "245" })?.frame;
+    if (next_idx === 0) {
+      const nf = this.get_next_frame({ id: "245" })?.frame ?? this.find_auto_frame()
+      this.next_frame = nf;
+    }
   }
 
   /**
