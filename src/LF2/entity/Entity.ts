@@ -1486,12 +1486,10 @@ export class Entity implements IDebugging {
     if (this.ctrl) {
       const { next_frame, key_list } = this.ctrl.update();
       if (
-        key_list === "ja" &&
+        key_list === "dja" &&
         this.transform_datas &&
         this.transform_datas[1] === this._data &&
-        (this.frame?.state === StateEnum.Walking ||
-          this.frame?.state === StateEnum.Standing ||
-          this.frame?.state === StateEnum.Defend)
+        this.position.y === 0
       ) {
         this.transfrom_to_another();
         this.ctrl.reset_key_list();
@@ -1706,10 +1704,12 @@ export class Entity implements IDebugging {
 
   transfrom_to_another() {
     const { transform_datas } = this;
-    if (!transform_datas) return;
-    const next_idx = (transform_datas.indexOf(this._data) + 1) % transform_datas.length;
+    if (!transform_datas?.length) return;
+    const curr_idx = transform_datas.indexOf(this._data)
+    const next_idx = (curr_idx + 1) % transform_datas.length;
     this.transform(transform_datas[next_idx]!);
-    this.next_frame = this.get_next_frame({ id: "245" })?.frame;
+    if (next_idx === 0)
+      this.next_frame = this.get_next_frame({ id: "245" })?.frame;
   }
 
   /**
