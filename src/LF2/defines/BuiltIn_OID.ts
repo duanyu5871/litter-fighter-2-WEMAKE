@@ -77,3 +77,5 @@ export enum BuiltIn_OID {
   Etc = "998",
   BrokenWeapon = "999"
 }
+export const O_ID = BuiltIn_OID;
+export type O_ID = BuiltIn_OID;

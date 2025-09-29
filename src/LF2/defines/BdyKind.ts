@@ -67,3 +67,6 @@ export const BdyKindDescriptions: Record<BdyKind, string> = {
   [BdyKind.Ignore]: "",
   [BdyKind.Criminal]: "",
 }
+
+export const B_K = BdyKind
+export type B_K = BdyKind

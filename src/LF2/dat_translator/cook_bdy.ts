@@ -1,7 +1,7 @@
 import { IFrameInfo, StateEnum } from "../defines";
 import { ActionType } from "../defines/ActionType";
-import { bdy_kind_full_name, BdyKind, OLD_BDY_KIND_GOTO_MAX, OLD_BDY_KIND_GOTO_MIN } from "../defines/BdyKind";
-import { BuiltIn_OID } from "../defines/BuiltIn_OID";
+import { B_K, bdy_kind_full_name, OLD_BDY_KIND_GOTO_MAX, OLD_BDY_KIND_GOTO_MIN } from "../defines/BdyKind";
+import { O_ID } from "../defines/BuiltIn_OID";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { Defines } from "../defines/defines";
 import { E_E } from "../defines/EntityEnum";
@@ -21,11 +21,11 @@ export function cook_bdy(bdy: Partial<IBdyInfo>, frame: IFrameInfo): void {
   bdy.kind = kind;
   bdy.kind_name = bdy_kind_full_name(bdy.kind);
 
-  if (bdy.kind === BdyKind.Normal && frame.state === StateEnum.Caught) {
+  if (bdy.kind === B_K.Normal && frame.state === StateEnum.Caught) {
     bdy.hit_flag = HitFlag.AllBoth
   }
   if (between(bdy.kind, OLD_BDY_KIND_GOTO_MIN, OLD_BDY_KIND_GOTO_MAX)) {
-    bdy.kind = BdyKind.Criminal;
+    bdy.kind = B_K.Criminal;
     bdy.kind_name = bdy_kind_full_name(bdy.kind);
     bdy.test = new CondMaker<C_Val>()
       .add(c => c
@@ -37,8 +37,8 @@ export function cook_bdy(bdy: Partial<IBdyInfo>, frame: IFrameInfo): void {
         .and(C_Val.AttackerType, "==", E_E.Weapon)
         .and(c => c
           .add(C_Val.ItrKind, "==", I_K.WeaponSwing)
-          .or(C_Val.AttackerOID, "==", BuiltIn_OID.HenryArrow1)
-          .or(C_Val.AttackerOID, "==", BuiltIn_OID.RudolfWeapon),
+          .or(C_Val.AttackerOID, "==", O_ID.HenryArrow1)
+          .or(C_Val.AttackerOID, "==", O_ID.RudolfWeapon),
         ),
       ).done();
     bdy.actions = ensure(bdy.actions, {

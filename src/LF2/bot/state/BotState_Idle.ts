@@ -1,7 +1,7 @@
 import { KEY_NAME_LIST } from "../../controller/BaseController";
 import { BotStateEnum } from "../../defines/BotStateEnum";
-import { BotState_Base } from "./BotState";
 import { manhattan_xz } from "../../helper/manhattan_xz";
+import { BotState_Base } from "./BotState";
 
 export class BotState_Idle extends BotState_Base {
   readonly key = BotStateEnum.Idle;
@@ -15,6 +15,7 @@ export class BotState_Idle extends BotState_Base {
     this.random_jumping()
 
     const { ctrl: c } = this;
+    if (c.following) return BotStateEnum.Following;
     const me = c.entity;
     const en = c.get_chasing()?.entity
     const av = c.get_avoiding()?.entity
@@ -25,8 +26,8 @@ export class BotState_Idle extends BotState_Base {
       return BotStateEnum.Chasing;
     else if (av)
       return BotStateEnum.Avoiding;
-
     this.ctrl.key_up(...KEY_NAME_LIST)
   }
 }
+
 
