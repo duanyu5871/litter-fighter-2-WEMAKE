@@ -75,42 +75,38 @@ export class BotState_Chasing extends BotState_Base {
         if (this.defend_test()) return;
         this.handle_block()
 
-        if (a_facing > 0 && (abs_dx < c.w_atk_x || out_of_range)) {
-          // 避免跑过头停下
-          c.key_down(GK.L).key_up(GK.R, GK.L)
-        } else if (a_facing < 0 && (abs_dx < c.w_atk_x || out_of_range)) {
-          // 避免跑过头停下
-          c.key_down(GK.R).key_up(GK.R, GK.L)
+        if (a_facing > 0 && (abs_dx < c.w_atk_x || out_of_range)) { // 避免跑过头停下
+          c.keep_press(GK.L)
+        } else if (a_facing < 0 && (abs_dx < c.w_atk_x || out_of_range)) { // 避免跑过头停下
+          c.keep_press(GK.R)
         } else if (
           c.desire() < c.r_atk_desire &&
           between(dist_en_x, 0, c.r_atk_x) &&
           between(abs_dz, 0, c.r_atk_z)
         ) {
           // 概率跑攻
-          c.key_down(GK.a).key_up(GK.a, GK.R, GK.L)
+          c.fast_click(GK.a).key_up(GK.R, GK.L)
         } else if (c.desire() < c.r_stop_desire) {
           // 概率刹车
-          a_facing < 0 ?
-            c.key_down(GK.R).key_up(GK.R, GK.L) :
-            c.key_down(GK.L).key_up(GK.R, GK.L)
+          c.fast_click(a_facing < 0 ? GK.R : GK.L)
         } else break;
         return
       }
       case StateEnum.Injured:
         if (c.action_desire() < c.d_desire)
-          c.start(GK.d).end(GK.d)
+          c.fast_click(GK.d)
         break;
       case StateEnum.Catching:
         // shit, louisEx air-push frame's state is StateEnum.Catching...
-        if (me.catching) c.start(GK.a).end(GK.a)
+        if (me.catching) c.fast_click(GK.a)
         break;
       case StateEnum.Attacking:
       case StateEnum.BurnRun:
       case StateEnum.Z_Moveable:
         if (my_z < en_z - c.w_atk_z) {
-          c.key_down(GK.D);
+          c.keep_press(GK.D);
         } else if (my_z > en_z + c.w_atk_z) {
-          c.key_down(GK.U);
+          c.keep_press(GK.U);
         } else {
           c.key_up(GK.D, GK.U);
         }
@@ -134,14 +130,12 @@ export class BotState_Chasing extends BotState_Base {
         return;
       }
       case StateEnum.Dash: {
-        if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
-          c.start(GK.a).end(GK.a)
-        }
+        this.handle_block()
         if (
           between(dist_en_x, 0, c.d_atk_x) &&
           between(abs_dz, 0, c.d_atk_z)
         ) {
-          c.key_down(GK.a).key_up(GK.a)
+          c.keep_press(GK.a)
           return
         }
         break;
@@ -154,14 +148,14 @@ export class BotState_Chasing extends BotState_Base {
           between(dist_en_y, c.j_atk_y_min, c.j_atk_y_max)
         ) {
           // 跳攻
-          c.key_down(GK.a).key_up(GK.a)
+          c.fast_click(GK.a)
         } else if (!out_of_range) {
           if (my_x < en_x && abs_dx > c.w_atk_x) {
             // 转向
-            c.key_down(GK.R).key_up(GK.L);
+            c.keep_press(GK.R);
           } else if (my_x > en_x && abs_dx > c.w_atk_x) {
             // 转向
-            c.key_down(GK.L).key_up(GK.R);
+            c.keep_press(GK.L);
           } else {
             c.key_up(GK.L, GK.R);
             break;
@@ -174,20 +168,15 @@ export class BotState_Chasing extends BotState_Base {
 
     }
     if (!out_of_range) {
-      if (my_x < en_x - c.w_atk_x) {
-        c.key_down(GK.R).key_up(GK.L);
-      } else if (my_x > en_x + c.w_atk_x) {
-        c.key_down(GK.L).key_up(GK.R);
-      } else {
-        c.key_up(GK.L, GK.R);
-      }
-      if (my_z < en_z - c.w_atk_z) {
-        c.key_down(GK.D).key_up(GK.U);
-      } else if (my_z > en_z + c.w_atk_z) {
-        c.key_down(GK.U).key_up(GK.D);
-      } else {
-        c.key_up(GK.U, GK.D);
-      }
+
+      if (my_x < en_x - c.w_atk_x) c.keep_press(GK.R);
+      else if (my_x > en_x + c.w_atk_x) c.keep_press(GK.L);
+      else c.key_up(GK.L, GK.R);
+
+      if (my_z < en_z - c.w_atk_z) c.keep_press(GK.D)
+      else if (my_z > en_z + c.w_atk_z) c.keep_press(GK.U)
+      else c.key_up(GK.U, GK.D);
+
     } else if (me.facing > 0 && my_x > en_x && state === StateEnum.Standing) {
       c.key_down(GK.L)
     } else if (me.facing < 0 && my_x < en_x && state === StateEnum.Standing) {
@@ -199,8 +188,9 @@ export class BotState_Chasing extends BotState_Base {
       between(dist_en_x, 0, c.w_atk_x) &&
       between(abs_dz, 0, c.w_atk_z)
     ) {
-      c.key_down(GK.a).key_up(GK.a)
-      return
+      c.fast_click(GK.a)
+    } else {
+      c.key_up(GK.a)
     }
     if (x_reach && z_reach) {
       /** 回头 */
@@ -211,11 +201,7 @@ export class BotState_Chasing extends BotState_Base {
       } else if (my_x < en_x && me.facing < 0) {
         c.key_down(GK.R).key_up(GK.L);
       }
-      c.key_down(GK.a).key_up(GK.a)
-    } else {
-      c.key_up(GK.a)
     }
-
   }
 
 }
