@@ -122,12 +122,12 @@ export function make_frames(
     for (const wpoint of wpoint_list) cook_wpoint(wpoint, frame);
     for (const cpoint of cpoint_list) cook_cpoint(cpoint, frame);
 
-    if (bdy_list.length) frame.bdy = bdy_list
     if (itr_list.length) frame.itr = itr_list
-    if (bpoint_list.length) frame.wpoint = wpoint_list[0]
-    if (opoint_list.length) frame.bpoint = bpoint_list[0]
-    if (wpoint_list.length) frame.opoint = opoint_list
+    if (bdy_list.length) frame.bdy = bdy_list
+    if (opoint_list.length) frame.opoint = opoint_list
+    if (wpoint_list.length) frame.wpoint = wpoint_list[0]
     if (cpoint_list.length) frame.cpoint = cpoint_list[0]
+    if (bpoint_list.length) frame.bpoint = bpoint_list[0]
 
     const state_name = StateEnum[frame.state!]
     if (state_name) (frame as any).state_name = `StateEnum.${state_name}`

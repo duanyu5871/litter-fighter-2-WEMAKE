@@ -23,7 +23,7 @@ export class BotState_Following extends BotState_Base {
       const { x: my_x, z: my_z } = me.position;
       const offset_x = Defines.AI_FOLLOWING_RANGE_X
       const offset_z = Defines.AI_FOLLOWING_RANGE_Z
-      
+
       if (my_x < en_x - offset_x) {
         c.db_hit(GK.R).end(GK.R);
       } else if (my_x > en_x + offset_x) {
@@ -39,13 +39,11 @@ export class BotState_Following extends BotState_Base {
         c.key_up(GK.U, GK.D);
       }
       return;
-    } else {
-      this.ctrl.key_up(...KEY_NAME_LIST);
     }
 
 
-
-
+    delete c.following;
+    this.ctrl.key_up(...KEY_NAME_LIST);
     const en = c.get_chasing()?.entity;
     const av = c.get_avoiding()?.entity;
 
