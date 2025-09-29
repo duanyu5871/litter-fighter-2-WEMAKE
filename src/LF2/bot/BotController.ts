@@ -1,5 +1,5 @@
 import FSM from "../base/FSM";
-import { BaseController, KEY_NAME_LIST } from "../controller/BaseController";
+import { BaseController, CONFLICTS_KEY_MAP, KEY_NAME_LIST } from "../controller/BaseController";
 import {
   ATTCKING_ITR_KINDS,
   ATTCKING_STATES,
@@ -329,19 +329,26 @@ export class BotController extends BaseController implements Required<IBotDataSe
   }
 
   key_up(...ks: LGK[]): this {
+    for (const k of ks) if (!this.is_end(k)) this.end(k)
+    return this;
+  }
+  key_down(...ks: LGK[]): this {
+    for (const k of ks) if (this.is_end(k)) this.start(k)
+    return this;
+  }
+  fast_click(...ks: LGK[]): this {
     for (const k of ks) {
-      if (!this.is_end(k)) {
-        this.end(k)
-      }
+      this.key_down(k).key_up(k)
+      const ck = CONFLICTS_KEY_MAP[k]
+      if (ck) this.key_up(ck)
     }
     return this;
   }
-
-  key_down(...ks: LGK[]): this {
+  keep_press(...ks: LGK[]): this {
     for (const k of ks) {
-      if (this.is_end(k)) {
-        this.start(k)
-      }
+      this.key_down(k)
+      const ck = CONFLICTS_KEY_MAP[k]
+      if (ck) this.key_up(ck)
     }
     return this;
   }

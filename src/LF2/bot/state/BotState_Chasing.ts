@@ -57,7 +57,15 @@ export class BotState_Chasing extends BotState_Base {
     const x_reach = abs_dx <= c.w_atk_x;
     const z_reach = abs_dz <= c.w_atk_z;
 
-    const out_of_range = abs_dx > Defines.AI_STAY_CHASING_RANGE && c.behavior === 'stay'
+    const out_of_range = (
+      abs_dx > Defines.AI_STAY_CHASING_RANGE &&
+      c.behavior === 'stay'
+    ) || (
+        me.team !== c.world.stage.team && (
+          en_x < c.world.stage.player_l - 80 ||
+          en_x > c.world.stage.player_r + 80
+        )
+      )
 
     switch (state) {
       case StateEnum.Normal:
@@ -65,9 +73,8 @@ export class BotState_Chasing extends BotState_Base {
         break;
       case StateEnum.Running: {
         if (this.defend_test()) return;
-        if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
-          c.start(GK.a).end(GK.a)
-        }
+        this.handle_block()
+
         if (a_facing > 0 && (abs_dx < c.w_atk_x || out_of_range)) {
           // 避免跑过头停下
           c.key_down(GK.L).key_up(GK.R, GK.L)
@@ -210,5 +217,6 @@ export class BotState_Chasing extends BotState_Base {
     }
 
   }
+
 }
 

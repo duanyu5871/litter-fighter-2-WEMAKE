@@ -62,22 +62,29 @@ export abstract class BotState_Base implements IState<BotStateEnum> {
   leave?(): void;
   handle_defends(): boolean {
     const { ctrl: c } = this;
-    if (c.defends.targets.length <= 0) return false;
-    if (c.action_desire() > c.d_desire) return false;
     const me = c.entity;
+    if (
+      c.defends.targets.length <= 0 ||
+      c.action_desire() > c.d_desire
+    ) return me.frame.state === StateEnum.Defend;
+
     if (c.defends.targets[0].defendable === 1) {
       const dx = c.defends.targets[0].entity.position.x - me.position.x
       const t_facing = c.defends.targets[0].entity.facing
-      if (dx > 0 && t_facing < 0) {
-        c.key_down(GK.R).key_up(GK.L)
-      } else if (dx < 0 && t_facing > 0) {
-        c.key_down(GK.L).key_up(GK.R)
-      }
-      c.start(GK.d).end(GK.d)
+      if (dx > 0 && t_facing < 0) c.keep_press(GK.R)
+      if (dx < 0 && t_facing > 0) c.keep_press(GK.L)
+      c.fast_click(GK.d).key_up(GK.L, GK.R)
     } else {
       // 不可防御的攻击
     }
     return true
+  }
+  handle_block() {
+    const { ctrl: c } = this;
+    const { entity: me } = c
+    if (find(me.v_rests, v => v[1].itr.kind === ItrKind.Block)) {
+      c.start(GK.a).end(GK.a)
+    }
   }
   handle_bot_actions(): boolean {
     const { ctrl: c } = this;

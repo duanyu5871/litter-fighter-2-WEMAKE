@@ -12,7 +12,7 @@ export default class CharacterState_Lying extends CharacterState_Base {
     if (e.hp <= 0) this.on_dead(e)
   }
   override leave(e: Entity, next_frame: IFrameInfo): void {
-    if (e.dead_join) {
+    if (e.dead_join && e.hp <= 0) {
       e.motionless = 30
       e.invulnerable = 30
       e.hp = e.hp_r = e.hp_max = (e.dead_join.hp ?? e.hp_max);

@@ -1,6 +1,7 @@
 import { KEY_NAME_LIST } from "../../controller";
-import { BotStateEnum, Defines, GK } from "../../defines";
+import { BotStateEnum, Defines, GK, StateEnum } from "../../defines";
 import { manhattan_xz } from "../../helper/manhattan_xz";
+import { between } from "../../utils";
 import { BotState_Base } from "./BotState";
 
 
@@ -23,22 +24,38 @@ export class BotState_Following extends BotState_Base {
       const { x: my_x, z: my_z } = me.position;
       const offset_x = Defines.AI_FOLLOWING_RANGE_X
       const offset_z = Defines.AI_FOLLOWING_RANGE_Z
+      const bound_l = en_x - offset_x;
+      const bound_r = en_x + offset_x;
+      const bound_t = en_z - offset_z;
+      const bound_b = en_z + offset_z;
 
-      if (my_x < en_x - offset_x) {
-        c.db_hit(GK.R).end(GK.R);
-      } else if (my_x > en_x + offset_x) {
-        c.db_hit(GK.L).end(GK.L);
-      } else {
-        c.key_up(GK.L, GK.R);
+      switch (me.frame.state) {
+        case StateEnum.Standing:
+        case StateEnum.Walking:
+          this.handle_block()
+          if (my_x < bound_l) c.fast_click(GK.R);
+          else if (my_x > bound_r) c.fast_click(GK.L);
+          else c.key_up(GK.R, GK.L);
+          if (my_z < bound_t) c.keep_press(GK.D);
+          else if (my_z > bound_b) c.keep_press(GK.U);
+          else c.key_up(GK.U, GK.D);
+          break;
+        case StateEnum.Dash:
+        case StateEnum.Jump:
+        case StateEnum.Running:
+          this.handle_block()
+          if (my_x > bound_r) c.keep_press(GK.L);
+          else if (my_x < bound_l) c.keep_press(GK.R);
+          else c.keep_press(me.facing < 0 ? GK.R : GK.L);
+          if (my_z < bound_t) c.keep_press(GK.D);
+          else if (my_z > bound_b) c.keep_press(GK.U);
+          else c.key_up(GK.U, GK.D);
+          break;
       }
-      if (my_z < en_z - offset_z) {
-        c.key_down(GK.D).key_up(GK.U);
-      } else if (my_z > en_z + offset_z) {
-        c.key_down(GK.U).key_up(GK.D);
-      } else {
-        c.key_up(GK.U, GK.D);
-      }
-      return;
+      if (
+        !between(my_x, bound_l, bound_r) ||
+        !between(my_z, bound_t, bound_b)
+      ) return
     }
 
 
