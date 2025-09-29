@@ -1,7 +1,6 @@
 import { FacingFlag, IEntityInfo, IFrameInfo, ItrKind, StateEnum, TNextFrame, WeaponType } from "../defines";
 import { ActionType } from "../defines/ActionType";
 import { BdyKind } from "../defines/BdyKind";
-import { BinOp } from "../defines/BinOp";
 import { EntityEnum } from "../defines/EntityEnum";
 import { EntityVal } from "../defines/EntityVal";
 import { IEntityData } from "../defines/IEntityData";
@@ -14,6 +13,7 @@ import { take_number } from "../utils/container_help/take_number";
 import { traversal } from "../utils/container_help/traversal";
 import { is_num, is_str } from "../utils/type_check";
 import { CondMaker } from "./CondMaker";
+import { FrameEditing } from "./FrameEditing";
 import { cook_file_variants } from "./cook_file_variants";
 import { cook_next_frame_mp_hp } from "./cook_next_frame_mp_hp";
 import { add_next_frame, edit_next_frame } from "./edit_next_frame";
@@ -24,15 +24,6 @@ import { take } from "./take";
 import { take_raw_frame_mp } from "./take_raw_frame_mp";
 const k_9 = ["Fa", "Fj", "Da", "Dj", "Ua", "Uj", "ja"] as const;
 
-function push_next_frame(
-  src: TNextFrame | undefined,
-  ...list: INextFrame[]
-): TNextFrame | undefined {
-  if (!list.length) return src;
-  if (!src) return list;
-  if (Array.isArray(src)) return [...src, ...list];
-  return [src, ...list];
-}
 const set_hit_turn_back = (frame: IFrameInfo, back_frame_id?: string) => {
   frame.key_down = frame.key_down || {};
   frame.key_down.B = { id: back_frame_id, wait: "i", facing: FacingFlag.Backward };
@@ -134,6 +125,7 @@ export function make_character_data(
       }
     });
 
+    const editing = new FrameEditing(frame);
     switch (Number(frame.id)) {
       /** standing */
       case 0:
@@ -148,43 +140,36 @@ export function make_character_data(
       case 7:
       case 8: {
         set_hit_turn_back(frame);
-        // set_hold_turn_back(frame);
-        frame.hit = frame.hit || {};
-        frame.hit.a = add_next_frame(frame.hit.a, {
-          id: ["45"],
-          facing: FacingFlag.Ctrl,
+        editing.hit('a', {
+          // weapon throw
+          id: "45", facing: FacingFlag.Ctrl,
           expression: new CondMaker<EntityVal>()
             .add(EntityVal.Holding_W_Type, "==", WeaponType.Baseball)
-            .or((v) =>
-              v
-                .add(EntityVal.Holding_W_Type, "==", WeaponType.Knife)
-                .and(EntityVal.PressFB, "!=", 0),
-            )
-            .done(),
-        }, {
-          id: ["20", "25"],
-          facing: FacingFlag.Ctrl,
+            .or(c => c
+              .add(EntityVal.Holding_W_Type, "==", WeaponType.Knife)
+              .and(EntityVal.PressFB, "!=", 0),
+            ).done(),
+        }, { // weapon swing
+          id: ["20", "25"], facing: FacingFlag.Ctrl,
           expression: new CondMaker<EntityVal>()
             .one_of(EntityVal.Holding_W_Type, WeaponType.Knife, WeaponType.Stick)
             .done(),
         }, { // drink
-          id: "55",
+          id: "55", facing: FacingFlag.Ctrl,
           expression: new CondMaker<EntityVal>()
             .one_of(EntityVal.Holding_W_Type, WeaponType.Drink)
             .done(),
-          facing: FacingFlag.Ctrl,
-        }, {
-          id: "70",
+        }, { // super_punch
+          id: "70", facing: FacingFlag.Ctrl,
           expression: new CondMaker<EntityVal>()
             .add(EntityVal.RequireSuperPunch, "==", 1)
             .done(),
         }, { // punch
           id: ["60", "65"], facing: FacingFlag.Ctrl
-        },
-        );
-        frame.hit.j = add_next_frame(frame.hit.j, { id: "210" }); // jump
-        frame.hit.d = add_next_frame(frame.hit.d, { id: "110" }); // defend
-        frame.hit.FF = { id: "running_0" };
+        })
+          .hit('j', { id: "210" }) // jump
+          .hit('d', { id: "110" }) // defend
+          .hit('FF', { id: "running_0" })
         frame.dvx = walking_speed / 2;
         frame.dvz = walking_speedz;
         frame.ctrl_z = 1;
@@ -195,18 +180,15 @@ export function make_character_data(
       case 9:
       case 10:
       case 11: {
-        frame.hit = frame.hit || {};
-        frame.hit.a = add_next_frame(frame.hit.a, {
+        editing.hit('a', {
           // 丢出武器
-          id: ["45"],
+          id: "45",
           expression: new CondMaker<EntityVal>()
             .add(EntityVal.Holding_W_Type, "==", WeaponType.Baseball)
-            .or((v) =>
-              v
-                .add(EntityVal.PressFB, "==", 1)
-                .and(EntityVal.Holding_W_Type, "!=", WeaponType.None),
-            )
-            .done(),
+            .or(c => c
+              .add(EntityVal.PressFB, "==", 1)
+              .and(EntityVal.Holding_W_Type, "!=", WeaponType.None),
+            ).done(),
         }, { // drink
           id: "55",
           expression: new CondMaker<EntityVal>()
@@ -216,15 +198,12 @@ export function make_character_data(
           id: "35",
           expression: new CondMaker<EntityVal>()
             .one_of(EntityVal.Holding_W_Type, WeaponType.Knife, WeaponType.Stick)
-            .done(),
-          facing: FacingFlag.Ctrl,
+            .done()
         }, { // run_atk
           id: "85"
-        });
-        frame.hit.j = add_next_frame(frame.hit.j, { id: "213" }); // dash
-        frame.hit.d = add_next_frame(frame.hit.d, { id: "102" }); // rowing
-        frame.hold = frame.hold || {};
-        frame.hit.B = frame.hold.B = { id: "218" }; // running_stop
+        }).hit('j', { id: "213" }) // dash
+          .hit('d', { id: "102" }) // rowing
+          .keydown('B', { id: "218" }); // running_stop
         frame.dvx = Number((running_speed / 2).toFixed(1));
         frame.dvz = running_speedz;
         frame.ctrl_z = 1;
@@ -251,7 +230,8 @@ export function make_character_data(
       case 18: {
         frame.hit = frame.hit || {};
         frame.hold = frame.hold || {};
-        frame.hit.B = frame.hold.B = { id: "19" }; // running_stop
+        frame.key_down = frame.key_down || {};
+        frame.key_down.B = { id: "19" }; // running_stop
         frame.hit.a = add_next_frame(frame.hit.a, { id: "50" });
         frame.dvx = Number((heavy_running_speed / 2).toFixed(1));
         frame.dvz = heavy_running_speedz;
@@ -293,8 +273,7 @@ export function make_character_data(
         if (frame_id === "212") {
           add_key_down_jump_atk(frame); // jump_atk
         }
-        frame.hit.B = { facing: FacingFlag.Ctrl };
-        frame.hold.B = { facing: FacingFlag.Ctrl };
+        frame.key_down.B = { facing: FacingFlag.Ctrl };
         break;
       }
       /** dash */
@@ -311,8 +290,7 @@ export function make_character_data(
           frame.key_down = frame.key_down || {};
           frame.key_down.a = add_next_frame(frame.key_down.a,
             {
-              id: "52",
-              facing: FacingFlag.Ctrl,
+              id: "52", facing: FacingFlag.Ctrl,
               expression: new CondMaker<EntityVal>()
                 .one_of(
                   EntityVal.Holding_W_Type,
@@ -322,15 +300,13 @@ export function make_character_data(
                 .done(),
             },
             {
-              id: "40",
-              facing: FacingFlag.Ctrl,
+              id: "40", facing: FacingFlag.Ctrl,
               expression: new CondMaker<EntityVal>()
                 .one_of(
                   EntityVal.Holding_W_Type,
                   WeaponType.Knife,
                   WeaponType.Stick,
-                )
-                .done(),
+                ).done(),
             },
             { id: "90" },
           ); // dash_atk
@@ -428,8 +404,7 @@ export function make_character_data(
         break;
       case 181:
       case 182:
-        if (!frame.hit) frame.hit = {};
-        frame.hit.j = push_next_frame(frame.hit.j, {
+        editing.hit('j', {
           id: "100",
           expression: new CondMaker<EntityVal>()
             .add(EntityVal.HP, ">", 0)
@@ -449,7 +424,7 @@ export function make_character_data(
       case 187:
       case 188:
         if (!frame.hit) frame.hit = {};
-        frame.hit.j = push_next_frame(frame.hit.j, {
+        frame.hit.j = add_next_frame(frame.hit.j, {
           id: "108",
           expression: new CondMaker<EntityVal>()
             .add(EntityVal.HP, ">", 0)

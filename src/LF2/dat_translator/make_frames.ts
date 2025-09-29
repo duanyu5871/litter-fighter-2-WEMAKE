@@ -8,6 +8,7 @@ import {
   ItrKind,
   IWpointInfo,
   StateEnum,
+  TNextFrame,
 } from "../defines";
 import { IEntityInfo } from "../defines/IEntityInfo";
 import { IFrameInfo } from "../defines/IFrameInfo";
@@ -25,9 +26,11 @@ import { cook_itr } from "./cook_itr";
 import cook_opoint from "./cook_opoint";
 import { cook_wpoint } from "./cook_wpoint";
 import { add_next_frame } from "./edit_next_frame";
+import { FrameEditing } from "./FrameEditing";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { make_frame_state } from "./make_frame_state";
 import { take } from "./take";
+
 export function make_frames(
   text: string,
   files: IEntityInfo["files"],
@@ -141,6 +144,8 @@ export function make_frames(
     const sound = take(frame, "sound");
     if (sound) frame.sound = sound.replace(/\\/g, '/') + ".mp3";
     frames[frame_id] = frame;
+
+    const editing = new FrameEditing(frame).init(frame);
 
     const dircontrol = take(cpoint_list[0], "dircontrol");
     if (dircontrol) {

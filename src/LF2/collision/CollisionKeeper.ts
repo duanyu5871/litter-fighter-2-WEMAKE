@@ -2,11 +2,10 @@ import { ICollision, ICollisionHandler } from "../base";
 import { ALL_ENTITY_ENUM, BdyKind, BuiltIn_OID, EntityEnum, EntityGroup, ItrKind, TEntityEnum } from "../defines";
 import { Ditto } from "../ditto";
 import { collision_action_handlers } from "../entity/collision_action_handlers";
-import { arithmetic_progression } from "../utils";
 import { handle_ball_frozen } from "./handle_ball_frozen";
 import { handle_ball_hit_other } from "./handle_ball_hit_other";
 import { handle_ball_is_hit } from "./handle_ball_is_hit";
-import { handle_body_goto } from "./handle_body_goto";
+import { handle_body_goto as handle_criminal_hit } from "./handle_body_goto";
 import { handle_healing } from "./handle_healing";
 import { handle_itr_kind_catch } from "./handle_itr_kind_catch";
 import { handle_itr_kind_force_catch } from "./handle_itr_kind_force_catch";
@@ -75,7 +74,6 @@ export class CollisionKeeper {
     )
   }
   handle(collision: ICollision) {
-
     const { handlers } = collision
     if (Ditto.DEV && handlers) {
       const collision_desc =
@@ -191,7 +189,7 @@ collisions_keeper.add(
   handle_itr_normal_bdy_defend,
 );
 collisions_keeper.add(
-  [EntityEnum.Fighter],
+  ALL_ENTITY_ENUM,
   [ItrKind.MagicFlute, ItrKind.MagicFlute2],
   [EntityEnum.Fighter, EntityEnum.Weapon],
   [BdyKind.Normal, BdyKind.Defend],
@@ -263,21 +261,12 @@ collisions_keeper.add(
   [BdyKind.Normal, BdyKind.Defend],
   handle_weapon_hit_other
 )
-
-
 collisions_keeper.add(
-  [EntityEnum.Fighter],
-  [ItrKind.Normal],
-  ALL_ENTITY_ENUM,
-  arithmetic_progression(BdyKind.GotoMin, BdyKind.GotoMax, 1) as BdyKind[],
-  handle_body_goto,
-);
-collisions_keeper.add(
-  [EntityEnum.Weapon],
+  [EntityEnum.Weapon, EntityEnum.Fighter],
   [ItrKind.WeaponSwing, ItrKind.Normal],
   ALL_ENTITY_ENUM,
-  arithmetic_progression(BdyKind.GotoMin, BdyKind.GotoMax, 1) as BdyKind[],
-  handle_body_goto,
+  [BdyKind.Criminal],
+  handle_criminal_hit,
 );
 collisions_keeper.add(
   ALL_ENTITY_ENUM,
@@ -286,10 +275,8 @@ collisions_keeper.add(
   [BdyKind.Normal],
   handle_healing,
 );
-
-
 collisions_keeper.add(
-  [EntityEnum.Fighter],
+  ALL_ENTITY_ENUM,
   [ItrKind.SuperPunchMe],
   [EntityEnum.Fighter],
   [BdyKind.Normal],

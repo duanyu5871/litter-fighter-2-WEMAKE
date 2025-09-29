@@ -1,38 +1,44 @@
 import { between } from "../utils";
+/**
+ * - [LF2]
+ * - [WEMAKE]
+ *
+ * - 原版lf2中
+ *    - 用于实现被攻击后跳转的逻辑。
+ *    - kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧。
+ *    - 只有如下的itr能击中此bdy。
+ *      - 角色的kind0的itr
+ *      - id为210 kind0的itr
+ *      - id为202 kind0的itr
+ *      - 角色手持武器造成的itr（可能是武器kind: 5的itr，未验证）
+ *
+ * - WEMAKE中：
+ *    - kind: 1XXX, 被攻击时跳至“XXX”帧。
+ *    - 使用了bdy.test实现了原版中的其他限制
+ *
+ * @see {BuiltIn_OID.Henry_Arrow1}
+ * @see {BuiltIn_OID.Rudolf_Weapon}
+ */
+export const OLD_BDY_KIND_GOTO_MIN = 1000;
+/**
+ * 参见GotoMin
+ *
+ * @see {BdyKind._OLD_GotoMin}
+ */
+export const OLD_BDY_KIND_GOTO_MAX = 1999;
 
 export enum BdyKind {
   /**
-   * [LF2][WEMAKE]
+   * - [LF2] √
+   * - [WEMAKE] √
    */
   Normal = 0,
-
   /**
-   * [LF2][WEMAKE]
-   *
-   * - 原版lf2中
-   *    - 用于实现被攻击后跳转的逻辑。
-   *    - kind: 10xx是id为300的“人质”专用的，被攻击时跳至xx帧。
-   *    - 只有如下的itr能击中此bdy。
-   *      - 角色的kind0的itr
-   *      - id为210 kind0的itr
-   *      - id为202 kind0的itr
-   *      - 角色手持武器造成的itr（可能是武器kind: 5的itr，未验证）
-   *
-   * - WEMAKE中：
-   *    - kind: 1XXX, 被攻击时跳至“XXX”帧。
-   *    - 使用了bdy.test实现了原版中的其他限制
-   *
-   * @see {BuiltIn_OID.Henry_Arrow1}
-   * @see {BuiltIn_OID.Rudolf_Weapon}
+   * [LF2] ×
+   * [WEMAKE] √
    */
-  GotoMin = 1000,
+  Criminal = 1,
 
-  /**
-   * 参见GotoMin
-   *
-   * @see {BdyKind.GotoMin}
-   */
-  GotoMax = 1999,
 
   /**
    * [WEMAKE ONLY]
@@ -51,16 +57,13 @@ export enum BdyKind {
 }
 export const bdy_kind_name = (v: any) => {
   let ret = BdyKind[v];
-  if (between(Number(v), BdyKind.GotoMin, BdyKind.GotoMax))
-    ret = 'Goto_' + (v - 1000)
   if (!ret) ret = `unknown_${v}`
   return ret;
 }
 export const bdy_kind_full_name = (v: any) => `BdyKind.${bdy_kind_name(v)}`
 export const BdyKindDescriptions: Record<BdyKind, string> = {
   [BdyKind.Normal]: "",
-  [BdyKind.GotoMin]: "",
-  [BdyKind.GotoMax]: "",
   [BdyKind.Defend]: "",
-  [BdyKind.Ignore]: ""
+  [BdyKind.Ignore]: "",
+  [BdyKind.Criminal]: "",
 }
