@@ -1,10 +1,9 @@
-import { BuiltIn_OID, Defines, FacingFlag, IOpointInfo } from "../defines";
+import { FacingFlag, IFrameInfo, IOpointInfo } from "../defines";
 import { floor } from "../utils/math/base";
 import { is_num, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";
 import { take } from "./take";
-
-export default function cook_opoint(opoint: IOpointInfo) {
+export function cook_opoint(opoint: IOpointInfo, frame: IFrameInfo) {
   const action = take(opoint, "action");
   opoint.oid = "" + take(opoint, "oid");
 

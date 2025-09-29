@@ -1,6 +1,7 @@
 import {
   FacingFlag,
   IBdyInfo,
+  IBpointInfo,
   ICpointInfo,
   IFramePictureInfo,
   IItrInfo,
@@ -20,10 +21,11 @@ import { match_colon_value } from "../utils/string_parser/match_colon_value";
 import take_sections from "../utils/string_parser/take_sections";
 import { to_num } from "../utils/type_cast/to_num";
 import { not_zero_num } from "../utils/type_check";
-import cook_bdy from "./cook_bdy";
+import { cook_bdy } from "./cook_bdy";
+import { cook_bpoint } from "./cook_bpoint";
 import { cook_cpoint } from "./cook_cpoint";
 import { cook_itr } from "./cook_itr";
-import cook_opoint from "./cook_opoint";
+import { cook_opoint } from "./cook_opoint";
 import { cook_wpoint } from "./cook_wpoint";
 import { add_next_frame } from "./edit_next_frame";
 import { FrameEditing } from "./FrameEditing";
@@ -46,32 +48,27 @@ export function make_frames(
     const bdy_list = r1.sections;
     _content = r1.remains;
 
-    for (const bdy of bdy_list) cook_bdy(bdy);
 
     const r2 = take_sections<IItrInfo>(_content, "itr:", "itr_end:");
     const itr_list = r2.sections;
     _content = r2.remains;
 
-    for (const itr of itr_list) cook_itr(itr);
 
     const r3 = take_sections<IOpointInfo>(_content, "opoint:", "opoint_end:");
     const opoint_list = r3.sections;
     _content = r3.remains;
-    for (const opoint of opoint_list) cook_opoint(opoint);
 
     const r4 = take_sections<IWpointInfo>(_content, "wpoint:", "wpoint_end:");
     const wpoint_list = r4.sections;
     _content = r4.remains;
-    for (const wpoint of wpoint_list) cook_wpoint(wpoint);
 
-    const r5 = take_sections(_content, "bpoint:", "bpoint_end:");
+    const r5 = take_sections<IBpointInfo>(_content, "bpoint:", "bpoint_end:");
     const bpoint_list = r5.sections;
     _content = r5.remains;
 
     const r6 = take_sections<ICpointInfo>(_content, "cpoint:", "cpoint_end:");
     const cpoint_list = r6.sections;
     _content = r6.remains;
-    for (const cpoint of cpoint_list) cook_cpoint(cpoint);
 
     const fields: any = {};
     for (const [name, value] of match_colon_value(_content))
@@ -116,13 +113,22 @@ export function make_frames(
       wait,
       next,
       ...fields,
-      bdy: bdy_list,
-      itr: itr_list,
-      wpoint: wpoint_list[0],
-      bpoint: bpoint_list[0],
-      opoint: opoint_list,
-      cpoint: cpoint_list[0],
     };
+
+    for (const bdy of bdy_list) cook_bdy(bdy, frame);
+    for (const itr of itr_list) cook_itr(itr, frame);
+    for (const bpoint of bpoint_list) cook_bpoint(bpoint, frame);
+    for (const opoint of opoint_list) cook_opoint(opoint, frame);
+    for (const wpoint of wpoint_list) cook_wpoint(wpoint, frame);
+    for (const cpoint of cpoint_list) cook_cpoint(cpoint, frame);
+
+    if (bdy_list.length) frame.bdy = bdy_list
+    if (itr_list.length) frame.itr = itr_list
+    if (bpoint_list.length) frame.wpoint = wpoint_list[0]
+    if (opoint_list.length) frame.bpoint = bpoint_list[0]
+    if (wpoint_list.length) frame.opoint = opoint_list
+    if (cpoint_list.length) frame.cpoint = cpoint_list[0]
+
     const state_name = StateEnum[frame.state!]
     if (state_name) (frame as any).state_name = `StateEnum.${state_name}`
 

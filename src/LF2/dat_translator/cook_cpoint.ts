@@ -1,3 +1,4 @@
+import { IFrameInfo } from "../defines";
 import { FacingFlag } from "../defines/FacingFlag";
 import { ICpointInfo } from "../defines/ICpointInfo";
 import { Defines } from "../defines/defines";
@@ -9,7 +10,7 @@ import { take } from "./take";
 import { take_not_zero_num } from "./take_not_zero_num";
 import { take_num } from "./take_num";
 
-export function cook_cpoint(unsure_cpoint: ICpointInfo): void {
+export function cook_cpoint(unsure_cpoint: ICpointInfo, frame: IFrameInfo): void {
 
   unsure_cpoint.throwvx = take_not_zero_num(unsure_cpoint, "throwvx", n => n * 0.5);
   unsure_cpoint.throwvy = take_not_zero_num(unsure_cpoint, "throwvy", n => n * -0.5);

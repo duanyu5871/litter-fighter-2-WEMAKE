@@ -1,4 +1,4 @@
-import { BuiltIn_OID, FacingFlag, IItrInfo, ItrEffect, ItrKind, StateEnum } from "../defines";
+import { BuiltIn_OID, FacingFlag, IFrameInfo, IItrInfo, ItrEffect, ItrKind, StateEnum } from "../defines";
 import { BdyKind } from "../defines/BdyKind";
 import { CollisionVal as C_Val } from "../defines/CollisionVal";
 import { Defines } from "../defines/defines";
@@ -14,7 +14,7 @@ import { fixed_float } from "./fixed_float";
 import { take_positive_num } from "./take_positive_num";
 import { ActionType } from "../defines/ActionType";
 
-export function cook_itr(itr?: Partial<IItrInfo>) {
+export function cook_itr(itr?: Partial<IItrInfo>, frame?: IFrameInfo) {
 
   if (!itr) return;
   itr.hit_flag = HitFlag.AllEnemy;

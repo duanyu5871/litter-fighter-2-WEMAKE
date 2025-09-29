@@ -1,8 +1,8 @@
-import { IWpointInfo } from "../defines";
+import { IFrameInfo, IWpointInfo } from "../defines";
 import { not_zero_num } from "../utils/type_check";
 import { take } from "./take";
 
-export function cook_wpoint(unsure_wpoint: IWpointInfo) {
+export function cook_wpoint(unsure_wpoint: IWpointInfo, frame: IFrameInfo) {
   const dvx = take(unsure_wpoint, "dvx");
   if (not_zero_num(dvx)) unsure_wpoint.dvx = dvx * 0.5;
 
