@@ -1275,10 +1275,10 @@ export class Entity implements IDebugging {
     if (this.frame.hp) this.hp -= this.frame.hp;
     const { cpoint } = this.frame;
     if (cpoint) {
-      // if (cpoint?.decrease) {
-      //   this._catch_time += cpoint.decrease;
-      //   if (this._catch_time < 0) this._catch_time = 0;
-      // }
+      if (cpoint?.decrease) {
+        this._catch_time += cpoint.decrease;
+        if (this._catch_time < 0) this._catch_time = 0;
+      }
     } else {
       this._catch_time = this._catch_time_max;
     }
