@@ -249,6 +249,7 @@ export class BaseController {
 
       if (is_local_ctrl(this)) {
         switch (this._key_downs) {
+          case '': break;
           case GK.Defend:
             this.dddd.test(GK.Defend, this.time)
             this.dada.test(GK.Defend, this.time)
@@ -279,6 +280,11 @@ export class BaseController {
               this.dada.test(GK.Attack, this.time)
               this.dada.test(GK.Jump, this.time)
             }
+            break;
+          default:
+            this.dddd.hit || this.dddd.reset()
+            this.dada.hit || this.dada.reset()
+            this.djdj.hit || this.djdj.reset()
             break;
         }
       }

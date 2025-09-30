@@ -183,7 +183,7 @@ export class EntityInfoRender implements IEntityCallbacks {
     this.world_renderer.scene.add(this.bars_node, this.name_node, this.ctrl_node, this.reserve_node);
     this.bars_node.visible = entity.key_role
     this.name_node.visible = entity.key_role
-    // this.ctrl_node.visible = false
+    this.ctrl_node.visible = false
 
     this.on_name_changed(entity)
     this.on_reserve_changed(entity)
