@@ -1585,6 +1585,7 @@ export class Entity implements IDebugging {
     if (!cpoint_a || !cpoint_b) {
       delete this._catcher;
       this.prev_cpoint_a = void 0;
+      this.velocity_0.y = 3;
       return this.get_caught_cancel_frame();
     }
     if (this.prev_cpoint_a !== cpoint_a) {
@@ -1598,9 +1599,9 @@ export class Entity implements IDebugging {
     }
     this.prev_cpoint_a = cpoint_a;
 
-    const { throwvx = 0, throwvy = 0, throwvz = 0, throwinjury } = cpoint_a;
+    const { throwvx = 0, throwvy = 0, throwvz = 0, throwinjury = 0 } = cpoint_a;
 
-    if (throwinjury) this.throwinjury = throwinjury;
+    if (throwinjury > 0) this.throwinjury = throwinjury;
     if (throwvx || throwvy || throwvz) {
       this.velocity_0.z = throwvz * this.world.tvz_f * cer.ctrl.UD || 0;
       this.velocity_0.x = throwvx * this.world.tvx_f * cer.facing;

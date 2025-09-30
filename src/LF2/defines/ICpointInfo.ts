@@ -13,6 +13,12 @@ export interface ICpointInfo {
   throwvx?: number;
   throwvy?: number;
   throwvz?: number;
+  /**
+   * 被丢者的落地受伤量
+   * -1: 抓人者变成被抓者
+   * @type {number}
+   * @memberof ICpointInfo
+   */
   throwinjury?: number;
   fronthurtact?: string;
   backhurtact?: string;
