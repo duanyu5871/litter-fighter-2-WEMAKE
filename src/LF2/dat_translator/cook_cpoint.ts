@@ -41,7 +41,7 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo, frame: IFrameInfo): void
 
   if (unsure_cpoint.throwvx && unsure_cpoint.throwinjury != -1) {
     // for normal throw & louis throw
-    unsure_cpoint.tx = unsure_cpoint.throwvx < 0 ? -80 : 80;
+    unsure_cpoint.tx = unsure_cpoint.throwvx < 0 ? 0 : 80;
     unsure_cpoint.ty = 10;
   }
 }
