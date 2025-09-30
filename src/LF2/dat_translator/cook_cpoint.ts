@@ -2,7 +2,7 @@ import { IFrameInfo } from "../defines";
 import { FacingFlag } from "../defines/FacingFlag";
 import { ICpointInfo } from "../defines/ICpointInfo";
 import { Defines } from "../defines/defines";
-import { abs } from "../utils";
+import { abs, sort_key_value } from "../utils";
 import { take_number } from "../utils/container_help/take_number";
 import { is_num, is_str, not_zero_num } from "../utils/type_check";
 import { get_next_frame_by_raw_id } from "./get_the_next";
@@ -21,6 +21,11 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo, frame: IFrameInfo): void
     unsure_cpoint.ty = 10;
   }
   unsure_cpoint.decrease = take_num(unsure_cpoint, 'decrease', n => -abs(n));
+
+  unsure_cpoint.z = 0;
+  const cover = take_not_zero_num(unsure_cpoint, "cover", n => n);
+  if (cover == 11) unsure_cpoint.z = 2;
+  if (cover == 10) unsure_cpoint.z = -2;
 
   const vaction = take(unsure_cpoint, "vaction");
   const raw_injury = take(unsure_cpoint, "injury");

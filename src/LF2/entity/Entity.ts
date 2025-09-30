@@ -1673,16 +1673,14 @@ export class Entity implements IDebugging {
     const { centerx: centerx_b, centery: centery_b, cpoint: c_b } = this.frame;
     if (!c_a || !c_b) return;
     if (c_a.throwvx || c_a.throwvx || c_a.throwvx) return;
+
     const face_a = this._catcher.facing;
     const face_b = this.facing;
     const { x: px, y: py, z: pz } = this._catcher.position;
     this.position.x =
       px - face_a * (centerx_a - c_a.x) + face_b * (centerx_b - c_b.x);
     this.position.y = round(py + centery_a - c_a.y + c_b.y - centery_b);
-    this.position.z = round(pz);
-    if (c_b.cover === 10 || c_b.cover === 0) this.position.z += 1;
-    else if (c_b.cover === 11 || c_b.cover === 1) this.position.z -= 1;
-    else this.position.z -= 1;
+    this.position.z = round(pz + c_a.z - c_b.z);
   }
 
   /**
@@ -1882,11 +1880,10 @@ export class Entity implements IDebugging {
 
     const { x, y, z } = holder.position;
     this.facing = holder.facing;
-
     this.position.set(
       round(x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x)),
       round(y + centery_a - wpoint_a.y - centery_b + wpoint_b.y),
-      round(z - wpoint_a.cover),
+      round(z + wpoint_a.z - wpoint_b.z),
     );
   }
 

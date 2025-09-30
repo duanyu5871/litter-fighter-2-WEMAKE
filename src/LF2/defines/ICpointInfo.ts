@@ -5,7 +5,7 @@ export interface ICpointInfo {
   kind: 1 | 2;
   x: number;
   y: number;
-  z?: number;
+  z: number;
   vaction?: TNextFrame;
   injury?: number;
   hurtable?: 0 | 1;
@@ -16,7 +16,6 @@ export interface ICpointInfo {
   throwinjury?: number;
   fronthurtact?: string;
   backhurtact?: string;
-  cover: number;
   shaking?: number;
 
   tx?: number;
