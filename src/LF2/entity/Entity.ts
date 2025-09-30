@@ -1569,15 +1569,18 @@ export class Entity implements IDebugging {
 
   private prev_cpoint_a?: ICpointInfo;
   update_caught(): INextFrame | undefined {
-    if (!this._catcher) return;
+    const cer = this._catcher;
+    if (!cer) return;
     /** "对齐颗粒度" */
     this.follow_catcher();
-    if (!this._catcher._catch_time) {
+    if (!cer._catch_time) {
       delete this._catcher;
       this.prev_cpoint_a = void 0;
       return this.get_caught_end_frame();
     }
-    const { cpoint: cpoint_a } = this._catcher.frame;
+
+    const frame_a = cer.frame;
+    const { cpoint: cpoint_a } = frame_a;
     const { cpoint: cpoint_b } = this.frame;
     if (!cpoint_a || !cpoint_b) {
       delete this._catcher;
@@ -1595,23 +1598,26 @@ export class Entity implements IDebugging {
     }
     this.prev_cpoint_a = cpoint_a;
 
-    const { throwvx, throwvy, throwvz, throwinjury } = cpoint_a;
-    if (throwvz) {
-      this.velocity_0.z =
-        throwvz * this.world.tvz_f * (this._catcher.ctrl?.UD || 0);
-    }
-    if (throwvx) {
-      this.velocity_0.x = throwvx * this.world.tvx_f * this._catcher.facing;
-    }
-    if (throwvy) {
-      this.velocity_0.y = throwvy * this.world.tvy_f;
-    }
+    const { throwvx = 0, throwvy = 0, throwvz = 0, throwinjury } = cpoint_a;
 
     if (throwinjury) this.throwinjury = throwinjury;
     if (throwvx || throwvy || throwvz) {
-      if (cpoint_a.tx) this.position.x = this.position.x + cpoint_a.tx * this._catcher.facing;
-      if (cpoint_a.ty) this.position.y = this.position.y + cpoint_a.ty;
-      if (cpoint_a.tz) this.position.z = this.position.z + cpoint_a.tz;
+      this.velocity_0.z = throwvz * this.world.tvz_f * cer.ctrl.UD || 0;
+      this.velocity_0.x = throwvx * this.world.tvx_f * cer.facing;
+      this.velocity_0.y = throwvy * this.world.tvy_f;
+      const { tx, ty, tz } = cpoint_a
+      const w = this.frame.pic?.w || 0
+      const h = this.frame.pic?.h || 0
+
+
+
+      if (tx !== void 0)
+        this.position.x = cer.position.x -
+          cer.facing * (frame_a.centerx - tx) -
+          this.facing * (this.frame.centerx - w / 2);
+
+      if (ty !== void 0) this.position.y = cer.position.y + frame_a.centery - ty - h / 2;
+      if (tz !== void 0) this.position.z = cer.position.z + tz;
       delete this._catcher;
       this.prev_cpoint_a = void 0;
     }
