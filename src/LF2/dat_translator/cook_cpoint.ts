@@ -17,7 +17,10 @@ export function cook_cpoint(unsure_cpoint: ICpointInfo, frame: IFrameInfo): void
   unsure_cpoint.throwvz = take_not_zero_num(unsure_cpoint, "throwvz", n => n * 1);
   unsure_cpoint.throwinjury = take_not_zero_num(unsure_cpoint, "throwinjury", n => n * 1);
   if (unsure_cpoint.throwinjury) {
-    unsure_cpoint.tx = 80;
+    if (unsure_cpoint.throwvx && unsure_cpoint.throwvx < 0)
+      unsure_cpoint.tx = -80;
+    else
+      unsure_cpoint.tx = 80;
     unsure_cpoint.ty = 10;
   }
   unsure_cpoint.decrease = take_num(unsure_cpoint, 'decrease', n => -abs(n));

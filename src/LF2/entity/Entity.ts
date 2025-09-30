@@ -1609,8 +1609,6 @@ export class Entity implements IDebugging {
       const w = this.frame.pic?.w || 0
       const h = this.frame.pic?.h || 0
 
-
-
       if (tx !== void 0)
         this.position.x = cer.position.x -
           cer.facing * (frame_a.centerx - tx) -
@@ -1860,30 +1858,30 @@ export class Entity implements IDebugging {
     const holder = this.holder;
     if (!holder) return;
     const {
-      wpoint: wpoint_a,
+      wpoint: wp_a,
       centerx: centerx_a,
       centery: centery_a,
     } = holder.frame;
-    if (!wpoint_a) this.debug(`follow_holder`, `failed! holder.frame.wpoint got ${wpoint_a}`)
-    if (!wpoint_a) return;
+    if (!wp_a) this.debug(`follow_holder`, `failed! holder.frame.wpoint got ${wp_a}`)
+    if (!wp_a) return;
 
-    if (wpoint_a.weaponact !== this.frame.id) {
-      this.enter_frame({ id: wpoint_a.weaponact });
+    if (wp_a.weaponact !== this.frame.id) {
+      this.enter_frame({ id: wp_a.weaponact });
     }
     const {
-      wpoint: wpoint_b,
+      wpoint: wp_b,
       centerx: centerx_b,
       centery: centery_b,
     } = this.frame;
-    if (!wpoint_b) this.debug(`follow_holder`, `failed! this.frame.wpoint got ${wpoint_b}`)
-    if (!wpoint_b) return;
+    if (!wp_b) this.debug(`follow_holder`, `failed! this.frame.wpoint got ${wp_b}`)
+    if (!wp_b) return;
 
     const { x, y, z } = holder.position;
     this.facing = holder.facing;
     this.position.set(
-      round(x + this.facing * (wpoint_a.x - centerx_a + centerx_b - wpoint_b.x)),
-      round(y + centery_a - wpoint_a.y - centery_b + wpoint_b.y),
-      round(z + wpoint_a.z - wpoint_b.z),
+      round(x + this.facing * (wp_a.x - centerx_a + centerx_b - wp_b.x)),
+      round(y + centery_a - wp_a.y - centery_b + wp_b.y),
+      round(z + wp_a.z - wp_b.z),
     );
   }
 
