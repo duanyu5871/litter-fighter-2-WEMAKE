@@ -92,6 +92,7 @@ export class BaseController {
    */
   start(...keys: LGK[]): this {
     this.queue.push(...keys.map(k => [1, k] as const))
+    for (const key of keys) if (this.keys[key].is_end()) this._key_downs += key
     return this;
   }
 
@@ -112,6 +113,7 @@ export class BaseController {
    */
   end(...keys: LGK[]): this {
     this.queue.push(...keys.map(k => [0, k] as const))
+    for (const key of keys) if (!this.keys[key].is_end()) this._key_ups += key
     return this;
   }
 
@@ -211,6 +213,8 @@ export class BaseController {
 
   protected result = new ControllerUpdateResult();
   readonly queue: (readonly [0 | 1 | 2, LGK])[] = []
+  private _key_downs: string = ''
+  private _key_ups: string = ''
   update(): ControllerUpdateResult {
     this._time.add()
     if (
@@ -226,32 +230,7 @@ export class BaseController {
             break;
           case 1:
             if (!this.is_end(k)) break;
-            if (is_local_ctrl(this)) {
-              if (!this.dddd.hit) {
-                this.dddd.test(k, this.time)
-              }
-              if (this.dddd.hit) {
-                this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "2")
-                this.world.team_stay(this.entity.team)
-                this.dddd.reset()
-              }
-              if (!this.dada.hit) {
-                this.dada.test(k, this.time)
-              }
-              if (this.dada.hit) {
-                this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "4")
-                this.world.team_move(this.entity.team)
-                this.dada.reset()
-              }
-              if (!this.djdj.hit) {
-                this.djdj.test(k, this.time)
-              }
-              if (this.djdj.hit) {
-                this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "0")
-                this.world.team_come(this.entity.team, this.entity.position.x, this.entity.position.y, this.entity.position.z)
-                this.djdj.reset()
-              }
-            }
+
             if (k === GK.d) {
               this._key_list = k;
             } else if (this._key_list[0] === GK.d) {
@@ -267,9 +246,63 @@ export class BaseController {
             break;
         }
       }
-      this.queue.length = 0;
-    }
 
+      if (is_local_ctrl(this)) {
+        switch (this._key_downs) {
+          case GK.Defend:
+            this.dddd.test(GK.Defend, this.time)
+            this.dada.test(GK.Defend, this.time)
+            this.djdj.test(GK.Defend, this.time)
+            break;
+          case GK.Attack:
+            this.dada.test(GK.Attack, this.time)
+            break;
+          case GK.Jump:
+            this.dada.test(GK.Jump, this.time)
+            break;
+          case 'dj':
+          case 'jd':
+            if (this.djdj.idx % 2) {
+              this.djdj.test(GK.Jump, this.time)
+              this.djdj.test(GK.Defend, this.time)
+            } else {
+              this.djdj.test(GK.Defend, this.time)
+              this.djdj.test(GK.Jump, this.time)
+            }
+            break;
+          case 'da':
+          case 'ad':
+            if (this.dada.idx % 2) {
+              this.dada.test(GK.Attack, this.time)
+              this.dada.test(GK.Defend, this.time)
+            } else {
+              this.dada.test(GK.Attack, this.time)
+              this.dada.test(GK.Jump, this.time)
+            }
+            break;
+        }
+      }
+      this.queue.length = 0;
+      this._key_downs = '';
+      this._key_downs = '';
+    }
+    if (is_local_ctrl(this)) {
+      if (this.dddd.hit) {
+        this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "2")
+        this.world.team_stay(this.entity.team)
+        this.dddd.reset()
+      }
+      if (this.dada.hit) {
+        this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "4")
+        this.world.team_move(this.entity.team)
+        this.dada.reset()
+      }
+      if (this.djdj.hit) {
+        this.world.etc(this.entity.position.x, this.entity.position.y, this.entity.position.z, "0")
+        this.world.team_come(this.entity.team, this.entity.position.x, this.entity.position.y, this.entity.position.z)
+        this.djdj.reset()
+      }
+    }
     const entity = this.entity;
     const frame = entity.frame;
     const { hold: hld, hit, key_down: kd_map, key_up: ku_map } = frame;
@@ -286,7 +319,6 @@ export class BaseController {
         ret.set(kd_map.F, this.keys[F].time, F);
       if (kd_map.B && this.tst("kd", B) && !ret.time)
         ret.set(kd_map.B, this.keys[B].time, B);
-
     }
     if (ku_map) {
       /** 相对方向的按钮判定 */
