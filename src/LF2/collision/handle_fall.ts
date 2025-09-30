@@ -26,11 +26,11 @@ export function handle_fall(collision: ICollision) {
   const is_critical = !!(itr.fall && itr.fall > Defines.DEFAULT_FALL_VALUE_CRITICAL)
 
   const spark_pos = victim.spark_point(a_cube, b_cube);
-  let effect = SparkEnum.Hit
+  let effect = SparkEnum.Hit;
   if (itr.effect === ItrEffect.Sharp && is_character(victim)) {
-    effect = is_critical ? SparkEnum.CriticalBleed : SparkEnum.Bleed;
+    effect = is_critical ? SparkEnum.CriticalBleed : SparkEnum.BleedFall;
   } else {
-    effect = is_critical ? SparkEnum.CriticalHit : SparkEnum.Hit;
+    effect = is_critical ? SparkEnum.CriticalHit : SparkEnum.HitFall;
   }
   victim.world.spark(...spark_pos, effect)
 
@@ -39,17 +39,17 @@ export function handle_fall(collision: ICollision) {
   const normal_fall_act = () => {
     if (!critical_hit) return;
     const direction: TFace = victim.velocity_0.x / victim.facing >= 0 ? 1 : -1;
-    victim.next_frame = { id: critical_hit[direction][0] };
+    victim.enter_frame({ id: critical_hit[direction][0] });
   }
 
   switch (itr.effect) {
     case ItrEffect.Fire:
     case ItrEffect.MFire2:
       if (fire) {
-        victim.next_frame = {
+        victim.enter_frame({
           id: fire[0],
           facing: turn_face(attacker_facing),
-        };
+        });
       } else {
         normal_fall_act()
       }
@@ -57,10 +57,10 @@ export function handle_fall(collision: ICollision) {
     case ItrEffect.MFire1:
     case ItrEffect.FireExplosion:
       if (fire) {
-        victim.next_frame = {
+        victim.enter_frame({
           id: fire[0],
           facing: attacker_facing,
-        };
+        });
       } else {
         normal_fall_act()
       }

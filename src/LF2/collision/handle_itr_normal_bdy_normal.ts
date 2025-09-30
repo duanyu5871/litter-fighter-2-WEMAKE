@@ -47,7 +47,8 @@ export function handle_itr_normal_bdy_normal(collision: ICollision) {
       const { fall = Defines.DEFAULT_ITR_FALL } = itr;
       victim.fall_value -= fall;
       victim.defend_value = 0;
-      const is_fall = victim.fall_value <= 0 ||
+      const is_fall =
+        victim.fall_value <= 0 ||
         victim.hp <= 0 ||
         victim.frame.state === StateEnum.Frozen ||
         (victim.fall_value <= Defines.DEFAULT_FALL_VALUE_DIZZY &&

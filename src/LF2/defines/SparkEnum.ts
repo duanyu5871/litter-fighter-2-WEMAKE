@@ -5,7 +5,9 @@ export enum SparkEnum {
   SlientCriticalHit = 'slient_critical_hit',
   DefendHit = 'defend_hit',
   Hit = 'hit',
+  HitFall = 'hit_fall',
   SlientHit = 'slient_hit',
   Bleed = 'bleed',
+  BleedFall = 'bleed_fall',
   CriticalBleed = 'critical_bleed'
 }

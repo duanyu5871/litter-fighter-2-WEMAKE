@@ -921,7 +921,10 @@ export class Entity implements IDebugging {
     }
     if (v.invisible) this.invisibility(v.invisible);
     if (v.opoint) this.apply_opoints(v.opoint);
-    if (!v.cpoint) delete this._catching;
+    if (!v.cpoint) {
+      delete this._catching;
+      delete this._catcher;
+    }
   }
 
   apply_opoints(opoints: IOpointInfo[]) {
@@ -1272,10 +1275,10 @@ export class Entity implements IDebugging {
     if (this.frame.hp) this.hp -= this.frame.hp;
     const { cpoint } = this.frame;
     if (cpoint) {
-      if (cpoint?.decrease) {
-        this._catch_time += cpoint.decrease;
-        if (this._catch_time < 0) this._catch_time = 0;
-      }
+      // if (cpoint?.decrease) {
+      //   this._catch_time += cpoint.decrease;
+      //   if (this._catch_time < 0) this._catch_time = 0;
+      // }
     } else {
       this._catch_time = this._catch_time_max;
     }
