@@ -25,12 +25,13 @@ export function make_fighter_data_dennis(data: IEntityData) {
 
 
     // d>j
-    bot_ball_dfj(75, 1 / 60, 50, 300)(e => {
-      e.e_ray?.push(
-        { ...e.e_ray![0], z: 0.3 },
-        { ...e.e_ray![0], z: -0.3 }
+    bot_ball_dfj(75, 1 / 60, 50, 300)((a, c) => {
+      a.e_ray?.push(
+        { ...a.e_ray![0], z: 0.3 },
+        { ...a.e_ray![0], z: -0.3 }
       )
-      return e;
+      a.expression = c.and(BotVal.EnemyOutOfRange, '!=', 1).done()
+      return a;
     }),
 
     // run_atk+dva

@@ -20,7 +20,10 @@ export function make_fighter_data_deep(data: IEntityData) {
     bot_ball_continuation("d>a+a", 0.5, 75),
 
     // d>j
-    bot_ball_dfj(150, void 0, 50, 200),
+    bot_ball_dfj(150, void 0, 50, 200)((a, c) => {
+      a.expression = c.and(BotVal.EnemyOutOfRange, '!=', 1).done()
+      return a
+    }),
 
     // catching_d>j
     bot_chasing_skill_action('d>j', 'catching_d>j', 150),

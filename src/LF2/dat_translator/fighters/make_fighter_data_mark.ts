@@ -19,8 +19,9 @@ export function make_fighter_data_mark(data: IEntityData) {
     bot_chasing_action('d>a+a', [GK.a], 0, 1 / 15),
 
     // d>j
-    bot_ball_dfj(50, void 0, 20, 200, 0.1)(a => {
+    bot_ball_dfj(50, void 0, 20, 200, 0.1)((a, c) => {
       foreach(a.e_ray, r => r.max_d = 1600)
+      a.expression = c.and(BotVal.EnemyOutOfRange, '!=', 1).done()
       return a
     }),
 

@@ -51,12 +51,13 @@ export function make_fighter_data_firen(data: IEntityData) {
     bot_ball_continuation("d>a+a", 0.8, 75),
 
     // d>j
-    bot_ball_dfj(75, void 0, 50, 1000)(e => {
-      e.e_ray?.push(
-        { ...e.e_ray![0], z: 0.2 },
-        { ...e.e_ray![0], z: -0.2 }
+    bot_ball_dfj(75, void 0, 50, 1000)((a, c) => {
+      a.e_ray?.push(
+        { ...a.e_ray![0], z: 0.2 },
+        { ...a.e_ray![0], z: -0.2 }
       );
-      return e;
+      a.expression = c.and(BotVal.EnemyOutOfRange, '!=', 1).done()
+      return a;
     }),
 
     // cancel_d>j

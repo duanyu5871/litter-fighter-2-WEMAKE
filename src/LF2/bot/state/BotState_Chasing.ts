@@ -57,7 +57,7 @@ export class BotState_Chasing extends BotState_Base {
     const x_reach = abs_dx <= c.w_atk_x;
     const z_reach = abs_dz <= c.w_atk_z;
 
-    const out_of_range = (
+    const out_of_range = c.en_out_of_range = (
       abs_dx > Defines.AI_STAY_CHASING_RANGE &&
       c.behavior === 'stay'
     ) || (

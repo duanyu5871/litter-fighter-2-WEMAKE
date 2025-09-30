@@ -47,6 +47,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
   data_set: IBotDataSet | undefined;
   behavior?: 'stay' | 'move';
   following?: [number, number, number];
+  en_out_of_range: boolean = false;
   /** 走攻触发范围X */
   get w_atk_x() {
     const chasing = this.get_chasing()?.entity;

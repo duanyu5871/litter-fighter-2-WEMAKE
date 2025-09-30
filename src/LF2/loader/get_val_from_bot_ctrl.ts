@@ -29,7 +29,9 @@ export const bot_val_getters: Record<BotVal, (e: BotController) => any> = {
     if (avoiding && abs(avoiding.position.x - e.entity.position.x) < 200 && abs(avoiding.position.z - e.entity.position.z) < 150) return 0;
     if (avoiding && ATTCKING_STATES.some(v => avoiding.frame.state === v)) return 0;
     return 1;
-  }
+  },
+  [BotVal.EnemyOutOfRange]: e => e.en_out_of_range ? 1 : 0
+
 }
 export const bot_entity_val_getters = new Map<string, IValGetter<BotController>>();
 
