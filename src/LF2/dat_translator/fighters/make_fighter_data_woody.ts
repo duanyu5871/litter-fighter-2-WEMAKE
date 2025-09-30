@@ -1,4 +1,4 @@
-import { IEntityData, StateEnum } from "../../defines";
+import { BotVal, IEntityData, StateEnum } from "../../defines";
 import { bot_ball_dfa } from "./bot_ball_dfa";
 import { bot_ball_dfj } from "./bot_ball_dfj";
 import { bot_chasing_skill_action } from "./bot_chasing_skill_action";
@@ -19,31 +19,36 @@ export function make_fighter_data_woody(data: IEntityData) {
     }),
 
     // d>j
-    bot_ball_dfj(200, void 0, 50, 200)(e => {
-      const ray = e.e_ray![0]
-      e.e_ray?.push(
+    bot_ball_dfj(200, void 0, 50, 200)((a, c) => {
+      const ray = a.e_ray![0]
+      a.e_ray?.push(
         { ...ray, z: 0.2 },
         { ...ray, z: -0.2 }
       )
-      return e;
+      a.expression = c.and(BotVal.EnemyOutOfRange, '!=', 1).done()
+      return a;
     }),
 
     // c_d>j
-    bot_ball_dfj(200, 0.3, 50, 200)(e => {
-      e.action_id = 'c_d>j'
-      const ray = e.e_ray![0]
-      e.e_ray?.push(
+    bot_ball_dfj(200, 0.3, 50, 200)((a, c) => {
+      a.action_id = 'c_d>j'
+      const ray = a.e_ray![0]
+      a.e_ray?.push(
         { ...ray, z: 0.2 },
         { ...ray, z: -0.2 }
       )
-      return e;
+      a.expression = c.and(BotVal.EnemyOutOfRange, '!=', 1).done()
+      return a;
     }),
 
     // d^a
     bot_uppercut_dua(0, void 0, bot_uppercut_dua.MIN_X, bot_uppercut_dua.MAX_X),
 
     // d^j
-    bot_chasing_skill_action('d^j', void 0, 50, 0.01),
+    bot_chasing_skill_action('d^j', void 0, 50, 0.01)((a, c) => {
+      a.expression = c.and(BotVal.EnemyOutOfRange, '!=', 1).done()
+      return a;
+    }),
 
     // dvj
     bot_chasing_skill_action('dvj', void 0, 50, 0.01),

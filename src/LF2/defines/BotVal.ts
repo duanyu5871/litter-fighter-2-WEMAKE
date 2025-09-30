@@ -11,5 +11,5 @@ export enum BotVal {
   EnemyState = "enemy_state",
   /** 是否处于比较安全的位置 */
   Safe = "safe",
-  EnemyOutOfRange = "EnemyOutOfRange",
+  EnemyOutOfRange = "en_oor",
 }
