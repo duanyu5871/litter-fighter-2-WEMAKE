@@ -46,6 +46,7 @@ import { ScaleAnimation } from "./ScaleAnimation";
 import { SineOpacity } from "./SineOpacity";
 import SlotSelLogic from "./SlotSelLogic";
 import { Sounds } from "./Sounds";
+import { StageModeLogic } from "./StageModeLogic";
 import StageNameText from "./StageNameText";
 import { StageTitleShow } from "./StageTitleShow";
 import { StageTitleText } from "./StageTitleText";
@@ -83,6 +84,7 @@ const COMPONENTS = [
   PlayerScore,
   PlayerScoreCell,
   VsModeLogic,
+  StageModeLogic,
   DemoModeLogic,
   PlayingTimeText,
   RandomImgOnLayoutResume,
