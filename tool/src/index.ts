@@ -76,13 +76,14 @@ async function main() {
   }
 
   const pic_list_map = new Map<string, ILegacyPictureInfo[]>();
-  const indexes = await convert_data_txt(RAW_LF2_PATH, DATA_DIR_PATH);
+  const indexes = await convert_data_txt(RAW_LF2_PATH, DATA_DIR_PATH, 'json5');
   if (indexes) {
     for (const src_path of ress.file.dat) {
       const dst_path = convert_dat_file.get_dst_path(
         DATA_DIR_PATH,
         RAW_LF2_PATH,
         src_path,
+        'json5'
       );
       const cache_info = await cache_infos.get_info(
         src_path,

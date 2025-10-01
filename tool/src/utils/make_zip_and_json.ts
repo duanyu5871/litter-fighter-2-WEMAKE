@@ -1,10 +1,11 @@
 import { zip } from "compressing";
 import fs from "fs/promises";
 import { join } from "path";
+import { Defines } from "../../../src/LF2/defines";
 import { file_md5_str } from "./file_md5_str";
 import { is_dir } from "./is_dir";
 import { write_file } from "./write_file";
-import { Defines } from "../../../src/LF2/defines";
+import { write_obj_file } from "./write_obj_file";
 
 export interface IZipFileInfo {
   url: string;
@@ -53,8 +54,7 @@ export async function make_zip_and_json(
       if (!name.match(/\.json?$/)) continue;
       paths.push('layouts/' + name)
     }
-    const str = JSON.stringify(paths, null, 2);
-    return fs.writeFile(layout_index_file, str)
+    return write_obj_file(layout_index_file, paths)
   }).catch(e => { })
 
   if (!(await is_dir(src_dir)))

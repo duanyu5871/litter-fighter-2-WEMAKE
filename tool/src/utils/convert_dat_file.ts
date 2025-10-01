@@ -1,17 +1,12 @@
 import fs from "fs/promises";
-import JSON5 from "json5";
+import json5 from "json5";
 import dat_to_json from "../../../src/LF2/dat_translator/dat_2_json";
 import { IDataLists } from "../../../src/LF2/defines/IDataLists";
 import { IEntityData } from "../../../src/LF2/defines/IEntityData";
 import { read_lf2_dat_file } from "./read_lf2_dat_file";
+import { write_obj_file } from "./write_obj_file";
 export type IRet = ReturnType<typeof dat_to_json>;
-function get_dst_path(
-  out_dir: string,
-  src_dir: string,
-  src_path: string,
-): string {
-  return src_path.replace(src_dir, out_dir).replace(/\.dat$/, ".json5");
-}
+
 export async function convert_dat_file(
   out_dir: string,
   src_path: string,
@@ -38,7 +33,14 @@ export async function convert_dat_file(
     await fs.copyFile(src_path, dst_path);
     return void 0;
   }
-  await fs.writeFile(dst_path, JSON5.stringify(ret, { space: 2, quote: '"' }));
+  await write_obj_file(dst_path, ret);
   return ret;
 }
-convert_dat_file.get_dst_path = get_dst_path;
+convert_dat_file.get_dst_path = function (
+  out_dir: string,
+  src_dir: string,
+  src_path: string,
+  suffix: 'json5' | 'json'
+): string {
+  return src_path.replace(src_dir, out_dir).replace(/\.dat$/, `.${suffix}`);
+};

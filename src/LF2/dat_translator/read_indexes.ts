@@ -6,6 +6,7 @@ import { match_hash_end } from "../utils/string_parser/match_hash_end";
 
 export function read_indexes(
   text: string | undefined | null,
+  suffix: 'json5' | 'json'
 ): IDataLists | undefined {
   if (!text) return void 0;
   const objects = match_block_once(text, "<object>", "<object_end>")
@@ -22,7 +23,7 @@ export function read_indexes(
             item[name] = value;
             break;
           case "file":
-            item[name] = value.replace(/\\/g, "/").replace(/.dat$/, ".json5");
+            item[name] = value.replace(/\\/g, "/").replace(/.dat$/, `.${suffix}`);
             break;
         }
       }
@@ -47,7 +48,7 @@ export function read_indexes(
             item[name] = "bg_" + value;
             break;
           case "file":
-            item[name] = value.replace(/\\/g, "/").replace(/.dat$/, ".json5");
+            item[name] = value.replace(/\\/g, "/").replace(/.dat$/, `.${suffix}`);
             break;
         }
       }
