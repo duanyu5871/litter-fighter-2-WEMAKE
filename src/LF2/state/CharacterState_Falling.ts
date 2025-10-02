@@ -64,7 +64,9 @@ export default class CharacterState_Falling extends CharacterState_Base {
   override leave(e: Entity, next_frame: IFrameInfo): void {
     super.leave(e, next_frame);
     this._bouncings.delete(e)
-
+    e.fall_value = e.fall_value_max;
+    e.defend_value = e.defend_value_max;
+    e.resting = e.resting_max
   }
   override on_landing(e: Entity): void {
     const {
