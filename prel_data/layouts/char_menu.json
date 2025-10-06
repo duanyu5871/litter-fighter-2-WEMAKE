@@ -24,7 +24,7 @@
               "center": "0.5,0.5",
               "visible": true,
               "img": {
-                "path": "!sprite/CMA.png",
+                "path": "!sprite/CMA@4x.png",
                 "w": 120,
                 "h": 66
               }
