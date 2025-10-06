@@ -67,7 +67,10 @@ export class EntityShadowRender {
       Math.floor(z - 550),
     );
     const scale = 0.5 + 0.5 * clamp(250 - y, 0, 250) / 250
+    const opacity = 0.3 + 0.7 * clamp(250 - y, 0, 250) / 250
     this.mesh.set_scale(scale, scale, 1)
+    this.material.opacity = opacity;
+
     this.mesh.visible = !invisible && !frame.no_shadow;
   }
 }
