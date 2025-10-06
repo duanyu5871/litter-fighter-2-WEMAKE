@@ -35,9 +35,9 @@ export default class PlayerName extends UIComponent {
     return this.gpl?.state === GamePrepareState.Player;
   }
   protected get text(): string {
-    if (this.is_com) return "Computer";
+    if (this.is_com) return this.lf2.string("char_menu.computer");
     if (this.joined) return this.player_name;
-    if (this.can_join) return "Join?";
+    if (this.can_join) return this.lf2.string("char_menu.join_q");
     return "";
   }
   protected _opacity: Sine = new Sine(0.65, 0.35, 3);
