@@ -316,7 +316,7 @@ export namespace Defines {
   };
 
   export enum BuiltIn_Imgs {
-    RFACE = "sprite/RFACE.png",
+    RFACE = "!sprite/RFACE@4x.png",
     CHARACTER_THUMB = "sprite/CHARACTER_THUMB.png",
   }
   export enum BuiltIn_Dats {
