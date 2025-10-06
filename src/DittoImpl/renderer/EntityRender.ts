@@ -1,10 +1,10 @@
-import type { IMeshNode } from "../../LF2/3d";
 import type { IEntityData, IPicture, ITexturePieceInfo } from "../../LF2/defines";
 import { Builtin_FrameId, StateEnum } from "../../LF2/defines";
-import { Ditto } from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
 import create_pictures from "../../LF2/loader/create_pictures";
-import { abs, clamp, floor, round } from "../../LF2/utils";
+import { white_texture } from "../../LF2/loader/ImageMgr";
+import { clamp, floor, PI } from "../../LF2/utils";
+import { __Mesh } from "../3d/__Mesh";
 import * as THREE from "../3d/_t";
 import { WorldRenderer } from "./WorldRenderer";
 export const EMPTY_PIECE: ITexturePieceInfo = {
@@ -17,11 +17,13 @@ export const EMPTY_PIECE: ITexturePieceInfo = {
   pixel_w: 0,
 };
 const EXTRA_SHAKING_TIME = 100;
+const r_vec3 = new THREE.Vector3(0, 0, -1);
 export class EntityRender {
   readonly renderer_type: string = "Entity";
   protected pictures!: Map<string, IPicture<THREE.Texture>>;
   entity!: Entity;
-  protected entity_mesh!: IMeshNode;
+  protected entity_mesh!: __Mesh;
+  protected blood_mesh!: __Mesh;
   protected entity_material!: THREE.MeshBasicMaterial;
   protected variants = new Map<string, string[]>();
   protected piece: ITexturePieceInfo = EMPTY_PIECE;
@@ -46,7 +48,7 @@ export class EntityRender {
     const first_text = this.pictures.get("0")?.texture;
     const inner = (this.entity_mesh =
       this.entity_mesh ||
-      new Ditto.MeshNode(world.lf2, {
+      new __Mesh(world.lf2, {
         geometry: new THREE.PlaneGeometry(1, 1).translate(0.5, -0.5, 0),
         material: (this.entity_material = new THREE.MeshBasicMaterial({
           map: first_text,
@@ -66,6 +68,16 @@ export class EntityRender {
     if (typeof data.base.render_order === "number") {
       this.entity_mesh.render_order = data.base.render_order;
     }
+
+    this.blood_mesh = new __Mesh(world.lf2, {
+      geometry: new THREE.PlaneGeometry(1, 3).translate(0, -1.25, 0),
+      material: new THREE.MeshBasicMaterial({
+        map: white_texture(),
+        color: new THREE.Color(1, 0, 0),
+        transparent: true,
+      }),
+    })
+
     return this;
   }
   get visible(): boolean {
@@ -75,10 +87,14 @@ export class EntityRender {
     this.entity_mesh.visible = v;
   }
   on_mount() {
-    (this.entity.world.renderer as WorldRenderer).scene.add(this.entity_mesh!);
+    (this.entity.world.renderer as WorldRenderer).scene.add(
+      this.entity_mesh,
+      this.blood_mesh
+    );
   }
   on_unmount(): void {
     this.entity_mesh.dispose();
+    this.blood_mesh.dispose()
     if (this.pictures)
       for (const [, pic] of this.pictures) pic.texture.dispose();
   }
@@ -103,7 +119,6 @@ export class EntityRender {
       entity_mesh.set_scale(0, 0, 0);
     }
   }
-
   render(dt: number) {
     const { entity, entity_mesh } = this;
     if (entity.frame.id === Builtin_FrameId.Gone) return;
@@ -117,7 +132,7 @@ export class EntityRender {
       this.apply_tex(entity, this._prev_tex = tex)
     }
 
-    const { centerx, centery, state } = frame;
+    const { centerx, centery, state, bpoint } = frame;
     const offset_x = entity.facing === 1 ? centerx : entity_mesh.scale_x - centerx;
 
     if (state === StateEnum.Message) {
@@ -127,12 +142,20 @@ export class EntityRender {
       cam_x += offset_x
       x = clamp(x, cam_x, cam_r)
     }
-    entity_mesh.set_position(
-      round(x - offset_x),
-      round(y - z / 2 + centery),
-      round(z),
-    );
+    const ex = Math.round(x - offset_x)
+    const ey = Math.round(y - z / 2 + centery)
+    const ez = Math.round(z)
+    entity_mesh.set_position(ex, ey, ez);
 
+    const is_b_v = !!bpoint && entity.hp < entity.hp_max * 0.33;
+    if (bpoint) {
+      let { x: bx, y: by, z: bz = 0, r = 0 } = bpoint
+      bx = entity.facing === 1 ? bx : entity_mesh.scale_x - bx;
+      this.blood_mesh.set_position(ex + bx - entity.facing / 2, ey - by - 0.5, ez + bz);
+      this.blood_mesh.inner.setRotationFromAxisAngle(r_vec3, r * PI / 180)
+    } else {
+      this.blood_mesh.set_position(ex, ey, ez)
+    }
     const is_visible = !entity.invisible;
     const is_blinking = !!entity.blinking;
     entity_mesh.visible = is_visible;
@@ -140,9 +163,10 @@ export class EntityRender {
       entity_mesh.visible = 0 === Math.floor(entity.blinking / 4) % 2;
     }
 
+    this.blood_mesh.visible = is_b_v && entity_mesh.visible;
+
     const { shaking } = entity
     if (shaking != this._shaking) {
-      // keep shaking for a while.
       if (!shaking) this._extra_shaking_time = EXTRA_SHAKING_TIME;
       this._shaking = shaking;
     }
@@ -151,6 +175,7 @@ export class EntityRender {
       this._shaking_time += dt
       const f = (floor(this._shaking_time / 32) % 2) || -1
       entity_mesh.x += facing * f;
+      this.blood_mesh.x += facing * f;
       if (!shaking) this._extra_shaking_time -= dt
     } else {
       this._shaking_time = 0;

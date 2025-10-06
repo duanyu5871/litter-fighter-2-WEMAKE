@@ -26,7 +26,6 @@ Ditto.setup({
   OrthographicCamera: __Camera_O,
   PerspectiveCamera: __Camera_P,
   SpriteNode: __Sprite,
-  MeshNode: __Mesh,
   BillboardNode: __Billboard,
   Vector3: THREE.Vector3,
   Vector2: THREE.Vector2,

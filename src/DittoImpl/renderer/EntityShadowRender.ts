@@ -1,9 +1,9 @@
 
 import type { IMeshNode } from "../../LF2/3d/IMesh";
 import { Background } from "../../LF2/bg/Background";
-import { Ditto } from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
-import { clamp, max } from "../../LF2/utils";
+import { clamp } from "../../LF2/utils";
+import { __Mesh } from "../3d/__Mesh";
 import * as T from "../3d/_t";
 import { WorldRenderer } from "./WorldRenderer";
 
@@ -27,7 +27,7 @@ export class EntityShadowRender {
   constructor(entity: Entity) {
     const { lf2 } = entity;
     this.entity = entity
-    this.mesh = new Ditto.MeshNode(lf2, {
+    this.mesh = new __Mesh(lf2, {
       geometry: new T.PlaneGeometry(0, 0),
       material: this.material,
     });

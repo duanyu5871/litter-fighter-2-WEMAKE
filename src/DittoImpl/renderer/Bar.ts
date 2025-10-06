@@ -1,8 +1,8 @@
 import type { IMeshNode } from "../../LF2/3d";
-import { Ditto } from "../../LF2/ditto";
 import type { LF2 } from "../../LF2/LF2";
+import { __Mesh } from "../3d/__Mesh";
 import * as T from "../3d/_t";
-import { get_color_material, get_bar_geo } from "./EntityInfoRender";
+import { get_bar_geo, get_color_material } from "./EntityInfoRender";
 
 export class Bar {
   readonly mesh: IMeshNode;
@@ -31,7 +31,7 @@ export class Bar {
     ax: number,
     ay: number
   ) {
-    this.mesh = new Ditto.MeshNode(lf2, {
+    this.mesh = new __Mesh(lf2, {
       geometry: get_bar_geo(w, h, ax, ay),
       material: get_color_material(color),
     });

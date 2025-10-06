@@ -56,7 +56,6 @@ export interface IDittoPack {
   OrthographicCamera: new (lf2: LF2) => IOrthographicCameraNode;
   PerspectiveCamera: new (lf2: LF2) => IPerspectiveCamera;
   SpriteNode: new (lf2: LF2, info?: ISpriteInfo) => ISprite;
-  MeshNode: new (lf2: LF2, info?: IMeshInfo) => IMeshNode;
   BillboardNode: new (lf2: LF2, info?: IBillboardInfo) => IBillboardNode;
   Vector3: new (x?: number, y?: number, z?: number) => IVector3;
   Vector2: new (x?: number, y?: number) => IVector2;

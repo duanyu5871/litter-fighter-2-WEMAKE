@@ -1,7 +1,7 @@
 import type { IMeshNode } from "../../LF2/3d";
 import type Layer from "../../LF2/bg/Layer";
-import { Ditto } from "../../LF2/ditto";
 import type { TPicture } from "../../LF2/loader/ImageMgr";
+import { __Mesh } from "../3d/__Mesh";
 import * as THREE from "../3d/_t";
 
 const pic_map = new Map<string, TPicture>()
@@ -29,7 +29,7 @@ export class BgLayerRender {
     };
     if (pic?.texture) params.map = pic.texture;
     else params.color = info.color;
-    this.mesh = new Ditto.MeshNode(bg.world.lf2, {
+    this.mesh = new __Mesh(bg.world.lf2, {
       geometry: new THREE.PlaneGeometry(w, h).translate(w / 2, -h / 2, 0),
       material: new THREE.MeshBasicMaterial(params),
     });
