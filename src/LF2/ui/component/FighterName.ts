@@ -27,7 +27,7 @@ export default class FighterName extends UIComponent {
     const character = character_id
       ? this.lf2.datas.find_character(character_id)
       : void 0;
-    return character?.base.name ?? "Random";
+    return character?.base.name ?? this.lf2.string("Random");
   }
   get joined(): boolean {
     return true === this.player.joined;

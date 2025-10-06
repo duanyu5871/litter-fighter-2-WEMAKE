@@ -2,7 +2,6 @@ import { Sine } from "../../animation/Sine";
 import Invoker from "../../base/Invoker";
 import { Defines } from "../../defines/defines";
 import { ui_load_txt } from "../ui_load_txt";
-import type { UINode } from "../UINode";
 import { UIComponent } from "./UIComponent";
 
 /**
@@ -22,8 +21,11 @@ export default class PlayerTeamName extends UIComponent {
     return !!this.player?.team_decided;
   }
   get text(): string {
-    const team = this.player?.team || "";
-    return Defines.TeamInfoMap[team]?.name || "";
+    const team = this.player?.team;
+    if(team === void 0) return ''
+    const info = Defines.TeamInfoMap[team]
+    if(info === void 0) return ''
+    return this.lf2.string(info.i18n);
   }
   get is_com(): boolean {
     return true === this.player?.is_com;

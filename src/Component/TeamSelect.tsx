@@ -6,7 +6,7 @@ export default function TeamSelect(props: TeamSelectProps) {
     <Select
       {...props}
       items={Defines.Teams}
-      parse={(i) => [i, Defines.TeamInfoMap[i].name]}
+      parse={(i) => [i, Defines.TeamInfoMap[i].i18n]}
     />
   );
 }

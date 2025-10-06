@@ -267,7 +267,7 @@ export namespace Defines {
     [Difficulty.Crazy]: "crazy",
   };
   export interface ITeamInfo {
-    name: string;
+    i18n: string;
     txt_color: string;
     txt_shadow_color: string;
   }
@@ -289,27 +289,27 @@ export namespace Defines {
   ];
   export const TeamInfoMap: ITeamInfoMap = {
     [TeamEnum.Independent]: {
-      name: "Independent",
+      i18n: "Independent",
       txt_color: "#ffffff",
       txt_shadow_color: "#000000",
     },
     [TeamEnum.Team_1]: {
-      name: "Team 1",
+      i18n: "Team_1",
       txt_color: "#4f9bff",
       txt_shadow_color: "#001e46",
     },
     [TeamEnum.Team_2]: {
-      name: "Team 2",
+      i18n: "Team_2",
       txt_color: "#ff4f4f",
       txt_shadow_color: "#460000",
     },
     [TeamEnum.Team_3]: {
-      name: "Team 3",
+      i18n: "Team_3",
       txt_color: "#3cad0f",
       txt_shadow_color: "#154103",
     },
     [TeamEnum.Team_4]: {
-      name: "Team 4",
+      i18n: "Team_4",
       txt_color: "#ffd34c",
       txt_shadow_color: "#9a5700",
     },
