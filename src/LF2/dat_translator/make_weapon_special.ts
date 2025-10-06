@@ -45,6 +45,7 @@ export function make_weapon_special(data: IEntityData) {
   switch (data.id) {
     case BuiltIn_OID.HenryArrow1:
       data.base.weight = Defines.WEAPON_WEIGHT_ARROW;
+      delete data.base.group
       foreach(data.frames, frame => {
         if (frame.state === StateEnum.Weapon_Rebounding) {
           delete frame.itr
@@ -69,6 +70,7 @@ export function make_weapon_special(data: IEntityData) {
       break;
     case BuiltIn_OID.RudolfWeapon:
       data.base.weight = Defines.WEAPON_WEIGHT_ARROW
+      delete data.base.group
       foreach(data.frames, frame => {
         if (frame.state === StateEnum.Weapon_Rebounding) {
           delete frame.itr
@@ -143,14 +145,17 @@ export function make_weapon_special(data: IEntityData) {
       break;
     case BuiltIn_OID.Weapon_LouisArmourA:
       data.base.weight = Defines.WEAPON_WEIGHT_HEAVY;
+      delete data.base.group
       data.base.brokens = broken_pieces_opoints(armour, armour, armour, armour, armour);
       break;
     case BuiltIn_OID.Weapon_LouisArmourB:
       data.base.weight = Defines.WEAPON_WEIGHT_HEAVY;
+      delete data.base.group
       data.base.brokens = broken_pieces_opoints(armour, armour, armour, armour, armour);
       break;
     case BuiltIn_OID.Weapon_IceSword:
       data.base.weight = Defines.WEAPON_WEIGHT_NOMRAL;
+      delete data.base.group
       data.base.brokens = broken_pieces_opoints(icesword1, icesword1, icesword1, icesword2, icesword2, icesword2, icesword2);
       break;
   }

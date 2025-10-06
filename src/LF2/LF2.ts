@@ -371,7 +371,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.callbacks.emit("on_cheat_changed")(cheat_name, enabled);
     this._curr_key_list = "";
   }
-  cmds: string[] = [];
+  cmds = new Set<string>();
   on_key_down(e: IKeyEvent) {
     this.debug('on_key_down', e)
     const key_code = e.key;
@@ -383,7 +383,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
         case 'f1': case 'f2': case 'f3': case 'f4': case 'f5':
         case 'f6': case 'f7': case 'f8': case 'f9': case 'f10':
           e.interrupt()
-          this.cmds.push(e.key)
+          this.cmds.add(e.key)
           break;
       }
     }

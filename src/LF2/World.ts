@@ -3,6 +3,7 @@ import { collisions_keeper } from "./collision/CollisionKeeper";
 import {
   ALL_ENTITY_ENUM,
   Builtin_FrameId, Defines,
+  EntityGroup,
   HitFlag,
   IBdyInfo, IBounding, IEntityData,
   IFrameInfo, IItrInfo, ItrKind,
@@ -246,11 +247,22 @@ export class World extends WorldDataset {
             this.lf2.infinity_mp = !this.lf2.infinity_mp;
             break;
           case 'f7':
-            for (const e of this.entities) e.hp = e.hp_max;
+            for (const e of this.entities) {
+              e.hp = e.hp_max;
+              e.mp = e.mp_max;
+            }
+            break;
+          case 'f8':
+            this.lf2.weapons.add_random(1, true, EntityGroup.VsWeapon)
+            break;
+          case 'f9':
+            for (const e of this.entities) {
+              if (is_weapon(e)) e.hp = 0;
+            }
             break;
         }
       }
-      this.lf2.cmds.length = 0
+      this.lf2.cmds.clear()
       if (!this._paused) this.update_once();
       this.update_camera();
       this.bg.update();
