@@ -3,6 +3,7 @@ import type { IMeshNode } from "../../LF2/3d/IMesh";
 import { Background } from "../../LF2/bg/Background";
 import { Ditto } from "../../LF2/ditto";
 import type { Entity } from "../../LF2/entity/Entity";
+import { clamp, max } from "../../LF2/utils";
 import * as T from "../3d/_t";
 import { WorldRenderer } from "./WorldRenderer";
 
@@ -57,7 +58,7 @@ export class EntityShadowRender {
 
     const {
       frame,
-      position: { x, z },
+      position: { x, z, y },
       invisible
     } = this.entity;
     this.mesh.set_position(
@@ -65,6 +66,8 @@ export class EntityShadowRender {
       Math.floor(-z / 2),
       Math.floor(z - 550),
     );
+    const scale = 0.5 + 0.5 * clamp(250 - y, 0, 250) / 250
+    this.mesh.set_scale(scale, scale, 1)
     this.mesh.visible = !invisible && !frame.no_shadow;
   }
 }
