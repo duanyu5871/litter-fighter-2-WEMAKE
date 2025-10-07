@@ -9,4 +9,12 @@ export interface IUIImgInfo {
   col?: number;
   row?: number;
   count?: number;
+  wrapS?: number;
+  wrapT?: number;
+  offsetX?: number;
+  offsetY?: number;
+  offsetAnimX?: number;
+  offsetAnimY?: number;
+  repeatX?: number;
+  repeatY?: number;
 }

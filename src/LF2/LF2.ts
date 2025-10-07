@@ -704,15 +704,16 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this._dispose_check('load_builtin_ui')
     const ret: ICookedUIInfo[] = []
     const paths: string[] = [
-      "builtin_data/launch/init.json",
+      "builtin_data/launch/bg.json5",
       "builtin_data/launch/loading_anim.json",
       "builtin_data/launch/main_text_button.json",
-      "builtin_data/launch/menu_text_button.json"
+      "builtin_data/launch/menu_text_button.json",
+      "builtin_data/launch/init.json5",
     ];
     for (const path of paths) {
       const cooked_ui_info = await cook_ui_info(this, path);
       this._dispose_check('load_builtin_ui')
-      ret.push(cooked_ui_info);
+      ret.unshift(cooked_ui_info);
     }
     return ret
   }
@@ -724,17 +725,16 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this._uiinfos_loaded = false;
     const files = zip.file(/^layouts\/.*?\.json5?$/)
     const ret: ICookedUIInfo[] = []
-
+    if (!this._uiinfos.length) {
+      ret.unshift(...await this.load_builtin_ui())
+      this._dispose_check('load_ui')
+    }
     for (const file of files) {
       const json = await file.json().catch(() => null);
       this._dispose_check('load_ui')
       if (!json || Array.isArray(json)) continue;
       const cooked_ui_info = await cook_ui_info(this, json);
       ret.push(cooked_ui_info);
-    }
-    if (!this._uiinfos.length) {
-      ret.unshift(...await this.load_builtin_ui())
-      this._dispose_check('load_ui')
     }
     if (this._disposed) {
       this._uiinfos.length = 0;

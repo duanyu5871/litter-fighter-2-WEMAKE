@@ -52,7 +52,6 @@ find_ui_template.TAG = 'find_ui_template'
 async function read_ui_template(lf2: LF2, raw_info: IUIInfo, parent: ICookedUIInfo | undefined): Promise<IUIInfo> {
   const { template: template_name, ...remain_raw_info } = raw_info
   if (!template_name) return raw_info;
-  if (template_name === 'key_u') debugger;
   const raw_template: Unsafe<IUIInfo> = await find_ui_template(lf2, parent, template_name);
   remain_raw_info.component;
 
@@ -125,7 +124,7 @@ export async function cook_ui_info(
     img: [],
     txt: []
   };
-  
+
   ret.enabled = parse_ui_value(ret, 'boolean', raw_info.enabled) ?? true
 
   const { img } = raw_info;
@@ -142,7 +141,6 @@ export async function cook_ui_info(
   const dw = floor(w ? w : sh ? (h * sw / sh) : 0);
   const dh = floor(h ? h : sw ? (w * sh / sw) : 0);
   ret.size = [dw, dh];
-
   const { items } = raw_info;
   if (items && !Array.isArray(items)) {
     Ditto.warn(`[${UINode.TAG}::cook_ui_info] items must be array, but got`, items);

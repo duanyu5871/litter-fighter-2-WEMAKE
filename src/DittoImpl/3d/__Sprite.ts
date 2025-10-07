@@ -91,7 +91,7 @@ export class __Sprite extends __Object implements ISprite {
     }
     return this;
   }
-  
+
   /**
    *
    * @note call apply();
@@ -110,7 +110,7 @@ export class __Sprite extends __Object implements ISprite {
   get_info(): ISpriteInfo {
     return this._info;
   }
-  
+
   override dispose(): void {
     super.dispose();
     dispose_mesh(this.inner);

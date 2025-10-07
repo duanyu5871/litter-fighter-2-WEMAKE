@@ -7,6 +7,7 @@ import { IDebugging, make_debugging } from "../../LF2/entity/make_debugging";
 import { IImageInfo } from "../../LF2/loader/IImageInfo";
 import { empty_texture, white_texture } from "../../LF2/loader/ImageMgr";
 import { TextInput } from "../../LF2/ui/component/TextInput";
+import { IUIImgInfo } from "../../LF2/ui/IUIImgInfo.dat";
 import type { UINode } from "../../LF2/ui/UINode";
 import { is_num, is_str } from "../../LF2/utils";
 import { __Sprite } from "../3d";
@@ -22,6 +23,7 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
 
   protected _css_obj: CSS2DObject | undefined;
   protected _dom: HTMLDivElement | undefined;
+  protected _ui_img?: IUIImgInfo;
 
   protected get dom() {
     if (this._dom) return this._dom;
@@ -126,11 +128,9 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     const img =
       this.node.imgs.value[this.node.img_idx.value] ||
       this.node.txts.value[this.node.txt_idx.value];
+
+    this._ui_img = this.node.data.img[this.node.img_idx.value]
     this.create_sprite_info(img).then(p => this.sprite.set_info(p).apply());
-    if (img) {
-      const { w, h, scale } = img
-      this.node.size.value = [w / scale, h / scale];
-    }
   }
 
   async create_sprite_info(img: IImageInfo | undefined): Promise<ISpriteInfo> {
@@ -175,16 +175,20 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     this.update_sprite();
     this.node.scale.dirty && this.sprite.set_scale(...this.node.scale.value);
 
-    // const sp = this.sprite as __Sprite;
-    // if (sp) {
-    //   const t = sp.inner.material.map;
-    //   if (t) {
-    //     t.offset.y += 0.001;
-    //     t.offset.x += 0.001;
-    //     t.wrapS = THREE.RepeatWrapping
-    //     t.wrapT = THREE.RepeatWrapping
-    //   }
-    // }
+    const sp = this.sprite as __Sprite;
+    if (sp && this._ui_img) {
+      const t = sp.inner.material.map;
+      if (t) {
+        const { wrapS, wrapT, offsetAnimX, offsetAnimY, repeatX, repeatY } = this._ui_img
+        if (offsetAnimX !== void 0) t.offset.y += offsetAnimX;
+        if (offsetAnimY !== void 0) t.offset.x += offsetAnimY;
+        if (wrapS !== void 0) t.wrapS = (wrapS as any)
+        if (wrapT !== void 0) t.wrapT = (wrapT as any)
+        if (repeatX !== void 0) t.repeat.setX(repeatX)
+        if (repeatY !== void 0) t.repeat.setY(repeatY)
+        t.needsUpdate = true
+      }
+    }
     if (this.node.pos.dirty) {
       const [x, y, z] = this.node.pos.value
       this.sprite.set_position(x, -y, z);
