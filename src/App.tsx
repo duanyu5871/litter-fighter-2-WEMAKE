@@ -448,6 +448,8 @@ function App() {
         width={794}
         height={450}
         draggable={false}
+        onContextMenu={e => { e.preventDefault(); e.stopPropagation(); }}
+        onContextMenuCapture={e => { e.preventDefault(); e.stopPropagation(); }}
       />
       <div ref={set_ele_game_overlay} className={classNames(styles.game_overlay, { [styles.gone]: !game_overlay })} />
       <DanmuOverlay lf2={lf2} />
