@@ -112,7 +112,7 @@ export class WorldRenderer implements IWorldRenderer {
       r3?.render();
       r4?.render();
     }
-    this.lf2.ui?.renderer.render()
+    this.lf2.ui?.renderer.render(dt)
     this.scene.render();
   }
 

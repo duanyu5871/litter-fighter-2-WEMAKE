@@ -160,7 +160,7 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     this.sprite.visible = v
     v ? this.show_dom() : this.hide_dom()
   }
-  render() {
+  render(dt: number) {
     if (this.node.center.dirty || this.node.size.dirty) {
       this.node.center.dirty = this.node.size.dirty = false
       const [w, h] = this.node.size.value;
@@ -180,8 +180,8 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
       const t = sp.inner.material.map;
       if (t) {
         const { wrapS, wrapT, offsetAnimX, offsetAnimY, repeatX, repeatY } = this._ui_img
-        if (offsetAnimX !== void 0) t.offset.y += offsetAnimX;
-        if (offsetAnimY !== void 0) t.offset.x += offsetAnimY;
+        if (offsetAnimX !== void 0) t.offset.y += (dt / 1000) * offsetAnimX;
+        if (offsetAnimY !== void 0) t.offset.x += (dt / 1000) * offsetAnimY;
         if (wrapS !== void 0) t.wrapS = (wrapS as any)
         if (wrapT !== void 0) t.wrapT = (wrapT as any)
         if (repeatX !== void 0) t.repeat.setX(repeatX)
@@ -202,6 +202,6 @@ export class UINodeRenderer implements IUINodeRenderer, IDebugging {
     this.sprite.apply()
     for (const child of this.node.children)
       if (child.visible !== child.renderer.visible || child.renderer.visible)
-        child.renderer.render()
+        child.renderer.render(dt)
   }
 }

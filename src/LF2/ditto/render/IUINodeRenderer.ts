@@ -13,7 +13,7 @@ export interface IUINodeRenderer {
   del(child: IUINodeRenderer): void;
   add(child: IUINodeRenderer): void;
   del_self(): void;
-  render(): void;
+  render(dt: number): void;
 
   on_start?(): void;
   on_resume(): void;
