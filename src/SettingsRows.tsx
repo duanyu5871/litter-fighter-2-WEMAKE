@@ -53,12 +53,12 @@ export default function SettingsRows(props: ISettingsRowsProps) {
     _stage?.phase_idx ?? -1,
   );
   const [difficulty, set_difficulty] = useState<Difficulty>(
-    lf2?.difficulty ?? Difficulty.Difficult,
+    lf2?.world.difficulty ?? Difficulty.Difficult,
   );
   const [world_properties, set_world_properties] = useState<TProperty[]>();
   useEffect(() => {
     set_bgm(lf2?.sounds.bgm() ?? "");
-    set_difficulty(lf2?.difficulty ?? Difficulty.Difficult);
+    set_difficulty(lf2?.world.difficulty ?? Difficulty.Difficult);
     set_stage_list(lf2?.stages);
     const on_stage_change = (stage: Stage | undefined) => {
       set_stage_id(stage?.data.id ?? Defines.VOID_STAGE.id);
@@ -76,10 +76,14 @@ export default function SettingsRows(props: ISettingsRowsProps) {
     if (!lf2) return;
     const a = [
       lf2.callbacks.add({
-        on_difficulty_changed: set_difficulty,
         on_loading_end: () => set_stage_list(lf2.stages),
       }),
-      lf2.world.callbacks.add({ on_stage_change }),
+      lf2.world.callbacks.add({
+        on_stage_change,
+        on_dataset_change: (k, v) => {
+          if (k === 'difficulty') set_difficulty(v as Difficulty)
+        }
+      }),
     ];
 
     const ppp = list_writable_properties(lf2.world)
@@ -305,7 +309,7 @@ export default function SettingsRows(props: ISettingsRowsProps) {
 
 interface IFieldInfo {
   title: string;
-  type: '' | 'int' | 'float';
+  type: '' | 'int' | 'float' | 'boolean';
   desc?: string;
 }
 const world_field_map: Record<keyof IWorldDataset, IFieldInfo> = {
@@ -350,4 +354,6 @@ const world_field_map: Record<keyof IWorldDataset, IFieldInfo> = {
   screen_w: { title: "screen_w", desc: "screen_w", type: '' },
   screen_h: { title: "screen_h", desc: "screen_h", type: '' },
   sync_render: { title: "sync_render", desc: "sync_render", type: '' },
+  difficulty: { title: "difficulty", desc: "difficulty", type: '' },
+  infinity_mp: { title: "infinity_mp", desc: "infinity_mp", type: 'boolean' },
 }

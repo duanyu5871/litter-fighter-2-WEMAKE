@@ -169,9 +169,9 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     this.player_r = this.bg.right
     if (!phase) return;
     const { objects, respawn, health_up, mp_up } = phase;
-    const hp_recovery = health_up?.[this.lf2.difficulty] || 0;
-    const hp_respawn = respawn?.[this.lf2.difficulty] || 0;
-    const mp_recovery = mp_up?.[this.lf2.difficulty] || 0;
+    const hp_recovery = health_up?.[this.world.difficulty] || 0;
+    const hp_respawn = respawn?.[this.world.difficulty] || 0;
+    const mp_recovery = mp_up?.[this.world.difficulty] || 0;
     const loop_players_fighters = hp_recovery || hp_respawn || mp_recovery
     if (loop_players_fighters) {
       const teams = new Set<string>()
@@ -237,7 +237,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       count += c.data.base.ce ?? 1;
     if (!count) count = 1;
 
-    switch (this.lf2.difficulty) {
+    switch (this.world.difficulty) {
       case Difficulty.Crazy:
         count *= 2
         break;

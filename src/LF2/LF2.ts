@@ -8,7 +8,8 @@ import {
 import { KEY_NAME_LIST, LocalController } from "./controller";
 import {
   BackgroundGroup,
-  Builtin_FrameId, CheatType, Defines, Difficulty, IBgData,
+  Builtin_FrameId, CheatType, Defines,
+  IBgData,
   IStageInfo, TFace
 } from "./defines";
 import {

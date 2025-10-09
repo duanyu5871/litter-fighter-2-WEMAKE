@@ -106,9 +106,9 @@ export default class Item {
         team: this.info.join_team ?? TeamEnum.Team_1
       }
 
-    let _hp = hp_map?.[this.lf2.difficulty]
+    let _hp = hp_map?.[this.world.difficulty]
     if (!is_num(_hp) && is_num(hp)) {
-      switch (this.lf2.difficulty) {
+      switch (this.world.difficulty) {
         case Difficulty.Easy: _hp = floor(hp * 3 / 4); break;
         case Difficulty.Crazy: _hp = floor(hp * 3 / 2); break;
         default: _hp = hp;
@@ -116,7 +116,7 @@ export default class Item {
     }
     if (is_num(_hp)) e.hp = e.hp_r = e.hp_max = _hp;
 
-    let _mp = mp_map?.[this.lf2.difficulty]
+    let _mp = mp_map?.[this.world.difficulty]
     if (is_num(mp) && !is_num(_mp)) _mp = mp;
     if (is_num(_mp)) e.mp = e.mp_max = _mp;
 

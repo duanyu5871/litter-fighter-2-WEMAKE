@@ -39,7 +39,7 @@ export class EndingPageLogic extends UIComponent {
       const i = this.txt_node.txt_idx.value++
       const l = this.txt_node.txts.value.length;
       if (i < l - 1) {
-        if (i === 0 && this.lf2.difficulty >= Difficulty.Difficult) {
+        if (i === 0 && this.world.difficulty >= Difficulty.Difficult) {
           this.txt_node.txt_idx.value = i + 2
         } else {
           this.txt_node.txt_idx.value = i + 1

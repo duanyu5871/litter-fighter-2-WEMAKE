@@ -396,7 +396,7 @@ export class BotController extends BaseController implements Required<IBotDataSe
 
   action_desire(): number {
     let ret = this.desire(); // 默认action设置的desire是crazy的好了。
-    for (let i = Difficulty.MAX - this.lf2.difficulty; i > 0; --i) {
+    for (let i = Difficulty.MAX - this.world.difficulty; i > 0; --i) {
       ret += this.lf2.random_in(0, ret);
     }
     return ret;
