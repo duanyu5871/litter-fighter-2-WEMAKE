@@ -20,6 +20,7 @@ export class WeaponsHelper {
   at(idx: number): Entity | undefined {
     return this.list()[idx];
   }
+
   add(
     data?: IEntityData | string,
     num: number = 1,
@@ -29,6 +30,7 @@ export class WeaponsHelper {
     if (!data) return [];
     return this.lf2.entities.add(data, num, team);
   }
+  
   randoms(group: string, duplicate: boolean) {
     const map = duplicate ? this.random_d_map : this.random_map
     let ret = map.get(group);

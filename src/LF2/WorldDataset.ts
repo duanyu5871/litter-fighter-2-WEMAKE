@@ -1,4 +1,4 @@
-import { Defines } from "./defines";
+import { Defines, Difficulty } from "./defines";
 import { IWorldDataset } from "./IWorldDataset";
 import { make_private_properties } from "./utils/make_private_properties";
 
@@ -126,7 +126,7 @@ export class WorldDataset implements IWorldDataset {
 
   mp_r_ticks: number = Defines.MP_R_TICKS;
   mp_r_ratio: number = Defines.MP_R_RATIO;
-  
+
   /**
    * 按键“双击”判定间隔，单位（帧数）
    *
@@ -181,8 +181,11 @@ export class WorldDataset implements IWorldDataset {
   screen_h: number = Defines.MODERN_SCREEN_HEIGHT;
   gravity: number = Defines.GRAVITY;
   sync_render: number = 0;
+  difficulty: Difficulty = Difficulty.Difficult;
+  infinity_mp: boolean = false;
+
   constructor() {
     make_private_properties(`${WorldDataset.TAG}::constructor`, this, (...args) => this.on_dataset_change?.(...args))
   }
-  on_dataset_change?: (k: string, curr: any, prev: any) => void
+  on_dataset_change?: (k: string, curr: any, prev: any) => void;
 }

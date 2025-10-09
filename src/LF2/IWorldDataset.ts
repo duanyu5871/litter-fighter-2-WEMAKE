@@ -1,3 +1,5 @@
+import { Difficulty } from "./defines/Difficulty";
+
 export interface IWorldDataset {
   /**
    * 被击中的对象晃动多少帧
@@ -178,4 +180,14 @@ export interface IWorldDataset {
   screen_h: number;
   gravity: number;
   sync_render: number;
+
+  /**
+   * 难度
+   */
+  difficulty: Difficulty;
+
+  /**
+   * 是否无限蓝
+   */
+  infinity_mp: boolean;
 }

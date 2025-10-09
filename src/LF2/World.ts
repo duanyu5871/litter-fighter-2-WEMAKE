@@ -230,22 +230,11 @@ export class World extends WorldDataset {
 
       for (const key of this.lf2.cmds) {
         switch (key) {
-          case 'f1':
-            this.set_paused(!this.paused);
-            break;
-          case 'f2':
-            this.set_paused(true);
-            this.update_once();
-            break;
-          case 'f4':
-            this.lf2.ui_stacks.length >= 2 && this.lf2.pop_ui()
-            break;
-          case 'f5':
-            this.playrate = this.playrate === 1 ? 100 : 1;
-            break;
-          case 'f6':
-            this.lf2.infinity_mp = !this.lf2.infinity_mp;
-            break;
+          case 'f1': this.set_paused(!this.paused); break;
+          case 'f2': this.paused ? this.update_once() : this.set_paused(true); break;
+          case 'f4': this.lf2.ui_stacks.length >= 2 && this.lf2.pop_ui(); break;
+          case 'f5': this.playrate = this.playrate === 1 ? 100 : 1; break;
+          case 'f6': this.infinity_mp = !this.infinity_mp; break;
           case 'f7':
             for (const e of this.entities) {
               e.hp = e.hp_max;

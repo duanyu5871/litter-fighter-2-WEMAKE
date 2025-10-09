@@ -4,12 +4,12 @@ import { TeamEnum } from "../defines/TeamEnum";
 import { Factory } from "../entity";
 import { Entity } from "../entity/Entity";
 import { LF2 } from "../LF2";
-import { is_non_empty_str } from "../utils";
 import { Randoming } from "./Randoming";
 
 export class EntitiesHelper {
   readonly lf2: LF2;
   readonly team_randoming: Randoming<TeamEnum>;
+
   constructor(lf2: LF2) {
     this.lf2 = lf2;
     this.team_randoming = new Randoming([
@@ -17,14 +17,15 @@ export class EntitiesHelper {
       TeamEnum.Team_2,
       TeamEnum.Team_3,
       TeamEnum.Team_4,
-      // TeamEnum.Independent,
     ], this.lf2)
   }
+
   list(): Entity[] {
     const ret: Entity[] = [];
     this.lf2.world.entities.forEach((v) => ret.push(v));
     return ret;
   }
+  
   at(idx: number): Entity | undefined {
     return this.list()[idx];
   }

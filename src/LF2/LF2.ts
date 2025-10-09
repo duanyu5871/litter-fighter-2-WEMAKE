@@ -74,8 +74,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   private _ui_stacks: UINode[] = [];
   private _loading: boolean = false;
   private _playable: boolean = false;
-  private _difficulty: Difficulty = Difficulty.Difficult;
-  private _infinity_mp: boolean = false;
   private _pointer_on_uis = new Set<UINode>();
   private _pointer_raycaster = new Ditto.Raycaster();
   private _pointer_vec_2 = new Ditto.Vector2();
@@ -103,26 +101,6 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
   get ui(): UINode | undefined {
     return this._ui_stacks[this._ui_stacks.length - 1];
   }
-  get difficulty(): Difficulty {
-    return this._difficulty;
-  }
-  set difficulty(v: Difficulty) {
-    if (this._difficulty === v) return;
-    const old = this._difficulty;
-    this._difficulty = v;
-    this.callbacks.emit("on_difficulty_changed")(v, old);
-  }
-  get infinity_mp(): boolean {
-    return this._infinity_mp;
-  }
-  set infinity_mp(v: boolean) {
-    if (this._infinity_mp === v) return;
-    this._infinity_mp = v;
-    this.callbacks.emit("on_infinity_mp")(v);
-    if (!v) return;
-    for (const e of this.world.entities) e.mp = e.mp_max;
-  }
-
   readonly world: World;
 
   /**
@@ -828,10 +806,10 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.callbacks.emit("on_component_broadcast")(component, message);
   }
   switch_difficulty(): void {
-    const { difficulty } = this;
+    const { difficulty } = this.world;
     const max = this.is_cheat_enabled(CheatType.LF2_NET) ? 4 : 3;
     const next = (difficulty % max) + 1;
-    this.difficulty = next;
+    this.world.difficulty = next;
   }
 
   random_get<T>(a: T | T[] | undefined): T | undefined {

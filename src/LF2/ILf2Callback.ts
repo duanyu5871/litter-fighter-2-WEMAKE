@@ -27,16 +27,10 @@ export interface ILf2Callback {
   on_enter_next_stage?(): void;
 
   on_dispose?(): void;
-  on_difficulty_changed?(
-    value: Difficulty,
-    prev: Difficulty,
-  ): void;
-
   on_ui_loaded?(ui_infos: ICookedUIInfo[]): void;
   on_prel_loaded?(): void;
 
   on_broadcast?(message: string): void;
-  on_infinity_mp?(enabled: boolean): void;
 
   on_zips_changed?(zips: IZip[]): void;
 

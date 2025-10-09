@@ -1904,7 +1904,7 @@ export class Entity implements IDebugging {
       return;
     }
     const { frame, which: flags } = result;
-    if (!this.world.lf2.infinity_mp) {
+    if (!this.world.infinity_mp) {
       const { mp, hp } = flags;
       if (mp) this.mp -= mp;
       if (hp) this.hp -= hp;
@@ -2011,7 +2011,7 @@ export class Entity implements IDebugging {
       frame = this.find_frame_by_id(this.lf2.random_get(id));
       if (!frame) return void 0;
     }
-    if (!this.world.lf2.infinity_mp && frame) {
+    if (!this.world.infinity_mp && frame) {
       if (this.frame.next === which) {
         // 用next 进入此动作，负数表示消耗，无视正数。若消耗完毕跳至按下防御键的指定跳转动作
         if (use_mp && this._mp < use_mp)
