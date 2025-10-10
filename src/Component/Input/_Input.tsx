@@ -244,7 +244,7 @@ function _Input(props: InputProps, forwarded_Ref: React.ForwardedRef<InputRef>) 
           className={input_cls_name}
           ref={ref_input}
           onChange={e => onChange?.(e.target.value)}
-          value={value ?? ''}
+          value={value}
           {..._p}
           style={_styles?.input} />
       </div>

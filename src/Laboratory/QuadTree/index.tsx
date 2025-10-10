@@ -2,8 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Vector2 as __Vector2, Vector2 } from "three";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
-import { Input, InputRef } from "../../Component/Input";
-import { InputNumber } from "../../Component/Input";
+import { InputNumber, InputRef } from "../../Component/Input";
 import Titled from "../../Component/Titled";
 import { __Render } from "../../DittoImpl";
 import FPS from "../../LF2/base/FPS";
@@ -239,36 +238,32 @@ export default function QuadTreeView() {
           {" "}
           <div ref={ref_div_count} />{" "}
         </Titled>
-        <Titled label="capacity:">
-          <InputNumber
-            placeholder="capacity"
-            defaultValue={CAPACITY}
-            min={0}
-            max={100}
-            onChange={(e) => {
-              let num = Math.floor(e!);
-              if (!num || num < 1) num = 1;
-              else if (num > 100) num = 100;
-              root_qt.capacity = num;
-            }}
-          />
-        </Titled>
-        <Titled label="add:">
-          <Combine>
-            <Input type="number" ref={ref_input_num_of_add} />
-            <Button
-              onClick={() => {
-                const len = Number(ref_input_num_of_add.current?.value);
-                if (!len) return;
-                for (let i = 0; i < len; i++) {
-                  root_qt.add_item();
-                }
-              }}
-            >
-              add
-            </Button>
-          </Combine>
-        </Titled>
+        <InputNumber
+          prefix='capacity:'
+          placeholder="capacity"
+          defaultValue={CAPACITY}
+          min={0}
+          max={100}
+          onChange={(e) => {
+            let num = Math.floor(e!);
+            if (!num || num < 1) num = 1;
+            else if (num > 100) num = 100;
+            root_qt.capacity = num;
+          }}
+        />
+        <Combine>
+          <InputNumber ref={ref_input_num_of_add} prefix='add:' style={{ width: 100 }} />
+          <Button
+            onClick={() => {
+              const len = Number(ref_input_num_of_add.current?.value);
+              if (!len) return;
+              for (let i = 0; i < len; i++) {
+                root_qt.add_item();
+              }
+            }}>
+            ok
+          </Button>
+        </Combine>
         <Button
           onClick={() => {
             for (const i of ref_pick_items.current) {
