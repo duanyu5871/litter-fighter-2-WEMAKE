@@ -2,7 +2,6 @@ import { GameKey, GONE_FRAME_INFO } from "../../defines";
 import type { Entity } from "../../entity";
 import type IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
-import type IStageCallbacks from "../../stage/IStageCallbacks";
 import { traversal } from "../../utils/container_help/traversal";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import { UINode } from "../UINode";
@@ -11,7 +10,6 @@ import { UIComponent } from "./UIComponent";
 export class VsModeLogic extends UIComponent {
   static override readonly TAG = 'VsModeLogic'
   protected score_board?: UINode;
-  protected time = 0;
   protected is_game_over: boolean = false;
   protected game_over_time: number = Number.MAX_SAFE_INTEGER;
   protected cancellers: (() => void)[] = []
@@ -36,7 +34,7 @@ export class VsModeLogic extends UIComponent {
 
       // 大于一队，继续打
       if (team_remains > 1) return;
-      this.game_over_time = this.time;
+      this.game_over_time = this.world.time;
     }
   }
   protected reset() {
@@ -62,10 +60,9 @@ export class VsModeLogic extends UIComponent {
     this.cancellers.length = 0;
   }
   override update(dt: number): void {
-    this.time += dt;
     if (
       !this.is_game_over &&
-      this.time - this.game_over_time > 3000
+      this.world.time - this.game_over_time > 3000
     ) {
       this.lf2.sounds.play_preset("end");
       if (this.score_board) this.score_board.visible = true;

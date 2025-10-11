@@ -57,6 +57,7 @@ export function make_stage_info_list(full_str: string): IStageInfo[] | void {
             if (key === "id") object.id = [value];
             else if (key === "act") object.act = value;
             else (object as any)[key] = to_num(value) ?? (object as any)[key];
+            object.facing = object.x < 0 ? 1 : -1;
           }
           phase_info.objects.push(object);
         }

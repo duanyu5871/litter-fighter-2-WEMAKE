@@ -220,6 +220,7 @@ export class World extends WorldDataset {
     let _prev_time = Date.now();
     let _update_count = 0;
     let _fix_radio = 1;
+    
     const on_update = () => {
       const time = Date.now();
       const real_dt = time - _prev_time;

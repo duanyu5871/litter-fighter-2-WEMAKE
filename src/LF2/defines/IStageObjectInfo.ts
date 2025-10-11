@@ -2,13 +2,12 @@ import { Difficulty } from "./Difficulty";
 
 export interface IStageObjectInfo {
   id_method?: string; // TODO
-
-
   id: string[];
   x: number;
   y?: number;
   z?: number;
   act?: string;
+  facing?: -1 | 1;
   hp?: number;
   mp?: number;
   hp_map?: { [x in Difficulty]?: number }

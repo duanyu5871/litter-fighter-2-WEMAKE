@@ -90,7 +90,7 @@ export default class Item {
     const creator = Factory.inst.get_entity_creator(data.type);
     if (!creator) { debugger; return false; }
 
-    let { hp, act, x, y, z, reserve, hp_map, mp, mp_map } = this.info;
+    let { hp, act, facing, x, y, z, reserve, hp_map, mp, mp_map } = this.info;
     if (this.times) this.times--;
     const e = creator(this.world, data);
     e.ctrl = Factory.inst.get_ctrl(e.data.id, "", e);
@@ -130,8 +130,9 @@ export default class Item {
     e.team = this.stage.team;
     e.attach();
     e.callbacks.add(this.entity_cb);
-
+    if (facing) e.facing = facing;
     if (is_str(act)) e.enter_frame({ id: act });
+    else if (is_character(e)) e.enter_frame({ id: "running_0" })
     else e.enter_frame(Defines.NEXT_FRAME_AUTO);
 
     if (is_character(e)) this.fighters.add(e);
