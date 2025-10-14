@@ -1,18 +1,20 @@
-import { GameKey, GONE_FRAME_INFO } from "../../defines";
+import { EntityGroup, GameKey, GONE_FRAME_INFO } from "../../defines";
 import type { Entity } from "../../entity";
 import type IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
 import { traversal } from "../../utils/container_help/traversal";
 import { IUIKeyEvent } from "../IUIKeyEvent";
 import { UINode } from "../UINode";
+import { Times } from "../utils/Times";
 import { UIComponent } from "./UIComponent";
 
 export class VsModeLogic extends UIComponent {
   static override readonly TAG = 'VsModeLogic'
   protected score_board?: UINode;
-  protected is_game_over: boolean = false;
-  protected game_over_time: number = Number.MAX_SAFE_INTEGER;
-  protected cancellers: (() => void)[] = []
+  protected state: 0 | 1 | 2 = 0;
+  protected cancellers: (() => void)[] = [];
+  protected weapon_drop_timer = new Times(0, 300);
+  protected gameover_timer = new Times(0, 180);
   protected fighter_callbacks: IEntityCallbacks = {
     on_dead: (e: Entity) => {
       // 各队伍存活计数
@@ -34,12 +36,12 @@ export class VsModeLogic extends UIComponent {
 
       // 大于一队，继续打
       if (team_remains > 1) return;
-      this.game_over_time = this.world.time;
+      this.state = 1;
     }
   }
   protected reset() {
-    this.game_over_time = Number.MAX_SAFE_INTEGER;
-    this.is_game_over = false;
+    this.gameover_timer.reset()
+    this.state = 0;
     this.world.paused = false;
     this.world.playrate = 1;
     this.world.infinity_mp = false;
@@ -60,21 +62,20 @@ export class VsModeLogic extends UIComponent {
     this.cancellers.length = 0;
   }
   override update(dt: number): void {
-    if (
-      !this.is_game_over &&
-      this.world.time - this.game_over_time > 3000
-    ) {
+    if (!this.world.paused && this.weapon_drop_timer.add() && this.lf2.random_in(0, 10) < 5) {
+      this.lf2.weapons.add_random(1, true, EntityGroup.VsWeapon)
+    }
+    if (this.state === 1 && this.gameover_timer.add()) {
+      this.state = 2
       this.lf2.sounds.play_preset("end");
       if (this.score_board) this.score_board.visible = true;
-      this.game_over_time = Number.MAX_SAFE_INTEGER;
-      this.is_game_over = true;
     }
   }
   override on_key_down(e: IUIKeyEvent): void {
     switch (e.game_key) {
       case GameKey.a:
       case GameKey.j: {
-        if (this.is_game_over) {
+        if (this.state == 2) {
           e.stop_immediate_propagation();
           this.lf2.pop_ui()
         }
