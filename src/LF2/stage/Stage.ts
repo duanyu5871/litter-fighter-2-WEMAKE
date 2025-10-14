@@ -97,19 +97,14 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
 
   constructor(world: World, data: IStageInfo) {
     this.world = world;
-    if ("bg" in data) {
-      this.data = data;
-      const bg_id = this.data.bg;
-      const bg_data = this.world.lf2.datas.backgrounds.find(
-        (v) => v.id === bg_id || v.id === "bg_" + bg_id,
-      ); // FIXME;
-      if (!bg_data && bg_id !== Defines.VOID_BG.id)
-        Ditto.warn(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
-      this.change_bg(bg_data ?? Defines.VOID_BG);
-    } else {
-      this.data = Defines.VOID_STAGE;
-      this.change_bg(Defines.VOID_BG);
-    }
+    this.data = data;
+    const bg_id = this.data.bg;
+    const bg_data = this.world.lf2.datas.backgrounds.find(
+      (v) => v.id === bg_id || v.id === "bg_" + bg_id,
+    ); // FIXME;
+    if (!bg_data && bg_id !== Defines.VOID_BG.id)
+      Ditto.warn(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
+    this.change_bg(bg_data ?? Defines.VOID_BG);
 
     const bg = this.world.bg;
     this.left = this.cam_l = this.player_l = this.enemy_l = bg.left
