@@ -45,7 +45,8 @@ export class World extends WorldDataset {
   incorporeities = new Set<Entity>();
 
   readonly slot_fighters = new Map<string, Entity>();
-  readonly collisions: ICollision[] = [];
+  readonly v_collisions: ICollision[] = [];
+  readonly a_collisions = new Map<Entity, ICollision>();
   get stage() {
     return this._stage;
   }
@@ -513,9 +514,22 @@ export class World extends WorldDataset {
   }
 
   private _temp_entitis_set = new Set<Entity>();
-  private _used_itrs = new Set<IItrInfo>()
+  private _used_itrs = new Set<Entity>()
+  add_collisions(...cs: ICollision[]) {
+    for (const c of cs) {
+      if (c.itr.vrest) {
+        this.v_collisions.push(c);
+      } else {
+        const prev = this.a_collisions.get(c.attacker);
+        if (!prev || prev.m_distance > c.m_distance)
+          this.a_collisions.set(c.attacker, c);
+      }
+    }
+  }
   collision_detections() {
-    this.collisions.length = 0;
+    this.v_collisions.length = 0;
+    this.a_collisions.clear();
+
     this._used_itrs.clear()
     this._temp_entitis_set.clear();
 
@@ -531,21 +545,19 @@ export class World extends WorldDataset {
         if (collision1?.handlers && collision2?.handlers) {
           const index1 = ALL_ENTITY_ENUM.indexOf(collision1.attacker.type)
           const index2 = ALL_ENTITY_ENUM.indexOf(collision2.attacker.type)
-          if (index1 < index2)
-            this.collisions.push(collision1)
-          else if (index1 > index2)
-            this.collisions.push(collision2)
-          else
-            this.collisions.push(collision1, collision2)
+          if (index1 < index2) this.add_collisions(collision1)
+          else if (index1 > index2) this.add_collisions(collision2)
+          else this.add_collisions(collision1, collision2)
         }
-        else if (collision1?.handlers) this.collisions.push(collision1)
-        else if (collision2?.handlers) this.collisions.push(collision2)
+        else if (collision1?.handlers) this.add_collisions(collision1)
+        else if (collision2?.handlers) this.add_collisions(collision2)
       }
       this._temp_entitis_set.add(a);
     }
-    for (const collision of this.collisions) {
-      collisions_keeper.handle(collision)
-    }
+    for (const c of this.v_collisions)
+      collisions_keeper.handle(c)
+    for (const [, c] of this.a_collisions)
+      collisions_keeper.handle(c)
   }
 
   collision_detection(a: Entity, b: Entity): ICollision | undefined {
@@ -559,13 +571,13 @@ export class World extends WorldDataset {
         const itr = af.itr[i]!
         const bdy = bf.bdy[j]!
 
-        if (!itr.vrest && this._used_itrs.has(itr)) return;
+        if (!itr.vrest && this._used_itrs.has(a)) return;
 
         const collision = this.collision_test(a, af, itr, b, bf, bdy);
 
         if (!collision) continue;
 
-        if (!itr.vrest) this._used_itrs.add(itr)
+        if (!itr.vrest) this._used_itrs.add(a)
         collision.handlers = collisions_keeper.handler(collision)
         return collision
       }
@@ -620,7 +632,15 @@ export class World extends WorldDataset {
 
     if (!itr.vrest && attacker.a_rest) return;
     if (itr.vrest && victim.get_v_rest(attacker.id) > 0) return;
-
+    const ax = attacker.position.x
+    const ay = attacker.position.y
+    const az = attacker.position.z
+    const vx = victim.position.x
+    const vy = victim.position.y
+    const vz = victim.position.z
+    const dx = vx - ax
+    const dy = vy - ay
+    const dz = vz - az
     const collision: ICollision = {
       v_rest: !itr.arest && itr.vrest ? itr.vrest + this.vrest_offset : void 0,
       victim,
@@ -631,6 +651,16 @@ export class World extends WorldDataset {
       bframe,
       a_cube,
       b_cube,
+      ax,
+      ay,
+      az,
+      vx,
+      vy,
+      vz,
+      dx,
+      dy,
+      dz,
+      m_distance: abs(dx) + abs(dy) + abs(dz)
     };
     if (
       bdy.tester?.run(collision) === false ||

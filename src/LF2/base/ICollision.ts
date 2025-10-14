@@ -75,5 +75,18 @@ export interface ICollision {
    */
   v_rest?: number;
 
-  handlers?: ((collision: ICollision) => void)[]
+  handlers?: ((collision: ICollision) => void)[];
+
+
+  ax: number;
+  ay: number;
+  az: number;
+  vx: number;
+  vy: number;
+  vz: number;
+
+  dx: number;
+  dy: number;
+  dz: number;
+  m_distance: number;
 }
