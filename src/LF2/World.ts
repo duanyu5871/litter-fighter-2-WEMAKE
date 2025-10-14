@@ -1,4 +1,5 @@
 import { Callbacks, FPS, ICollision } from "./base";
+import { Background } from "./bg/Background";
 import { collisions_keeper } from "./collision/CollisionKeeper";
 import {
   ALL_ENTITY_ENUM,
@@ -31,6 +32,8 @@ export class World extends WorldDataset {
 
   private _spark_data?: IEntityData;
   private _spark_creator?: ICreator<Entity, typeof Entity>;
+
+  private _bg: Background;
   private _stage: Stage;
   private _need_FPS: boolean = true;
   private _need_UPS: boolean = true;
@@ -47,6 +50,13 @@ export class World extends WorldDataset {
   readonly slot_fighters = new Map<string, Entity>();
   readonly v_collisions: ICollision[] = [];
   readonly a_collisions = new Map<Entity, ICollision>();
+  get bg() { return this._bg; }
+  set bg(v: Background) {
+    if (v === this._bg) return;
+    const o = this._bg;
+    this._bg = v;
+    o.dispose();
+  }
   get stage() {
     return this._stage;
   }
@@ -65,9 +75,6 @@ export class World extends WorldDataset {
       this.start_update();
     }
   };
-  get bg() {
-    return this._stage.bg;
-  }
   get left() {
     return this.bg.left || 0;
   }
@@ -121,7 +128,8 @@ export class World extends WorldDataset {
   constructor(lf2: LF2) {
     super()
     this.lf2 = lf2;
-    this._stage = new Stage(this, Defines.VOID_BG);
+    this._bg = new Background(this, Defines.VOID_BG);
+    this._stage = new Stage(this, Defines.VOID_STAGE);
     this.renderer = new Ditto.WorldRender(this);
   }
   add_incorporeities(...entities: Entity[]) {

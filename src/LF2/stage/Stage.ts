@@ -23,7 +23,6 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   readonly callbacks = new Callbacks<IStageCallbacks>();
   private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
-  private _bg: Background;
   private _phase_idx: number = 0;
   private _phase: IStagePhaseInfo | undefined;
   readonly items = new Set<Item>();
@@ -35,7 +34,7 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   /** 章是否结束 */
   get is_chapter_finish(): boolean { return this._is_chapter_finish }
 
-  get bg(): Background { return this._bg; }
+  get bg(): Background { return this.world.bg; }
   get phases() { return this.data.phases }
   get id(): string { return this.data.name; }
   get name(): string { return this.data.name; }
@@ -74,32 +73,31 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
 
   change_bg(data: IBgData): Background {
     // FIXME: so messed up here...
-    if (this._bg) {
-      if (this._bg.data.id === data.id) return this._bg;
-      this._bg.dispose();
+    const prev_bg = this.world.bg;
+    if (prev_bg) {
+      if (prev_bg.data.id === data.id) return prev_bg;
     }
+    prev_bg.dispose();
     const world_stage = this.world.stage;
     if (world_stage && this.world.bg.data.id === data.id)
-      return this._bg = this.world.bg
+      return this.world.bg
 
-    this._bg = new Background(this.world, data)
-    this.left = this.cam_l = this.player_l = this.enemy_l = this._bg.left
-    this.right = this.cam_r = this.player_r = this.enemy_r = this._bg.right
-    this.near = this._bg.near;
-    this.far = this._bg.far;
-    this.width = this._bg.width;
-    this.depth = this._bg.depth;
-    this.middle = this._bg.middle;
+    const bg = new Background(this.world, data)
+    this.left = this.cam_l = this.player_l = this.enemy_l = bg.left
+    this.right = this.cam_r = this.player_r = this.enemy_r = bg.right
+    this.near = bg.near;
+    this.far = bg.far;
+    this.width = bg.width;
+    this.depth = bg.depth;
+    this.middle = bg.middle;
     this.drink_l = -1000;
     this.drink_r = this.bg.width + 1000
-    return this._bg;
+    return this.world.bg = bg;
   }
-  constructor(world: World, data: IStageInfo | IBgData) {
+
+  constructor(world: World, data: IStageInfo) {
     this.world = world;
-    if ("type" in data && data.type === "background") {
-      this.data = Defines.VOID_STAGE;
-      this._bg = this.change_bg(data);
-    } else if ("bg" in data) {
+    if ("bg" in data) {
       this.data = data;
       const bg_id = this.data.bg;
       const bg_data = this.world.lf2.datas.backgrounds.find(
@@ -107,18 +105,20 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
       ); // FIXME;
       if (!bg_data && bg_id !== Defines.VOID_BG.id)
         Ditto.warn(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
-      this._bg = this.change_bg(bg_data ?? Defines.VOID_BG);
+      this.change_bg(bg_data ?? Defines.VOID_BG);
     } else {
       this.data = Defines.VOID_STAGE;
-      this._bg = this.change_bg(Defines.VOID_BG);
+      this.change_bg(Defines.VOID_BG);
     }
-    this.left = this.cam_l = this.player_l = this.enemy_l = this._bg.left
-    this.right = this.cam_r = this.player_r = this.enemy_r = this._bg.right
-    this.near = this._bg.near;
-    this.far = this._bg.far;
-    this.width = this._bg.width;
-    this.depth = this._bg.depth;
-    this.middle = this._bg.middle;
+
+    const bg = this.world.bg;
+    this.left = this.cam_l = this.player_l = this.enemy_l = bg.left
+    this.right = this.cam_r = this.player_r = this.enemy_r = bg.right
+    this.near = bg.near;
+    this.far = bg.far;
+    this.width = bg.width;
+    this.depth = bg.depth;
+    this.middle = bg.middle;
     this.drink_l = -1000;
     this.drink_r = this.bg.width + 1000
     if (this.data.next)
@@ -292,9 +292,6 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   dispose() {
     this._disposed = true;
     for (const f of this._disposers) f();
-
-    if (this._bg !== this.world.bg) this._bg.dispose();
-
     for (const item of this.items) item.dispose();
 
     const temp: Entity[] = [];
