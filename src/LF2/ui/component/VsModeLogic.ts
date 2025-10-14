@@ -49,7 +49,7 @@ export class VsModeLogic extends UIComponent {
     this.score_board = this.node.find_child("score_board")!
     for (const [, f] of this.world.slot_fighters)
       this.cancellers.push(f.callbacks.add(this.fighter_callbacks))
-    this.reset()
+    this.reset();
   }
   override on_stop(): void {
     this.world.entities.forEach(v => {

@@ -16,7 +16,6 @@ import Show from "./Component/Show";
 import Titled from "./Component/Titled";
 import { useShortcut } from "./Component/useShortcut";
 import { DanmuOverlay } from "./DanmuOverlay";
-import { DatViewer } from "./pages/dat_viewer/DatViewer";
 import { __Pointings } from "./DittoImpl";
 import { Indicating, INDICATINGS } from "./DittoImpl/renderer/FrameIndicators";
 import { WorldRenderer } from "./DittoImpl/renderer/WorldRenderer";
@@ -50,12 +49,13 @@ import img_btn_3_0 from "./assets/btn_3_0.png";
 import img_btn_3_1 from "./assets/btn_3_1.png";
 import img_btn_3_2 from "./assets/btn_3_2.png";
 import "./init";
+import { DatViewer } from "./pages/dat_viewer/DatViewer";
+import { useWorkspaces } from "./pages/dat_viewer/useWorkspaces";
 import {
   useLocalBoolean,
   useLocalNumber,
   useLocalString,
 } from "./useLocalStorage";
-import { useWorkspaces } from "./pages/dat_viewer/useWorkspaces";
 
 function App() {
   const [fullscreen] = useState(() => new Ditto.FullScreen());
@@ -200,7 +200,9 @@ function App() {
         lf2.world.callbacks.add({
           on_stage_change: (s) => _set_bg_id(s.bg.id),
           on_pause_change: (v) => _set_paused(v),
-          on_sync_render_changed: (v) => set_sync_render(v),
+          on_dataset_change: (key, value) => {
+            if (key === 'sync_render') set_sync_render(value as any)
+          },
         }),
         lf2.callbacks.add({
           on_ui_loaded: (layouts) => {

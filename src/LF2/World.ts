@@ -38,6 +38,9 @@ export class World extends WorldDataset {
   private _UPS = new FPS(0.9);
   private _render_worker_id?: ReturnType<typeof Ditto.Render.add>;
   private _update_worker_id?: ReturnType<typeof Ditto.Interval.add>;
+  private _time = 0;
+
+  get time() { return this._time }
   entities = new Set<Entity>();
   incorporeities = new Set<Entity>();
 
@@ -56,12 +59,11 @@ export class World extends WorldDataset {
   }
   override on_dataset_change = (k: string, curr: any, prev: any) => {
     this.callbacks.emit('on_dataset_change')(k as any, curr, prev, this)
+    if (k === 'sync_render') {
+      this.start_render();
+      this.start_update();
+    }
   };
-  on_sync_render_change(curr: any, prev: any) {
-    this.callbacks.emit('on_sync_render_changed')(curr, prev)
-    this.start_render();
-    this.start_update();
-  }
   get bg() {
     return this._stage.bg;
   }
@@ -220,7 +222,7 @@ export class World extends WorldDataset {
     let _prev_time = Date.now();
     let _update_count = 0;
     let _fix_radio = 1;
-    
+
     const on_update = () => {
       const time = Date.now();
       const real_dt = time - _prev_time;
@@ -377,11 +379,7 @@ export class World extends WorldDataset {
     entity.chasing = void 0;
   }
 
-  protected _time = 0;
-  get time() { return this._time }
-  protected _updating = 0
   update_once() {
-    this._updating = 1;
     if (this._time === Number.MAX_SAFE_INTEGER) this._time = 0;
     else ++this._time;
     for (const e of this.entities) {
@@ -435,7 +433,6 @@ export class World extends WorldDataset {
     this.del_entities(this.gone_entities);
     this.collision_detections();
     this.stage.update();
-    this._updating = 0;
   }
 
   render_once(dt: number) {
