@@ -1,33 +1,20 @@
-import type { IReqCreateRoom } from "./IReqCreateRoom";
-import type { IReqExitRoom } from "./IReqExitRoom";
-import type { IReqJoinRoom } from "./IReqJoinRoom";
-import type { IReqPlayerNotReady } from "./IReqPlayerNotReady";
-import type { IReqPlayerReady } from "./IReqPlayerReady";
-import type { IReqRegister } from "./IReqRegister";
-import type { IReqRoomStart } from "./IReqRoomStart";
-import { IRespOtherExitRoom } from "./IRespOtherExitRoom";
-import { IRespOtherJoinRoom } from "./IRespOtherJoinRoom";
-import { IReqListRooms } from "./IReqRespListRooms";
+import type { IMsgReqMap, IMsgRespMap } from "./IMsgMap";
 
+export type TReq = IMsgReqMap[keyof IMsgReqMap]
+export type TResp = IMsgRespMap[keyof IMsgRespMap]
 export * from "./ErrCode";
-export * from "./IReq";
-export * from "./IReqCreateRoom";
-export * from "./IReqJoinRoom";
-export * from "./IReqPlayerNotReady";
-export * from "./IReqPlayerReady";
-export * from "./IReqRegister";
-export * from "./IReqRoomStart";
-export * from "./IResp";
-export * from "./IRespCreateRoom";
-export * from "./IRespJoinRoom";
+export * from "./IMsg_CreateRoom";
+export * from "./IMsg_JoinRoom";
+export * from "./IMsg_ListRooms";
+export * from "./IMsg_PlayerReady";
+export * from "./IMsg_Register";
+export * from "./IMsg_RoomStart";
+export * from "./IMsgMap";
+export * from "./_IReq";
+export * from "./_IResp";
+export * from "./IRespCloseRoom";
 export * from "./IRespOtherExitRoom";
 export * from "./IRespOtherJoinRoom";
-export * from "./IRespRegister";
 export * from "./IRoomInfo";
 export * from "./IUserInfo";
-export * from "./IRespCloseRoom"
 export * from "./MsgEnum";
-export * from "./IReqRespListRooms";
-export type TReq = IReqJoinRoom | IReqCreateRoom | IReqRegister |
-  IReqPlayerReady | IReqPlayerNotReady | IReqRoomStart | IReqExitRoom |
-  IRespOtherExitRoom | IRespOtherJoinRoom | IReqListRooms;

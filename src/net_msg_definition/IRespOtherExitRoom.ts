@@ -1,4 +1,4 @@
-import type { IResp } from "./IResp";
+import type { IResp } from "./_IResp";
 import type { IUserInfo } from "./IUserInfo";
 import type { MsgEnum } from "./MsgEnum";
 

@@ -1,4 +1,4 @@
-export enum ErrCode {
+export const enum ErrCode {
   NotRegister = 1000,
   AlreadyInRoom = 1001,
   NotInRoom = 1002,

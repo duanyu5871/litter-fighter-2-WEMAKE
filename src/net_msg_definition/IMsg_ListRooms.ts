@@ -1,6 +1,6 @@
-import { IReq } from "./IReq";
-import { IRoomInfo } from "./IRoomInfo";
-import { MsgEnum } from "./MsgEnum";
+import type { IReq } from "./_IReq";
+import type { IRoomInfo } from "./IRoomInfo";
+import type { MsgEnum } from "./MsgEnum";
 
 export interface IReqListRooms extends IReq<MsgEnum.ListRooms> {
   offset?: number;
