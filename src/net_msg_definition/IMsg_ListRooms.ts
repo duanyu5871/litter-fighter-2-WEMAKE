@@ -1,4 +1,4 @@
-import type { IReq } from "./_IReq";
+import type { IReq } from "./_Base";
 import type { IRoomInfo } from "./IRoomInfo";
 import type { MsgEnum } from "./MsgEnum";
 

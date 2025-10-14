@@ -8,7 +8,7 @@ import { Input } from "../../Component/Input";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { Strong, Text } from "../../Component/Text";
-import { IReqCreateRoom, IReqJoinRoom, IReqListRooms, IRespCreateRoom, IRespJoinRoom, IRespListRooms, IRoomInfo, MsgEnum } from "../../net_msg_definition";
+import { IRoomInfo, MsgEnum } from "../../net_msg_definition";
 import { Connection } from "./Connection";
 
 
@@ -36,9 +36,7 @@ function Player() {
     const conn = ref_conn.current;
     if (!conn) return;
     set_rooms_loading(true)
-    conn.send<IReqListRooms, IRespListRooms>({
-      type: MsgEnum.ListRooms
-    }).then((r) => {
+    conn.send(MsgEnum.ListRooms, {}).then((r) => {
       set_rooms(r.rooms ?? [])
     }).finally(() => {
       set_rooms_loading(false)
@@ -72,8 +70,7 @@ function Player() {
     const conn = ref_conn.current
     if (!conn) return;
     set_room_creating(true)
-    conn.send<IReqCreateRoom, IRespCreateRoom>({
-      type: MsgEnum.CreateRoom,
+    conn.send(MsgEnum.CreateRoom, {
       max_users: 8,
       title: 'Hello World',
     }).then((resp) => {
@@ -89,7 +86,7 @@ function Player() {
     const conn = ref_conn.current;
     if (!conn) return;
     set_room_joining(true)
-    conn.send<IReqJoinRoom, IRespJoinRoom>({ type: MsgEnum.JoinRoom, roomid: ref_room_id.current }).then((resp) => {
+    conn.send(MsgEnum.JoinRoom, { roomid: ref_room_id.current }).then((resp) => {
       set_room(resp.room)
     }).catch(e => {
       console.log(e)

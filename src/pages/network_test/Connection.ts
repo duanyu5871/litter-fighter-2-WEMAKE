@@ -1,5 +1,5 @@
 import { Callbacks } from "../../LF2/base";
-import { IReq, IReqRegister, IResp, IRespRegister, MsgEnum } from "../../net_msg_definition";
+import { IMsgReqMap, IMsgRespMap, IReq, IReqRegister, IResp, IRespRegister, MsgEnum } from "../../net_msg_definition";
 import { IJob } from "./IJob";
 
 export interface IConnectionCallbacks {
@@ -27,8 +27,7 @@ export class Connection {
 
   protected _on_open = () => {
     this.callbacks.emit('on_open')(this)
-    this.send<IReqRegister, IRespRegister>({
-      type: MsgEnum.Register,
+    this.send(MsgEnum.Register, {
       name: 'player_1'
     }, {
       timeout: 1000
@@ -88,10 +87,14 @@ export class Connection {
   }
 
 
-  send<Req extends IReq = IReq, Resp extends IResp = IResp>(msg: Omit<Req, 'pid'>, options?: ISendOpts): Promise<Resp> {
+  send<
+    T extends MsgEnum,
+    Req extends IReq = IMsgReqMap[T],
+    Resp extends IResp = IMsgRespMap[T]
+  >(type: T, msg: Omit<Req, 'pid' | 'type'>, options?: ISendOpts): Promise<Resp> {
     if (!this._ws) return Promise.reject(new Error(`[${Connection.TAG}] not open`))
     const pid = `${++this._pid}`;
-    const _req: IReq = { pid, ...msg };
+    const _req: IReq = { pid, type, ...msg };
     this._ws.send(JSON.stringify(_req));
     return new Promise<Resp>((resolve, reject) => {
       this._jobs.set(pid, { resolve: resolve as any, reject, ...options });
