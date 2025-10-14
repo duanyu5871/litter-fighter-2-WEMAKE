@@ -21,7 +21,6 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
   readonly next_stage?: IStageInfo;
   readonly team: string;
   readonly callbacks = new Callbacks<IStageCallbacks>();
-  private _disposed: boolean = false;
   private _disposers: (() => void)[] = [];
   private _phase_idx: number = 0;
   private _phase: IStagePhaseInfo | undefined;
@@ -90,21 +89,19 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     this.width = bg.width;
     this.depth = bg.depth;
     this.middle = bg.middle;
-    this.drink_l = -1000;
-    this.drink_r = this.bg.width + 1000
+    this.drink_l = -1200;
+    this.drink_r = this.bg.width + 1200
     return this.world.bg = bg;
   }
 
   constructor(world: World, data: IStageInfo) {
     this.world = world;
     this.data = data;
-    const bg_id = this.data.bg;
-    const bg_data = this.world.lf2.datas.backgrounds.find(
-      (v) => v.id === bg_id || v.id === "bg_" + bg_id,
-    ); // FIXME;
-    if (!bg_data && bg_id !== Defines.VOID_BG.id)
-      Ditto.warn(Stage.TAG + "::constructor", `bg_data not found, id: ${bg_id}`);
-    this.change_bg(bg_data ?? Defines.VOID_BG);
+    const bid = this.data.bg;
+    const bdt = this.world.lf2.datas.backgrounds.find(v => v.id === bid);
+    if (!bdt)
+      Ditto.warn(Stage.TAG + "::constructor", `bg not found, id: ${bid}`);
+    this.change_bg(bdt ?? Defines.VOID_BG);
 
     const bg = this.world.bg;
     this.left = this.cam_l = this.player_l = this.enemy_l = bg.left
@@ -114,8 +111,8 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     this.width = bg.width;
     this.depth = bg.depth;
     this.middle = bg.middle;
-    this.drink_l = -1000;
-    this.drink_r = this.bg.width + 1000
+    this.drink_l = -1200;
+    this.drink_r = this.bg.width + 1200
     if (this.data.next)
       this.next_stage = this.lf2.stages.find(v => v.id === this.data.next);
     this.team = new_team();
@@ -211,12 +208,12 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     }
     this.player_l = phase.player_l ?? 0
     this.cam_l = phase.camera_l ?? 0
-    this.enemy_l = phase.enemy_l ?? -1000
-    this.drink_l = phase.drink_l ?? -1000
+    this.enemy_l = phase.enemy_l ?? -1200
+    this.drink_l = phase.drink_l ?? -1200
     this.player_r = phase.player_r ?? phase.bound ?? this.bg.right
     this.cam_r = phase.camera_r ?? phase.bound ?? this.bg.right
-    this.enemy_r = phase.enemy_r ?? (phase.bound + 1000) ?? this.bg.right
-    this.drink_r = phase.drink_r ?? (this.bg.right + 1000)
+    this.enemy_r = phase.enemy_r ?? (phase.bound + 1200) ?? this.bg.right
+    this.drink_r = phase.drink_r ?? (this.bg.right + 1200)
   }
 
   enter_phase(idx: number) {
@@ -285,7 +282,6 @@ export class Stage implements Readonly<Omit<IStageInfo, 'bg'>> {
     }
   }
   dispose() {
-    this._disposed = true;
     for (const f of this._disposers) f();
     for (const item of this.items) item.dispose();
 
