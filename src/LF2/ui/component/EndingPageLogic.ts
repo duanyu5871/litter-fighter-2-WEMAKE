@@ -44,6 +44,9 @@ export class EndingPageLogic extends UIComponent {
         } else {
           this.txt_node.txt_idx.value = i + 1
         }
+        const txt_idx = this.txt_node.txt_idx.value
+        const { w, h, scale } = this.txt_node.txts.value[txt_idx]!
+        this.txt_node.size.value = ([w / scale, h / scale])
       } else {
         if (this.lf2.ui_stacks.length > 1) {
           this.lf2.pop_ui(true, (_, i) => i === 0)
