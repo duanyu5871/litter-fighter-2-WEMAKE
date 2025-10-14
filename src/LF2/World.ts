@@ -432,7 +432,10 @@ export class World extends WorldDataset {
       }
     }
     this.del_entities(this.gone_entities);
-    this.collision_detections();
+
+    if (this.time % 2 === 0)
+      this.collision_detections();
+
     this.stage.update();
   }
 
