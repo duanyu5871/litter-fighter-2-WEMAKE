@@ -571,13 +571,9 @@ export class World extends WorldDataset {
         const itr = af.itr[i]!
         const bdy = bf.bdy[j]!
 
-        if (!itr.vrest && this._used_itrs.has(a)) return;
-
         const collision = this.collision_test(a, af, itr, b, bf, bdy);
 
         if (!collision) continue;
-
-        if (!itr.vrest) this._used_itrs.add(a)
         collision.handlers = collisions_keeper.handler(collision)
         return collision
       }

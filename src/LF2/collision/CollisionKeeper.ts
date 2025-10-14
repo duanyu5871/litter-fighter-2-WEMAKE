@@ -74,7 +74,7 @@ export class CollisionKeeper {
     )
   }
   handle(collision: ICollision) {
-    const { handlers } = collision
+    const { handlers } = collision;
     if (Ditto.DEV && handlers) {
       const collision_desc =
         `[${collision.attacker.data.type}]#${ItrKind[collision.itr.kind]} => ` +
