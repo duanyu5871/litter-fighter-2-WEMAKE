@@ -5,10 +5,16 @@ import { IJob } from "./IJob";
 export interface IConnectionCallbacks {
   once?: boolean;
   on_open?(conn: Connection): void;
-  on_close?(conn: Connection): void;
+  on_close?(e: CloseEvent, conn: Connection): void;
   on_register?(resp: IRespRegister, conn: Connection): void;
   on_error?(event: Event, conn: Connection): void;
 }
+
+export interface ISendOpts {
+  ignoreCode?: boolean;
+  timeout?: number;
+}
+
 export class Connection {
   readonly callbacks = new Callbacks<IConnectionCallbacks>()
   protected _pid = 1;
@@ -24,6 +30,8 @@ export class Connection {
     this.send<IReqRegister, IRespRegister>({
       type: MsgEnum.Register,
       name: 'player_1'
+    }, {
+      timeout: 1000
     }).then((resp) => {
       this.callbacks.emit('on_register')(resp, this)
     }).catch((e) => {
@@ -46,8 +54,8 @@ export class Connection {
     }
   }
 
-  protected _on_close = () => {
-    this.callbacks.emit('on_close')(this)
+  protected _on_close = (e: CloseEvent) => {
+    this.callbacks.emit('on_close')(e, this)
     this._ws = null;
   }
 
@@ -80,7 +88,7 @@ export class Connection {
   }
 
 
-  send<Req extends IReq = IReq, Resp extends IResp = IResp>(msg: Omit<Req, 'pid'>, options?: { ignoreCode?: boolean; timeout?: number; }): Promise<Resp> {
+  send<Req extends IReq = IReq, Resp extends IResp = IResp>(msg: Omit<Req, 'pid'>, options?: ISendOpts): Promise<Resp> {
     if (!this._ws) return Promise.reject(new Error(`[${Connection.TAG}] not open`))
     const pid = `${++this._pid}`;
     const _req: IReq = { pid, ...msg };

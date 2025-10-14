@@ -1,11 +1,10 @@
 
 import List from "rc-virtual-list";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import Frame from "../../Component/Frame";
 import { Input } from "../../Component/Input";
-import Select from "../../Component/Select";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { Strong, Text } from "../../Component/Text";
@@ -58,19 +57,13 @@ function Player() {
     if (ref_conn.current) return;
     const conn = ref_conn.current = new Connection();
     conn.open('ws://localhost:8080')
-    set_connected(1);
-    conn.callbacks.once('on_open', () => {
-      console.log('on_open');
-    })
-    conn.callbacks.once('on_close', () => {
-      console.log('on_close');
-    })
-    conn.callbacks.once('on_error', (err) => {
-      console.error('on_error:', err);
+    set_connected(TriState.Pending);
+    conn.callbacks.once('on_close', (e) => {
+      set_connected(TriState.False)
     })
     conn.callbacks.once('on_register', (resp) => {
       console.log('on_register:', resp);
-      set_connected(2);
+      set_connected(TriState.True);
       update_rooms()
     })
   }
