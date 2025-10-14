@@ -210,7 +210,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
   constructor() {
     make_debugging(this)
-    this.world = new World(this);
+    this.debug(`constructor`)
     this.datas = new DatMgr(this);
     this.sounds = new Ditto.Sounds(this);
     this.images = new ImageMgr(this);
@@ -218,12 +218,12 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.keyboard.callback.add(this);
     this.pointings = new Ditto.Pointings();
     this.pointings.callback.add(this);
+    Ditto.Cache.forget(LF2.DATA_TYPE, LF2.DATA_VERSION).catch(e => { })
+    Ditto.Cache.forget(PlayerInfo.DATA_TYPE, PlayerInfo.DATA_VERSION).catch(e => { })
+    this.world = new World(this);
     this.world.start_update();
     this.world.start_render();
     LF2.instances.push(this)
-    this.debug(`constructor`)
-    Ditto.Cache.forget(LF2.DATA_TYPE, LF2.DATA_VERSION).catch(e => { })
-    Ditto.Cache.forget(PlayerInfo.DATA_TYPE, PlayerInfo.DATA_VERSION).catch(e => { })
   }
 
   random_entity_info(e: Entity) {
