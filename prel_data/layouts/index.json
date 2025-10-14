@@ -13,6 +13,5 @@
   "layouts/player_keys_hints.json",
   "layouts/player_score_row.json",
   "layouts/score_board.json",
-  "layouts/stage_mode_prepare_page.json",
   "layouts/vs_mode_prepare_page.json"
 ]

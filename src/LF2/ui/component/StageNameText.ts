@@ -25,23 +25,28 @@ export default class StageNameText extends UIComponent {
   }
   override on_resume(): void {
     super.on_resume();
-    if (this._stage === Defines.VOID_STAGE) this.on_broadcast();
     this.lf2.callbacks.add(this)
   }
   override on_pause(): void {
     super.on_pause();
     this.lf2.callbacks.del(this);
   }
+  override on_show(): void {
+    if (this._stage === Defines.VOID_STAGE) this.on_broadcast();
+  }
   on_broadcast(v: string = Defines.BuiltIn_Broadcast.SwitchStage) {
     if (v !== Defines.BuiltIn_Broadcast.SwitchStage) return
     const { stages } = this;
     if (!stages.length) {
       this._stage = Defines.VOID_STAGE;
+      this.world.stage.change_bg(Defines.VOID_BG)
     } else {
       const state_id = this.stage.id;
       const curr_idx = stages.findIndex((v) => v.id === state_id);
       const next_idx = (curr_idx + 1) % stages.length;
       this._stage = stages[next_idx]!;
+      const bdt = this.world.lf2.datas.backgrounds.find(v => v.id === this._stage.bg);
+      this.world.stage.change_bg(bdt ?? Defines.VOID_BG)
     }
 
     ui_load_txt(this.lf2, {

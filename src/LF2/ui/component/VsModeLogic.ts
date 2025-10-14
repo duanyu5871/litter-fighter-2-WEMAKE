@@ -1,4 +1,4 @@
-import { EntityGroup, GameKey, GONE_FRAME_INFO } from "../../defines";
+import { Defines, EntityGroup, GameKey, GONE_FRAME_INFO } from "../../defines";
 import type { Entity } from "../../entity";
 import type IEntityCallbacks from "../../entity/IEntityCallbacks";
 import { is_character } from "../../entity/type_check";
@@ -54,6 +54,8 @@ export class VsModeLogic extends UIComponent {
     this.reset();
   }
   override on_stop(): void {
+    this.lf2.change_bg(Defines.VOID_BG)
+    this.lf2.change_stage(Defines.VOID_STAGE)
     this.world.entities.forEach(v => {
       v.enter_frame(GONE_FRAME_INFO)
       v.next_frame = GONE_FRAME_INFO

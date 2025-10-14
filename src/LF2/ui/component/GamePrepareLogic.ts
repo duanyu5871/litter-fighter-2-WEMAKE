@@ -115,7 +115,7 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
       // 清空已选的com
       for (const slot of this.coms)
         slot.fsm.use(SlotSelStatus.Empty)
-      
+
       // ready状态
       for (const slot of this.joined_players)
         if (slot.fsm.state?.key === SlotSelStatus.Ready)
@@ -339,6 +339,11 @@ export default class GamePrepareLogic extends UIComponent<IGamePrepareLogicCallb
     else if (background_name_text) this.lf2.change_bg(background_name_text.background);
     if (stage_name_text) this.lf2.push_ui("stage_mode_page");
     else this.lf2.push_ui("vs_mode_page");
+  }
+
+  override on_stop(): void {
+    this.lf2.change_stage(Defines.VOID_STAGE)
+    this.lf2.change_bg(Defines.VOID_BG)
   }
 }
 
