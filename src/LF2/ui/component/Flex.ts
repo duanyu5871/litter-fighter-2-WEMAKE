@@ -26,8 +26,8 @@ export class Flex<Callbacks extends IUICompnentCallbacks = IUICompnentCallbacks>
       fit_h, fit_w,
       padding: [padding_top, padding_right, padding_bottom, padding_left]
     } = this;
-    let temp_x = 0;
-    let temp_y = 0;
+    let temp_x = padding_left;
+    let temp_y = padding_top;
     const my_cross = this.node.cross;
 
     const { children } = this.node
