@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true,
+    "outDir": "./dist",
+    "rootDirs": [
+      "./src",
+      "../src/Net"
+    ],
+    "noUncheckedIndexedAccess": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "./src/types"
+    ],
+    "lib": [
+      "ES2015"
+    ]
+  }
+}

@@ -1,12 +1,12 @@
 import { Callbacks } from "../../LF2/base";
-import { IMsgReqMap, IMsgRespMap, IReq, IReqRegister, IResp, IRespRegister, MsgEnum } from "../../net_msg_definition";
+import { IMsgReqMap, IMsgRespMap, IReq, IReqPlayerInfo, IResp, IRespPlayerInfo, MsgEnum } from "../../Net";
 import { IJob } from "./IJob";
 
 export interface IConnectionCallbacks {
   once?: boolean;
   on_open?(conn: Connection): void;
   on_close?(e: CloseEvent, conn: Connection): void;
-  on_register?(resp: IRespRegister, conn: Connection): void;
+  on_register?(resp: IRespPlayerInfo, conn: Connection): void;
   on_error?(event: Event, conn: Connection): void;
 }
 
@@ -27,7 +27,7 @@ export class Connection {
 
   protected _on_open = () => {
     this.callbacks.emit('on_open')(this)
-    this.send(MsgEnum.Register, {
+    this.send(MsgEnum.PlayerInfo, {
       name: 'player_1'
     }, {
       timeout: 1000

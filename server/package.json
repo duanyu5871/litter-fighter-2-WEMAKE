@@ -1,0 +1,25 @@
+{
+  "name": "lfj-node-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "rollup -c -w",
+    "build": "rollup -c",
+    "start": "rollup -c && node ./dist/cjs/index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.7",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@types/ws": "^8.18.1",
+    "rollup": "^4.52.4",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "ws": "^8.18.3"
+  }
+}

@@ -1,4 +1,4 @@
-import { IResp } from "../../net_msg_definition";
+import { IResp } from "../../Net";
 
 
 export interface IJob {

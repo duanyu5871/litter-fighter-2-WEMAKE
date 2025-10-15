@@ -1,10 +1,10 @@
 export enum MsgEnum {
-  Register = 'Register',
+  PlayerInfo = 'PlayerInfo',
   CreateRoom = 'CreateRoom',
   JoinRoom = 'JoinRoom',
-  PlayerReady = 'PlayerReady',
-  RoomStart = 'RoomStart',
   ExitRoom = 'ExitRoom',
   CloseRoom = "CloseRoom",
+  PlayerReady = 'PlayerReady',
+  RoomStart = 'RoomStart',
   ListRooms = "ListRooms",
 }

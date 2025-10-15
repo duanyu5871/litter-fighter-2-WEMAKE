@@ -1,5 +1,5 @@
 import type WebSocket from 'ws';
-import type { IReq, IResp, IUserInfo } from '../../src/net_msg_definition';
+import type { IReq, IResp, IPlayerInfo } from '../../src/net_msg_definition';
 import type { Room } from './Room';
 import type { UserManager } from './UserManager';
 
@@ -49,7 +49,7 @@ export class User {
     }
     this.ws.send(JSON.stringify(_resp))
   }
-  info(): Required<IUserInfo> {
+  info(): Required<IPlayerInfo> {
     return {
       id: this.id,
       name: this.name

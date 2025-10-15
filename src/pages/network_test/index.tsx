@@ -8,7 +8,7 @@ import { Input } from "../../Component/Input";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { Strong, Text } from "../../Component/Text";
-import { IRoomInfo, MsgEnum } from "../../net_msg_definition";
+import { IRoomInfo, MsgEnum } from "../../Net";
 import { Connection } from "./Connection";
 
 
@@ -16,8 +16,8 @@ indexedDB.databases().then((r) => console.log(r))
 
 enum TriState {
   False = 0,
-  Pending = 1,
-  True = 2
+  Pending = '',
+  True = 1
 }
 
 function Player() {
@@ -71,8 +71,7 @@ function Player() {
     if (!conn) return;
     set_room_creating(true)
     conn.send(MsgEnum.CreateRoom, {
-      max_users: 8,
-      title: 'Hello World',
+      max_players: 8,
     }).then((resp) => {
       set_room(resp.room)
       update_rooms()
@@ -98,10 +97,10 @@ function Player() {
 
   return (
     <Space>
-      <Button size='s' disabled={connected === 1} onClick={connected ? disconnect : connect}>
-        {connected === 1 ? 'connecting...' : connected === 2 ? 'disconnect' : 'connect'}
+      <Button size='s' disabled={connected === TriState.Pending} onClick={connected ? disconnect : connect}>
+        {connected === TriState.Pending ? 'connecting...' : connected === TriState.False ? 'disconnect' : 'connect'}
       </Button>
-      <Show show={connected}>
+      <Show show={connected === TriState.True}>
         <Show show={room}>
           <Text>room: {room?.id}</Text>
         </Show>
@@ -120,12 +119,12 @@ function Player() {
                     {room.title || room.id}
                   </Strong>
                   <Strong>
-                    {room.master?.name}
+                    {room.owner?.name}
                   </Strong>
                   <Strong>
                     人数:
-                    {room.users?.length}
-                    {room.max_users ? '/' + room.max_users : null}
+                    {room.players?.length}
+                    {room.max_players ? '/' + room.max_players : null}
                   </Strong>
                 </Space>
               )

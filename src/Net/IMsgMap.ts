@@ -4,11 +4,11 @@ import type { IReqExitRoom, IRespExitRoom } from "./IMsg_ExitRoom";
 import type { IReqJoinRoom, IRespJoinRoom } from "./IMsg_JoinRoom";
 import type { IReqListRooms, IRespListRooms } from "./IMsg_ListRooms";
 import type { IReqPlayerReady, IRespPlayerReady } from "./IMsg_PlayerReady";
-import type { IReqRegister, IRespRegister } from "./IMsg_Register";
+import type { IReqPlayerInfo, IRespPlayerInfo } from "./IMsg_PlayerInfo";
 import type { IReqRoomStart, IRespRoomStart } from "./IMsg_RoomStart";
 import type { MsgEnum } from "./MsgEnum";
 export interface IMsgReqMap {
-  [MsgEnum.Register]: IReqRegister,
+  [MsgEnum.PlayerInfo]: IReqPlayerInfo,
   [MsgEnum.CreateRoom]: IReqCreateRoom,
   [MsgEnum.JoinRoom]: IReqJoinRoom,
   [MsgEnum.PlayerReady]: IReqPlayerReady,
@@ -19,7 +19,7 @@ export interface IMsgReqMap {
 }
 
 export interface IMsgRespMap {
-  [MsgEnum.Register]: IRespRegister,
+  [MsgEnum.PlayerInfo]: IRespPlayerInfo,
   [MsgEnum.CreateRoom]: IRespCreateRoom,
   [MsgEnum.JoinRoom]: IRespJoinRoom,
   [MsgEnum.PlayerReady]: IRespPlayerReady,
