@@ -5,6 +5,7 @@ import { IReqExitRoom } from "./IMsg_ExitRoom";
 
 let room_id = 0;
 export class Room {
+  static TAG = 'Room';
   readonly id = '' + (++room_id);
   owner: Client;
   max_players: number = 4
@@ -15,7 +16,10 @@ export class Room {
       title: this.title,
       id: this.id,
       owner: this.owner.player_info!,
-      players: Array.from(this.players).map(v => v.player_info!),
+      players: Array.from(this.players).map(v => ({
+        ...v.player_info!,
+        ready: v.ready
+      })),
       max_players: this.max_players
     }
   }
@@ -32,6 +36,7 @@ export class Room {
   }
 
   ready(client: Client, req?: IReqPlayerReady) {
+    console.log(`[${Room.TAG}::ready]`)
     const { players } = this;
     const { player_info, room } = client;
     if (!players.has(client)) return false;
@@ -50,17 +55,21 @@ export class Room {
   }
 
   exit(client: Client, req?: IReqExitRoom) {
-    const { players, room_info } = this;
+    console.log(`[${Room.TAG}::exit]`)
+    const { players } = this;
     const { player_info, room } = client;
     if (!players.has(client)) return false;
     if (!player_info) return false;
     if (room !== this) return false;
 
     if (req) players.delete(client);
-    for (const pl of players)
-      pl.resp(MsgEnum.ExitRoom, '', { player: player_info, room: room_info })
+
+
     client.ready = false
     delete client.room
+    const { room_info } = this;
+    for (const pl of players)
+      pl.resp(MsgEnum.ExitRoom, '', { player: player_info, room: room_info })
     client.resp(
       req?.type ?? MsgEnum.ExitRoom,
       req?.pid ?? '',
@@ -70,7 +79,8 @@ export class Room {
   }
 
   join(client: Client, req?: IReqJoinRoom) {
-    const { players, room_info } = this;
+    console.log(`[${Room.TAG}::join]`)
+    const { players } = this;
     const { player_info, room } = client;
     if (players.has(client)) return false;
     if (!player_info) return false;
@@ -79,6 +89,7 @@ export class Room {
 
     client.ready = false
     client.room = this;
+    const { room_info } = this;
     for (const pl of players) if (pl != client)
       pl.resp(MsgEnum.JoinRoom, '', { player: player_info, room: room_info })
     client.resp(
@@ -90,6 +101,7 @@ export class Room {
   }
 
   close(client: Client, req?: IReqCloseRoom) {
+    console.log(`[${Room.TAG}::close]`)
     const { players } = this;
     const { player_info, room } = client;
     if (!players.has(client)) return false;

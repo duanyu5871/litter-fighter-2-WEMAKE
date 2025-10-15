@@ -48,6 +48,7 @@ wss.on('connection', (ws) => {
   ws.on('message', (msg: RawData) => {
     try {
       const req: TReq = JSON.parse(msg.toString());
+      console.log(`客户端 ${client.id} req:`, req);
 
       switch (req.type) {
         case MsgEnum.PlayerInfo: {
@@ -69,7 +70,20 @@ wss.on('connection', (ws) => {
           if (
             ensure_player_info(client, req) &&
             ensure_not_in_room(client, req)
-          ) client.room?.join(client, req);
+          ) {
+            let room: Room | null = null
+            for (const r of rooms) {
+              if (r.id === req.roomid) {
+                room = r;
+                break;
+              }
+            }
+            if (room) room.join(client, req);
+            else client.resp(
+              req.type,
+              req.pid,
+              { code: ErrCode.RoomNotFound, error: 'room not found' })
+          }
           break;
         }
         case MsgEnum.ExitRoom: {

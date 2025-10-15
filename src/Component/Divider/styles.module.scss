@@ -1,0 +1,7 @@
+@use "../../styles/lfui_values.module.scss"as *;
+
+.lfui_divider {
+  height          : 1px;
+  box-sizing      : border-box;
+  background-color: $primary_border_color;
+}

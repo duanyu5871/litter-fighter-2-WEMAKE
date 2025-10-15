@@ -1,5 +1,5 @@
 import { Callbacks } from "../../LF2/base";
-import { IMsgReqMap, IMsgRespMap, IReq, IReqPlayerInfo, IResp, IRespPlayerInfo, MsgEnum } from "../../Net";
+import { IMsgReqMap, IMsgRespMap, IPlayerInfo, IReq, IResp, IRespPlayerInfo, MsgEnum, TResp } from "../../Net";
 import { IJob } from "./IJob";
 
 export interface IConnectionCallbacks {
@@ -8,6 +8,7 @@ export interface IConnectionCallbacks {
   on_close?(e: CloseEvent, conn: Connection): void;
   on_register?(resp: IRespPlayerInfo, conn: Connection): void;
   on_error?(event: Event, conn: Connection): void;
+  on_message(resp: TResp): void;
 }
 
 export interface ISendOpts {
@@ -21,18 +22,18 @@ export class Connection {
   protected _reopen?: () => void;
   protected _jobs = new Map<string, IJob>();
   protected _ws: WebSocket | null = null;
+  player?: IPlayerInfo;
   static TAG: string = 'Connection';
 
   protected _on_error = (e: Event) => this.callbacks.emit('on_error')(e, this)
 
   protected _on_open = () => {
     this.callbacks.emit('on_open')(this)
-    this.send(MsgEnum.PlayerInfo, {
-      name: 'player_1'
-    }, {
+    this.send(MsgEnum.PlayerInfo, {}, {
       timeout: 1000
     }).then((resp) => {
       this.callbacks.emit('on_register')(resp, this)
+      this.player = resp.player;
     }).catch((e) => {
       this.close();
       this.callbacks.emit('on_error',)
@@ -46,6 +47,7 @@ export class Connection {
     if (!job) return;
     this._jobs.delete(pid);
     if (job.timerId) clearTimeout(job.timerId);
+    this.callbacks.emit('on_message')(resp)
     if (code && !job.ignoreCode) {
       job.reject(new Error(`[${code}]${error}`));
     } else {

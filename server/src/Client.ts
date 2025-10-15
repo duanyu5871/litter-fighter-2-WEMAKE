@@ -18,7 +18,6 @@ export class Client {
     Resp extends IResp = IMsgRespMap[T]
   >(type: T, pid: string, resp: Omit<Resp, 'pid' | 'type'>) {
     if (!this.ws) return Promise.reject(new Error(`[${Client.TAG}] not open`))
-
     const _resp: IResp = { pid, type, ...resp };
     this.ws.send(JSON.stringify(_resp));
   }
