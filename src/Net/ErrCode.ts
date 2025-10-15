@@ -8,4 +8,5 @@ export const enum ErrCode {
   InvalidRoomId = 1006,
   RoomNotFound = 1007,
   InvalidRoomParameters = 1008,
+  ParseFailed = 1009,
 }

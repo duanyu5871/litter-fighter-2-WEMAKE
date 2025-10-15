@@ -42,12 +42,12 @@ export class Connection {
   protected _on_message = (event: MessageEvent<any>) => {
     console.log('收到服务器消息:', event.data);
     const resp = JSON.parse(event.data) as IResp;
+    this.callbacks.emit('on_message')(resp)
     const { pid, code, error } = resp;
     const job = this._jobs.get(pid);
     if (!job) return;
     this._jobs.delete(pid);
     if (job.timerId) clearTimeout(job.timerId);
-    this.callbacks.emit('on_message')(resp)
     if (code && !job.ignoreCode) {
       job.reject(new Error(`[${code}]${error}`));
     } else {

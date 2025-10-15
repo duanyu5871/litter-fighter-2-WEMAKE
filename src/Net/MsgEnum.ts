@@ -7,4 +7,5 @@ export enum MsgEnum {
   PlayerReady = 'PlayerReady',
   RoomStart = 'RoomStart',
   ListRooms = "ListRooms",
+  Error = "Error",
 }

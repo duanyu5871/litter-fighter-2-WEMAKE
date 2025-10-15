@@ -1,13 +1,13 @@
-import React from "react";
-export interface IFlexProps extends React.HTMLAttributes<HTMLDivElement> {
+import type { CSSProperties, ForwardedRef, HTMLAttributes } from "react";
+import { forwardRef } from "react";
+export interface IFlexProps extends HTMLAttributes<HTMLDivElement> {
   inline?: boolean,
-  direction?: React.CSSProperties['flexDirection'],
-  align?: React.CSSProperties['alignItems'],
-  justify?: React.CSSProperties['justifyContent'],
-  gap?: React.CSSProperties['gap'],
-  _ref?: React.Ref<HTMLDivElement>,
+  direction?: CSSProperties['flexDirection'],
+  align?: CSSProperties['alignItems'],
+  justify?: CSSProperties['justifyContent'],
+  gap?: CSSProperties['gap'],
 }
-export function Flex(props: IFlexProps) {
+function _Flex(props: IFlexProps, ref: ForwardedRef<HTMLDivElement>) {
   const {
     inline = false,
     direction = 'row',
@@ -15,11 +15,10 @@ export function Flex(props: IFlexProps) {
     justify,
     gap,
     style,
-    _ref,
     ..._p
   } = props;
 
-  const _style: React.CSSProperties = {
+  const _style: CSSProperties = {
     display: inline ? 'inline-flex' : 'flex',
     flexDirection: direction,
     alignItems: align,
@@ -27,5 +26,6 @@ export function Flex(props: IFlexProps) {
     ...style,
     gap
   }
-  return <div {..._p} style={_style} ref={_ref} />
+  return <div {..._p} style={_style} ref={ref} />
 }
+export const Flex = forwardRef<HTMLDivElement, IFlexProps>(_Flex)

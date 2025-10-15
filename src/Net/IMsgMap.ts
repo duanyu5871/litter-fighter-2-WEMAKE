@@ -7,6 +7,7 @@ import type { IReqPlayerReady, IRespPlayerReady } from "./IMsg_PlayerReady";
 import type { IReqPlayerInfo, IRespPlayerInfo } from "./IMsg_PlayerInfo";
 import type { IReqRoomStart, IRespRoomStart } from "./IMsg_RoomStart";
 import type { MsgEnum } from "./MsgEnum";
+import { IReq, IResp } from "./_Base";
 export interface IMsgReqMap {
   [MsgEnum.PlayerInfo]: IReqPlayerInfo,
   [MsgEnum.CreateRoom]: IReqCreateRoom,
@@ -16,8 +17,8 @@ export interface IMsgReqMap {
   [MsgEnum.ExitRoom]: IReqExitRoom,
   [MsgEnum.CloseRoom]: IReqCloseRoom,
   [MsgEnum.ListRooms]: IReqListRooms,
+  [MsgEnum.Error]: IReq<MsgEnum.Error>,
 }
-
 export interface IMsgRespMap {
   [MsgEnum.PlayerInfo]: IRespPlayerInfo,
   [MsgEnum.CreateRoom]: IRespCreateRoom,
@@ -28,4 +29,5 @@ export interface IMsgRespMap {
   [MsgEnum.JoinRoom]: IRespJoinRoom,
   [MsgEnum.CloseRoom]: IRespCloseRoom,
   [MsgEnum.ListRooms]: IRespListRooms,
+  [MsgEnum.Error]: IResp<MsgEnum.Error>,
 }
