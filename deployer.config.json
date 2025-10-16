@@ -6,9 +6,12 @@
     "REMOTE_BACKUP_DIR": "/root/frontends/lf2_backup",
     "LOCAL_PATH": "./build",
     "GIT_BRANCH": "origin/main",
+    "GIT_IGNORED": true
+  },
+  "oss": {
     "GIT_IGNORED": true,
-    "GIT_NO_BEHIND": false,
-    "GIT_NO_AHEAD": false,
-    "GIT_NO_DIRTY": false
+    "OSS_ENABLE": true,
+    "LOCAL_PATH": "./build",
+    "REMOTE_DIR": ""
   }
 }
