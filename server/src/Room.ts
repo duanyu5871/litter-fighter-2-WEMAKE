@@ -168,6 +168,10 @@ export class Room {
 
   start(client: Client, req: IReqRoomStart = { type: MsgEnum.RoomStart, pid: '' }) {
     const { players } = this;
+    if (players.size < this.min_players) {
+      client.resp(req.type, req.pid, { code: ErrCode.PlayersTooFew, error: 'players are too few' }).catch(() => void 0)
+      return;
+    }
     for (const pl of players)
       if (pl != client) pl.resp(MsgEnum.RoomStart, '', {}).catch(() => void 0)
     client.resp(req.type, req.pid, {}).catch(() => void 0)

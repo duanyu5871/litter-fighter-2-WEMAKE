@@ -130,6 +130,9 @@ export class Connection {
       this._reopen = void 0
     }
     this._ws?.close()
+    this._ws?.removeEventListener('message', this._on_message);
+    this._ws?.removeEventListener('open', this._on_open);
+    this._ws?.removeEventListener('close', this._on_close);
     this._ws = null
   }
 

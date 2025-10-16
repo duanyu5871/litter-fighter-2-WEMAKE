@@ -203,22 +203,35 @@ function Player() {
           <Text>room joining...</Text>
         </Show>
         <Show show={!room}>
-          <Frame label='room list'>
-            <Button onClick={() => update_rooms()}>
-              refresh
-            </Button>
+          <Frame style={{ padding: 0 }}>
+
+            <Flex direction='column' align='stretch' gap={5}>
+              <Flex gap={10} align='center' justify='space-between' style={{ margin: 5 }}>
+                <Strong>{`房间列表`}</Strong>
+                <Button
+                  variants={['no_border', 'no_round', 'no_shadow']}
+                  onClick={() => update_rooms()} >
+                  刷新
+                </Button>
+              </Flex>
+              <Divider />
+            </Flex>
             <List data={rooms} itemKey={r => r.id!}>
               {(r) => (
-                <Flex direction='column' align='stretch' gap={5} style={{ marginTop: 5 }}>
-                  <Flex gap={10}>
-                    <Strong> 房名: {r.title} </Strong>
-                    <Button onClick={() => join_room(r.id)}>
-                      Join
-                    </Button>
-                  </Flex>
-                  <Flex gap={10}>
-                    <Text style={{ flex: 1 }}> 房主: {r.owner?.name} </Text>
-                    <Text> 人数: {r.players?.length}/{r.max_players} </Text>
+                <Flex direction='column' align='stretch' gap={5}>
+                  <Flex gap={10} direction='column' align='stretch' justify='space-between' style={{ margin: 5 }}>
+                    <Flex gap={10}>
+                      <Strong> 房名: {r.title} </Strong>
+                      <Text> 人数: {r.players?.length}/{r.max_players} </Text>
+                    </Flex>
+                    <Flex gap={10}>
+                      <Text style={{ flex: 1 }}> 房主: {r.owner?.name} </Text>
+                      <Button
+                        variants={['no_border', 'no_round', 'no_shadow']}
+                        onClick={() => join_room(r.id)}>
+                        加入
+                      </Button>
+                    </Flex>
                   </Flex>
                   <Divider />
                 </Flex>
