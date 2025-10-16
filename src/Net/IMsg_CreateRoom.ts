@@ -4,6 +4,7 @@ import type { MsgEnum } from './MsgEnum';
 
 export interface IReqCreateRoom extends IReq<MsgEnum.CreateRoom> {
   title?: string;
+  min_players?: number;
   max_players?: number;
 }
 export interface IRespCreateRoom extends IResp<MsgEnum.CreateRoom> {

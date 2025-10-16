@@ -1,16 +1,16 @@
 
 import List from "rc-virtual-list";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
+import { Divider } from "../../Component/Divider";
+import { Flex } from "../../Component/Flex";
 import Frame from "../../Component/Frame";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { Strong, Text } from "../../Component/Text";
-import { IPlayerInfo, IRoomInfo, MsgEnum } from "../../Net";
-import { Connection } from "./Connection";
 import { useStateRef } from "../../hooks/useStateRef";
-import { Flex } from "../../Component/Flex";
-import { Divider } from "../../Component/Divider";
+import { IRoomInfo, MsgEnum } from "../../Net";
+import { Connection } from "./Connection";
 
 
 indexedDB.databases().then((r) => console.log(r))
@@ -25,13 +25,20 @@ function Player() {
   const [connected, set_connected] = useState<TriState>(TriState.False);
   const [room_creating, set_room_creating, ref_room_creating] = useStateRef<boolean>(false);
   const [room_joining, set_room_joining, ref_room_joining] = useStateRef<boolean>(false);
-  const [player, set_player, ref_player] = useStateRef<IPlayerInfo | undefined>(void 0)
   const [room, set_room, ref_room] = useStateRef<IRoomInfo | undefined>(void 0);
   const [rooms_loading, set_rooms_loading] = useState(false)
   const [rooms, set_rooms] = useState<IRoomInfo[]>([])
   const ref_room_id = useRef<string>('')
 
   const [conn, set_conn, ref_conn] = useStateRef<Connection | null>(null)
+
+  const { players, me, owner } = useMemo(() => {
+    const players = room?.players ?? []
+    const me = players.find(v => v.id == conn?.player?.id) || null;
+    const owner = players.find(v => v.id == room?.owner?.id) || null;
+    return { players, me, owner } as const
+  }, [room])
+
 
   const update_rooms = useCallback(() => {
     const conn = ref_conn.current;
@@ -50,7 +57,6 @@ function Player() {
     conn.close();
     set_connected(0);
     set_room(void 0);
-    set_player(void 0)
     set_conn(null);
   }
   function connect() {
@@ -67,7 +73,6 @@ function Player() {
       console.log('on_register:', resp);
       set_connected(TriState.True);
       update_rooms()
-      set_player(resp.player)
     })
     conn.callbacks.add({
       on_message: (resp) => {
@@ -77,23 +82,47 @@ function Player() {
             set_room(resp.room);
             break;
           case MsgEnum.ExitRoom:
-            if (resp.player?.id === conn.player?.id)
+          case MsgEnum.Kick:
+            if (resp.player?.id === conn.player?.id) {
               set_room(void 0)
-            else
+              update_rooms();
+            } else {
               set_room(resp.room);
+            }
             break;
           case MsgEnum.CloseRoom:
             set_room(void 0);
+            update_rooms();
             break;
-
-          case MsgEnum.PlayerInfo:
           case MsgEnum.PlayerReady:
+            set_room(prev => {
+              if (!prev) return prev;
+              const { players } = prev;
+              const ret = { ...prev }
+              if (players?.length) {
+                for (const p of players)
+                  if (p.id === resp.player?.id)
+                    p.ready = !!resp.ready;
+                ret.players = [...players]
+              }
+              return ret
+            })
+            break;
+          case MsgEnum.PlayerInfo:
+            set_room(prev => {
+              if (!prev) return prev;
+              if (prev.players)
+                for (const p of prev.players)
+                  if (p.id === resp.player?.id)
+                    Object.assign(p, resp.player)
+              return { ...prev }
+            })
+            break;
           case MsgEnum.RoomStart:
           case MsgEnum.ListRooms:
         }
       }
     })
-
   }
 
   function create_room() {
@@ -105,7 +134,8 @@ function Player() {
     if (!conn) return;
     set_room_creating(true)
     conn.send(MsgEnum.CreateRoom, {
-      max_players: 8,
+      min_players: 2,
+      max_players: 4,
     }).then((resp) => {
       set_room(resp.room)
       update_rooms()
@@ -137,8 +167,8 @@ function Player() {
         {connected === TriState.Pending ? 'connecting...' : connected === TriState.False ? 'connect' : 'disconnect'}
       </Button>
       <Show show={connected === TriState.True}>
-        <Show show={player}>
-          <Text>{player?.name}</Text>
+        <Show show={me}>
+          <Text>{me?.name}</Text>
         </Show>
         <Show show={room_creating}>
           <Text>room creating...</Text>
@@ -171,38 +201,62 @@ function Player() {
           </Frame>
         </Show>
         <Show show={room}>
-          <Frame label={`${room?.title} players`}>
-            <List data={room?.players || []} itemKey={r => r.id!}>
-              {(other) => {
-                const is_self = other.id === player?.id
+          <Frame style={{ padding: 0 }}>
+            <Flex direction='column' align='stretch' gap={5}>
+              <Flex gap={10} align='center' justify='space-between' style={{ margin: 5 }}>
+                <Strong>{`${room?.title} (${players?.length}/${room?.max_players})`}</Strong>
+              </Flex>
+              <Divider />
+            </Flex>
+            <List data={players} itemKey={r => r.id!}>
+              {(other, index) => {
+                const is_self = other.id === conn?.player?.id
                 return (
-                  <Flex direction='column' align='stretch' gap={5} style={{ marginTop: 5 }}>
-                    <Flex gap={10} align='center' justify='space-between'>
+                  <Flex direction='column' align='stretch' gap={5}>
+                    <Flex gap={10} align='center' justify='space-between' style={{ margin: 5 }}>
                       <Text >
                         {other.name}
                       </Text>
-                      <Text style={{ opacity: 0.8, verticalAlign: 'middle' }}>
+                      <Text style={{ opacity: 0.5, verticalAlign: 'middle' }}>
                         {is_self ? '(你)' : ''}
                         {other.id == room?.owner?.id ? '👑' : ''}
                       </Text>
-                      {
-                        is_self ?
-                          <Text> {other.ready ? '已准备' : '未准备'} </Text> :
-                          <Text> {other.ready ? '已准备' : '未准备'} </Text>
-                      }
+                      <Flex align='center'>
+                        <Show show={owner?.id === me?.id && !is_self}>
+                          <Button
+                            size='s'
+                            variants={['no_border', 'no_round', 'no_shadow']}
+                            onClick={() => ref_conn.current?.send(MsgEnum.Kick, { playerid: other.id })}>
+                            踢出
+                          </Button>
+                        </Show>
+                        <Text> {other.ready ? '已准备' : '未准备'} </Text>
+                      </Flex>
                     </Flex>
                     <Divider />
                   </Flex>
                 )
               }}
             </List>
+            <Flex direction='row' align='stretch' justify='space-evenly' gap={5} style={{ margin: 5 }}>
+              <Button
+                variants={['no_border', 'no_round', 'no_shadow']}
+                onClick={() => ref_conn.current?.send(MsgEnum.ExitRoom, {})}>
+                <Text> 退出房间 </Text>
+              </Button>
+              <Button
+                variants={['no_border', 'no_round', 'no_shadow']}
+                onClick={() => ref_conn.current?.send(MsgEnum.PlayerReady, { ready: !me?.ready })}>
+                {me?.ready ? '取消准备' : '准备!'}
+              </Button>
+            </Flex>
           </Frame>
         </Show>
         <Show show={!room && connected && !room_joining && !room_creating}>
           <Button size='s' onClick={create_room}>create room</Button>
         </Show>
       </Show>
-    </Space>
+    </Space >
   )
 }
 

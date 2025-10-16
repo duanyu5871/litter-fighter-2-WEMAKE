@@ -1,6 +1,6 @@
 import type { IReqCloseRoom, IRespCloseRoom } from "./IMsg_CloseRoom";
 import type { IReqCreateRoom, IRespCreateRoom } from "./IMsg_CreateRoom";
-import type { IReqExitRoom, IRespExitRoom } from "./IMsg_ExitRoom";
+import type { IReqExitRoom, IReqKick, IRespExitRoom, IRespKick } from "./IMsg_ExitRoom";
 import type { IReqJoinRoom, IRespJoinRoom } from "./IMsg_JoinRoom";
 import type { IReqListRooms, IRespListRooms } from "./IMsg_ListRooms";
 import type { IReqPlayerReady, IRespPlayerReady } from "./IMsg_PlayerReady";
@@ -18,6 +18,7 @@ export interface IMsgReqMap {
   [MsgEnum.CloseRoom]: IReqCloseRoom,
   [MsgEnum.ListRooms]: IReqListRooms,
   [MsgEnum.Error]: IReq<MsgEnum.Error>,
+  [MsgEnum.Kick]: IReqKick,
 }
 export interface IMsgRespMap {
   [MsgEnum.PlayerInfo]: IRespPlayerInfo,
@@ -30,4 +31,5 @@ export interface IMsgRespMap {
   [MsgEnum.CloseRoom]: IRespCloseRoom,
   [MsgEnum.ListRooms]: IRespListRooms,
   [MsgEnum.Error]: IResp<MsgEnum.Error>,
+  [MsgEnum.Kick]: IRespKick,
 }

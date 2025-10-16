@@ -1,5 +1,5 @@
 import { Callbacks } from "../../LF2/base";
-import { IMsgReqMap, IMsgRespMap, IPlayerInfo, IReq, IResp, IRespPlayerInfo, MsgEnum, TResp } from "../../Net";
+import { ErrCode, IMsgReqMap, IMsgRespMap, IPlayerInfo, IReq, IResp, IRespPlayerInfo, MsgEnum, TResp } from "../../Net";
 import { IJob } from "./IJob";
 
 export interface IConnectionCallbacks {
@@ -7,25 +7,67 @@ export interface IConnectionCallbacks {
   on_open?(conn: Connection): void;
   on_close?(e: CloseEvent, conn: Connection): void;
   on_register?(resp: IRespPlayerInfo, conn: Connection): void;
-  on_error?(event: Event, conn: Connection): void;
-  on_message(resp: TResp): void;
+  on_error?(error: ConnError, conn: Connection): void;
+  on_message(resp: TResp, conn: Connection): void;
 }
 
 export interface ISendOpts {
   ignoreCode?: boolean;
   timeout?: number;
 }
-
+export type ConnError = Error & {
+  type: MsgEnum | string,
+  code: ErrCode | number,
+  error: string
+}
+export function resp_error(resp: IResp): ConnError {
+  const code = resp.code ?? ErrCode.Unknown;
+  const info = resp.error ?? 'unknown error';
+  return Object.assign(new Error(`[${code}]${info}`), {
+    type: resp.type ?? 'unknown',
+    code: code,
+    error: info
+  })
+}
+export function req_timeout_error(req: IReq, timeout: number): ConnError {
+  const code = ErrCode.Timeout;
+  const info = `timeout! over ${timeout}ms`;
+  return Object.assign(new Error(`[${code}]${info}`), {
+    type: req.type,
+    pid: req.pid,
+    code: code,
+    error: info
+  })
+}
+export function req_unknown_error(req: IReq, error: Error): ConnError {
+  const code = ErrCode.Unknown;
+  const info = `unknown error`;
+  return Object.assign(error, {
+    type: req.type,
+    pid: req.pid,
+    code: code,
+    error: info
+  })
+}
+export function unknown_error(req: IReq, error: Error): ConnError {
+  const code = ErrCode.Unknown;
+  const info = `unknown error`;
+  return Object.assign(error, {
+    type: req.type,
+    pid: req.pid,
+    code: code,
+    error: info
+  })
+}
 export class Connection {
+  static TAG: string = 'Connection';
   readonly callbacks = new Callbacks<IConnectionCallbacks>()
   protected _pid = 1;
   protected _reopen?: () => void;
   protected _jobs = new Map<string, IJob>();
   protected _ws: WebSocket | null = null;
   player?: IPlayerInfo;
-  static TAG: string = 'Connection';
 
-  protected _on_error = (e: Event) => this.callbacks.emit('on_error')(e, this)
 
   protected _on_open = () => {
     this.callbacks.emit('on_open')(this)
@@ -36,20 +78,23 @@ export class Connection {
       this.player = resp.player;
     }).catch((e) => {
       this.close();
-      this.callbacks.emit('on_error',)
+      throw e;
     })
   }
   protected _on_message = (event: MessageEvent<any>) => {
     console.log('收到服务器消息:', event.data);
     const resp = JSON.parse(event.data) as IResp;
-    this.callbacks.emit('on_message')(resp)
     const { pid, code, error } = resp;
     const job = this._jobs.get(pid);
+    const err = code ? resp_error(resp) : void 0
+    if (err) this.callbacks.emit('on_error')(err, this)
+    else this.callbacks.emit('on_message')(resp, this)
+
     if (!job) return;
     this._jobs.delete(pid);
     if (job.timerId) clearTimeout(job.timerId);
     if (code && !job.ignoreCode) {
-      job.reject(new Error(`[${code}]${error}`));
+      job.reject(err);
     } else {
       job.resolve(resp);
     }
@@ -76,7 +121,7 @@ export class Connection {
     this._ws.addEventListener('message', this._on_message);
     this._ws.addEventListener('open', this._on_open);
     this._ws.addEventListener('close', this._on_close);
-    this._ws.addEventListener('error', this._on_error);
+    // this._ws.addEventListener('error', this._on_error);
   }
 
   close() {
@@ -94,18 +139,27 @@ export class Connection {
     Req extends IReq = IMsgReqMap[T],
     Resp extends IResp = IMsgRespMap[T]
   >(type: T, msg: Omit<Req, 'pid' | 'type'>, options?: ISendOpts): Promise<Resp> {
-    if (!this._ws) return Promise.reject(new Error(`[${Connection.TAG}] not open`))
+    const ws = this._ws;
+    if (!ws) return Promise.reject(new Error(`[${Connection.TAG}] not open`))
     const pid = `${++this._pid}`;
     const _req: IReq = { pid, type, ...msg };
-    this._ws.send(JSON.stringify(_req));
     return new Promise<Resp>((resolve, reject) => {
-      this._jobs.set(pid, { resolve: resolve as any, reject, ...options });
       const timeout = options?.timeout || 0;
-      if (timeout > 0) {
-        setTimeout(() => {
-          this._jobs.delete(pid);
-          reject(new Error(`timeout! over ${timeout}`));
-        }, timeout);
+      const timerId = timeout > 0 ? window.setTimeout(() => {
+        this._jobs.delete(pid);
+        const error = req_timeout_error(_req, timeout)
+        this.callbacks.emit('on_error')(error, this)
+        reject(error);
+      }, timeout) : void 0;
+
+      this._jobs.set(pid, { resolve: resolve as any, timerId, reject, ...options });
+      try {
+        ws.send(JSON.stringify(_req));
+      } catch (e) {
+        clearTimeout(timerId)
+        const error = req_unknown_error(_req, e as Error)
+        this.callbacks.emit('on_error')(error, this)
+        reject(error)
       }
     });
   }

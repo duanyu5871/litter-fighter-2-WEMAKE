@@ -1,4 +1,6 @@
 export const enum ErrCode {
+  Timeout = -2,
+  Unknown = -1,
   NotRegister = 1000,
   AlreadyInRoom = 1001,
   NotInRoom = 1002,
@@ -9,4 +11,5 @@ export const enum ErrCode {
   RoomNotFound = 1007,
   InvalidRoomParameters = 1008,
   ParseFailed = 1009,
+  RoomIsFull = 1010,
 }

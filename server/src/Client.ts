@@ -9,7 +9,7 @@ function ensure_player_info(client: Client, req: TReq) {
   client.resp(req.type, req.pid, {
     code: ErrCode.NotRegister,
     error: 'player info not set!'
-  });
+  }).catch(() => void 0);
   return false;
 }
 function ensure_not_in_room(client: Client, req: TReq) {
@@ -17,15 +17,15 @@ function ensure_not_in_room(client: Client, req: TReq) {
   client.resp(req.type, req.pid, {
     code: ErrCode.AlreadyInRoom,
     error: 'already in room'
-  });
+  }).catch(() => void 0);
   return false;
 }
 function ensure_in_room(client: Client, req: TReq) {
-  if (!client.room) return true;
+  if (client.room) return true;
   client.resp(req.type, req.pid, {
     code: ErrCode.NotInRoom,
     error: 'not in room'
-  });
+  }).catch(() => void 0);
   return false;
 }
 function ensure_room_owner(client: Client, req: TReq) {
@@ -65,13 +65,13 @@ export class Client {
   }
 
   private handle_ws_msg = (msg: RawData) => {
-    console.log(`[${Client.TAG}::handle_ws_msg] ${this.id} msg:`, msg);
+    console.log(`[${Client.TAG}::handle_ws_msg] ${this.id} msg:`, '' + msg);
     try {
       const req: TReq = JSON.parse(msg.toString());
       this.handle_req(req)
     } catch (error) {
       console.error('解析消息失败:', error);
-      this.resp(MsgEnum.Error, '', { code: ErrCode.ParseFailed, error: '消息格式错误' });
+      this.resp(MsgEnum.Error, '', { code: ErrCode.ParseFailed, error: '消息格式错误' }).catch(() => void 0);
     }
   }
 
@@ -96,7 +96,7 @@ export class Client {
           id: this.id,
           name: req.name?.trim() || `玩家${this.id}`
         }
-        this.resp(req.type, req.pid, { player: player_info })
+        this.resp(req.type, req.pid, { player: player_info }).catch(() => void 0)
         break;
       }
       case MsgEnum.CreateRoom: {
@@ -122,15 +122,22 @@ export class Client {
           else this.resp(
             req.type,
             req.pid,
-            { code: ErrCode.RoomNotFound, error: 'room not found' })
+            { code: ErrCode.RoomNotFound, error: 'room not found' }
+          ).catch(() => void 0)
         }
         break;
       }
       case MsgEnum.ExitRoom: {
+        const { room } = this;
         if (
           ensure_player_info(this, req) &&
-          ensure_in_room(this, req)
-        ) this.room?.exit(this, req);
+          ensure_in_room(this, req) &&
+          room
+        ) {
+          room.exit(this, req);
+          if (!room.players.size)
+            ctx.room_mgr.all.delete(room)
+        }
         break;
       }
       case MsgEnum.PlayerReady: {
@@ -163,8 +170,21 @@ export class Client {
       case MsgEnum.ListRooms: {
         if (
           ensure_player_info(this, req)
-        ) this.resp(req.type, req.pid, { rooms: Array.from(ctx.room_mgr.all).map(v => v.room_info) })
+        ) this.resp(req.type, req.pid, { rooms: Array.from(ctx.room_mgr.all).map(v => v.room_info) }).catch(() => void 0)
         break;
+      }
+      case MsgEnum.Kick: {
+        const room = this.room
+        if (
+          ensure_player_info(this, req) &&
+          ensure_in_room(this, req) &&
+          ensure_room_owner(this, req) &&
+          room
+        ) {
+          room.kick(req)
+          if (!room.players.size)
+            ctx.room_mgr.all.delete(room)
+        }
       }
     }
   }

@@ -10,3 +10,11 @@ export interface IRespExitRoom extends IResp<MsgEnum.ExitRoom> {
   player?: IPlayerInfo;
   room?: IRoomInfo;
 }
+
+export interface IReqKick extends IReq<MsgEnum.Kick> {
+  playerid?: IPlayerInfo['id'];
+}
+export interface IRespKick extends IResp<MsgEnum.Kick> {
+  player?: IPlayerInfo;
+  room?: IRoomInfo;
+}

@@ -3,6 +3,7 @@ export enum MsgEnum {
   CreateRoom = 'CreateRoom',
   JoinRoom = 'JoinRoom',
   ExitRoom = 'ExitRoom',
+  Kick = 'KickPlayer',
   CloseRoom = "CloseRoom",
   PlayerReady = 'PlayerReady',
   RoomStart = 'RoomStart',
