@@ -1,6 +1,6 @@
 
 import List from "rc-virtual-list";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import { Divider } from "../../Component/Divider";
 import { Flex } from "../../Component/Flex";
@@ -31,14 +31,34 @@ function Player() {
   const ref_room_id = useRef<string>('')
 
   const [conn, set_conn, ref_conn] = useStateRef<Connection | null>(null)
-
-  const { players, me, owner } = useMemo(() => {
+  const [countdown, set_countdown] = useState(5)
+  const { players, me, owner, all_ready, is_owner } = useMemo(() => {
     const players = room?.players ?? []
     const me = players.find(v => v.id == conn?.player?.id) || null;
     const owner = players.find(v => v.id == room?.owner?.id) || null;
-    return { players, me, owner } as const
+    const all_ready = !!(
+      !players.some(v => !v.ready) &&
+      room?.min_players &&
+      players.length >= room.min_players
+    )
+    return { players, me, owner, all_ready, is_owner: me === owner } as const
   }, [room])
 
+  useEffect(() => {
+    let sec = 5
+    set_countdown(sec);
+    if (!all_ready) return;
+    const tid = setInterval(() => {
+      sec -= 1;
+      set_countdown(sec);
+      if (sec > 0) return;
+
+      clearInterval(tid);
+      if (is_owner)
+        ref_conn.current?.send(MsgEnum.RoomStart, {})
+    }, 1000)
+    return () => clearInterval(tid)
+  }, [all_ready, is_owner])
 
   const update_rooms = useCallback(() => {
     const conn = ref_conn.current;
@@ -63,6 +83,11 @@ function Player() {
     if (ref_conn.current) return;
     const conn = new Connection();
     set_conn(conn);
+
+  }
+
+  useEffect(() => {
+    if (!conn) return;
     conn.open('ws://localhost:8080')
     set_connected(TriState.Pending);
     conn.callbacks.once('on_close', (e) => {
@@ -123,7 +148,8 @@ function Player() {
         }
       }
     })
-  }
+    return () => conn?.close()
+  }, [conn])
 
   function create_room() {
     if (
@@ -238,6 +264,12 @@ function Player() {
                 )
               }}
             </List>
+            {
+              all_ready ?
+                <Flex direction='row' align='stretch' justify='space-evenly' gap={5} style={{ margin: 5 }}>
+                  即将开始，倒计时: {countdown}秒
+                </Flex> : null
+            }
             <Flex direction='row' align='stretch' justify='space-evenly' gap={5} style={{ margin: 5 }}>
               <Button
                 variants={['no_border', 'no_round', 'no_shadow']}

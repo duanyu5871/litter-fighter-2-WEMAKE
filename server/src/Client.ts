@@ -163,8 +163,9 @@ export class Client {
         if (
           ensure_player_info(this, req) &&
           ensure_in_room(this, req) &&
-          ensure_room_owner(this, req)
-        ) break;
+          ensure_room_owner(this, req) &&
+          this.room
+        ) this.room.start(this, req)
         break;
       }
       case MsgEnum.ListRooms: {

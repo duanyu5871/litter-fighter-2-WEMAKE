@@ -2,7 +2,7 @@ import {
   ErrCode,
   IReqCloseRoom, IReqCreateRoom,
   IReqExitRoom,
-  IReqJoinRoom, IReqKick, IReqPlayerReady, IRespCloseRoom,
+  IReqJoinRoom, IReqKick, IReqPlayerReady, IReqRoomStart, IRespCloseRoom,
   IRespExitRoom,
   IRespJoinRoom, IRespKick, IRoomInfo, MsgEnum, TInfo
 } from "../../src/Net/index";
@@ -166,5 +166,10 @@ export class Room {
     return true;
   }
 
-
+  start(client: Client, req: IReqRoomStart = { type: MsgEnum.RoomStart, pid: '' }) {
+    const { players } = this;
+    for (const pl of players)
+      if (pl != client) pl.resp(MsgEnum.RoomStart, '', {}).catch(() => void 0)
+    client.resp(req.type, req.pid, {}).catch(() => void 0)
+  }
 }
