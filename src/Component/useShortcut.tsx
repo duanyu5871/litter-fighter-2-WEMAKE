@@ -47,9 +47,10 @@ export function useShortcut(
         e.preventDefault?.();
         e.stopImmediatePropagation?.();
       };
-      if (e.ctrlKey && keys.indexOf("ctrl") < 0) return;
-      if (e.shiftKey && keys.indexOf("shift") < 0) return;
-      if (e.altKey && keys.indexOf("alt") < 0) return;
+
+      if ((keys.indexOf("ctrl") >= 0) === !e.ctrlKey) return;
+      if ((keys.indexOf("shift") >= 0) === !e.shiftKey) return;
+      if ((keys.indexOf("alt") >= 0) === !e.altKey) return;
       if (e.key.toLowerCase() !== keys[keys.length - 1].toLowerCase()) return;
       ref_fn.current?.();
       interrupt();

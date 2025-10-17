@@ -130,16 +130,10 @@ export class Client {
         break;
       }
       case MsgEnum.ExitRoom: {
-        const { room } = this;
         if (
           ensure_player_info(this, req) &&
-          ensure_in_room(this, req) &&
-          room
-        ) {
-          room.exit(this, req);
-          if (!room.players.size)
-            ctx.room_mgr.all.delete(room)
-        }
+          ensure_in_room(this, req)
+        ) this.room?.exit(this, req);
         break;
       }
       case MsgEnum.PlayerReady: {
@@ -153,21 +147,16 @@ export class Client {
         if (
           ensure_player_info(this, req) &&
           ensure_in_room(this, req) &&
-          ensure_room_owner(this, req) &&
-          this.room
-        ) {
-          this.room.close(this, req)
-          ctx.room_mgr.all.delete(this.room)
-        }
+          ensure_room_owner(this, req)
+        ) this.room?.close(this, req)
         break;
       }
       case MsgEnum.RoomStart: {
         if (
           ensure_player_info(this, req) &&
           ensure_in_room(this, req) &&
-          ensure_room_owner(this, req) &&
-          this.room
-        ) this.room.start(this, req)
+          ensure_room_owner(this, req)
+        ) this.room?.start(this, req)
         break;
       }
       case MsgEnum.ListRooms: {
@@ -185,15 +174,11 @@ export class Client {
           room
         ) {
           room.kick(req)
-          if (!room.players.size)
-            ctx.room_mgr.all.delete(room)
         }
         break;
       }
-      case MsgEnum.Chat: {
-        handle_req_chat(this, req)
-        break;
-      }
+      case MsgEnum.Chat: handle_req_chat(this, req); break;
+
     }
   }
 }

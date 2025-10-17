@@ -1,6 +1,6 @@
 
 import List from "rc-virtual-list";
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import { Divider } from "../../Component/Divider";
 import { Flex } from "../../Component/Flex";
@@ -9,11 +9,9 @@ import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { Strong, Text } from "../../Component/Text";
 import { useStateRef } from "../../hooks/useStateRef";
-import { IRoomInfo, MsgEnum } from "../../Net";
+import { IRespChat, IRoomInfo, MsgEnum } from "../../Net";
 import { Connection } from "./Connection";
-import { Input } from "../../Component/Input";
-import Combine from "../../Component/Combine";
-import Select from "../../Component/Select";
+import { ChatBox } from "./ChatBox";
 
 
 indexedDB.databases().then((r) => console.log(r))
@@ -23,16 +21,7 @@ enum TriState {
   Pending = '',
   True = 1
 }
-
-type TChatTarget = 'global' | 'room'
-const chat_targets: [TChatTarget, ReactNode][] = [
-  ['global', '全局'],
-  ['room', '房间']
-]
 function Player() {
-  const [chat_target, set_chat_target] = useStateRef<TChatTarget>('global');
-  const [chat_msg_text, set_chat_msg_text] = useStateRef<string>('');
-  const [chat_msg_sending, set_chat_msg_sending] = useStateRef<boolean>(false);
   const [connected, set_connected] = useState<TriState>(TriState.False);
   const [room_creating, set_room_creating, ref_room_creating] = useStateRef<boolean>(false);
   const [room_joining, set_room_joining, ref_room_joining] = useStateRef<boolean>(false);
@@ -53,6 +42,7 @@ function Player() {
     )
     return { players, me, owner, all_ready, is_owner: me === owner } as const
   }, [room])
+
 
   useEffect(() => {
     let sec = 5
@@ -153,8 +143,8 @@ function Player() {
               return { ...prev }
             })
             break;
-          case MsgEnum.RoomStart:
-          case MsgEnum.ListRooms:
+          case MsgEnum.RoomStart: break;
+          case MsgEnum.ListRooms: break;
         }
       }
     })
@@ -197,7 +187,7 @@ function Player() {
       set_room_joining(false)
     })
   }
-  return (
+  return <>
     <Space>
       <Button size='s' disabled={connected === TriState.Pending} onClick={connected ? disconnect : connect}>
         {connected === TriState.Pending ? 'connecting...' : connected === TriState.False ? 'connect' : 'disconnect'}
@@ -307,43 +297,10 @@ function Player() {
         <Show show={!room && connected && !room_joining && !room_creating}>
           <Button size='s' onClick={create_room}>create room</Button>
         </Show>
-
-        <Flex direction='column'>
-          <Combine>
-            <Select
-              items={chat_targets}
-              parse={i => i}
-              value={chat_target}
-              onChange={v => set_chat_target(v ?? 'global')} />
-            <Input
-              disabled={chat_msg_sending}
-              maxLength={100}
-              style={{ width: 100 }}
-              placeholder="输入消息"
-              value={chat_msg_text}
-              onChange={set_chat_msg_text} />
-            <Button disabled={chat_msg_sending || !chat_msg_text.trim()} onClick={() => {
-              const conn = ref_conn.current;
-              if (!conn) return;
-              set_chat_msg_sending(true)
-              conn.send(MsgEnum.Chat, {
-                target: chat_target,
-                text: chat_msg_text.trim()
-              }).then(r => {
-                set_chat_msg_text('');
-              }).catch(e => {
-
-              }).finally(() => {
-                set_chat_msg_sending(false)
-              })
-            }}>
-              发送
-            </Button>
-          </Combine>
-        </Flex>
       </Show>
     </Space>
-  )
+    <ChatBox conn={conn} room={room} style={{ position: 'fixed', left: 0, bottom: 0 }} />
+  </>
 }
 
 export default function NetworkTest() {

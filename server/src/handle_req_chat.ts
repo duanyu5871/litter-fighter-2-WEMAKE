@@ -1,6 +1,7 @@
 import { ErrCode, IReqChat, IRespChat, TInfo } from '../../src/Net/index';
 import { Client, ensure_in_room, ensure_player_info } from './Client';
 
+let msg_seq = Date.now();
 export function handle_req_chat(client: Client, req: IReqChat) {
   if (!ensure_player_info(client, req)) return;
   const { target, text, type, pid } = req;
@@ -11,7 +12,7 @@ export function handle_req_chat(client: Client, req: IReqChat) {
   const { ctx, room } = client;
   const { player_info: sender } = client;
   const date = Date.now();
-  const resp: TInfo<IRespChat> = { sender, date, text, target };
+  const resp: TInfo<IRespChat> = { sender, date, text, target, seq: msg_seq++ };
   switch (target) {
     case 'global': {
       ctx.broadcast(type, resp, client);
@@ -21,6 +22,7 @@ export function handle_req_chat(client: Client, req: IReqChat) {
     case 'room': {
       if (!ensure_in_room(client, req))
         break;
+      if (!room) break;
       room?.broadcast(type, resp, client);
       client.resp(type, pid, resp);
       break;

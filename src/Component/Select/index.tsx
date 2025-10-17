@@ -247,11 +247,9 @@ export function Select<T, V>(props: ISelectProps<T, V> | IMultiSelectProps<T, V>
                 {
                   checked_tree_nodes?.map((node, idx) => {
                     return (
-                      <Space.Item key={idx}>
-                        <Tag closeable={multi} on_close={(e) => on_click_item(node, e)}>
-                          {node.data?.label}
-                        </Tag>
-                      </Space.Item>
+                      <Tag closeable={multi} key={idx} on_close={(e) => on_click_item(node, e)}>
+                        {node.data?.label}
+                      </Tag>
                     )
                   })
                 }

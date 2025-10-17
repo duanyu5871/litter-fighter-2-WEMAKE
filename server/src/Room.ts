@@ -89,14 +89,16 @@ export class Room {
     }
     this.broadcast(req.type, resp, client)
     client.resp(req.type, req.pid, resp).catch(() => void 0)
+    if (!this.players.size)
+      this.ctx.room_mgr.all.delete(room)
   }
   exit(client: Client, req: IReqExitRoom = { type: MsgEnum.ExitRoom, pid: '' }) {
     console.log(`[${Room.TAG}::exit]`)
     const { players } = this;
     const { player_info, room } = client;
-    if (!players.has(client)) return false;
-    if (!player_info) return false;
-    if (room !== this) return false;
+    if (!players.has(client)) return;
+    if (!player_info) return;
+    if (room !== this) return;
 
     client.ready = false
     delete client.room
@@ -111,7 +113,8 @@ export class Room {
     this.broadcast(req.type, resp, client)
     client.resp(req.type, req.pid, resp).catch(() => void 0)
 
-    return true;
+    if (!players.size)
+      this.ctx.room_mgr.all.delete(room)
   }
 
   join(client: Client, req: IReqJoinRoom = { type: MsgEnum.JoinRoom, pid: '' }) {
@@ -146,9 +149,9 @@ export class Room {
     console.log(`[${Room.TAG}::close]`)
     const { players } = this;
     const { player_info, room } = client;
-    if (!players.has(client)) return false;
-    if (!player_info) return false;
-    if (room !== this) return false;
+    if (!players.has(client)) return;
+    if (!player_info) return;
+    if (room !== this) return;
 
     const { room_info } = this
     const resp: TInfo<IRespCloseRoom> = {
@@ -156,10 +159,9 @@ export class Room {
     }
     this.broadcast(req.type, resp, client)
     client.resp(req.type, req.pid, resp).catch(() => void 0)
-    for (const pl of players)
-      delete pl.room
+    for (const pl of players) delete pl.room
     players.clear()
-    return true;
+    this.ctx.room_mgr.all.delete(this)
   }
 
   start(client: Client, req: IReqRoomStart = { type: MsgEnum.RoomStart, pid: '' }) {
