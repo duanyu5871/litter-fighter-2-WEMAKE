@@ -127,9 +127,12 @@ function _ChatBox(props: IChatBoxProps, ref: ForwardedRef<HTMLDivElement>) {
             case "room": classname = styles.msg_item_room; break;
             case "private": classname = styles.msg_item_pri; break;
           }
+          let name = i.sender?.name;
+          if (i.sender?.id === conn?.player?.id)
+            name = `[你]${name}`
           return (
-            <div className={classname} >
-              {`${i.sender?.name}: ${i.text}`}
+            <div className={classname}>
+              {`${name}: ${i.text}`}
             </div>
           )
         }}
