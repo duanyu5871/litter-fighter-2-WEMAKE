@@ -113,6 +113,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
    * @memberof LF2
    */
   readonly zips: IZip[] = [];
+  readonly md5s: string[] = [];
   readonly players: Map<string, PlayerInfo> = new Map([
     ["1", new PlayerInfo("1")],
     ["2", new PlayerInfo("2")],
@@ -409,7 +410,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     this.on_loading_content(txt, progress);
   }
 
-  protected async load_zip_from_info_url(info_url: string): Promise<IZip> {
+  protected async load_zip_from_info_url(info_url: string): Promise<[IZip, string]> {
     this._dispose_check('load_zip_from_info_url')
     this.on_loading_content(`${info_url}`, 0);
     const [{ url, md5 }] = await Ditto.Importer.import_as_json([info_url]);
@@ -435,7 +436,7 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
       });
     }
     this.on_loading_content(`${url}`, 100);
-    return ret;
+    return [ret, md5];
   }
 
   async load(arg1: IZip | string): Promise<void> {
@@ -447,10 +448,9 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
 
     if (is_first)
       await this.import_json("builtin_data/launch/strings.json").then(r => this.load_strings(r[0])).catch(e => { })
-
     try {
-      const zip = is_str(arg1) ? await this.load_zip_from_info_url(arg1) : arg1;
-      await this.load_data(zip);
+      const [zip, md5] = is_str(arg1) ? await this.load_zip_from_info_url(arg1) : [arg1, 'unknown'];
+      await this.load_data(zip, md5);
       await this.load_ui(zip);
       if (is_first) {
         this.set_ui(this.uiinfos[0]!)
@@ -478,16 +478,17 @@ export class LF2 implements IKeyboardCallback, IPointingsCallback, IDebugging {
     )
     throw error;
   }
-  private async load_data(zip?: IZip) {
+  private async load_data(zip: IZip, md5: string) {
     this._dispose_check('load_data')
-    if (zip) {
-      await zip.file("strings.json")?.json().then(r => this.load_strings(r))
-      this._dispose_check('load_data')
-      await zip.file("strings.json5")?.json().then(r => this.load_strings(r))
-      this._dispose_check('load_data')
-      this.zips.unshift(zip);
-      this.callbacks.emit("on_zips_changed")(this.zips);
-    }
+
+    await zip.file("strings.json")?.json().then(r => this.load_strings(r))
+    this._dispose_check('load_data')
+    await zip.file("strings.json5")?.json().then(r => this.load_strings(r))
+    this._dispose_check('load_data')
+    this.zips.unshift(zip);
+    this.md5s.unshift(md5);
+    this.callbacks.emit("on_zips_changed")(this.zips);
+
     await this.datas.load();
     this._dispose_check('load_data')
     for (const d of this.datas.characters) {
