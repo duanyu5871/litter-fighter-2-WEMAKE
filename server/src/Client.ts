@@ -2,9 +2,10 @@ import type { RawData, WebSocket } from 'ws';
 import { ErrCode, IMsgRespMap, IPlayerInfo, IResp, MsgEnum, TInfo, TReq } from "../../src/Net/index";
 import type { Context } from './Context';
 import { Room } from './Room';
+import { handle_req_chat } from './handle_req_chat';
 let client_id = 0;
 
-function ensure_player_info(client: Client, req: TReq) {
+export function ensure_player_info(client: Client, req: TReq) {
   if (client.player_info) return true;
   client.resp(req.type, req.pid, {
     code: ErrCode.NotRegister,
@@ -20,7 +21,7 @@ function ensure_not_in_room(client: Client, req: TReq) {
   }).catch(() => void 0);
   return false;
 }
-function ensure_in_room(client: Client, req: TReq) {
+export function ensure_in_room(client: Client, req: TReq) {
   if (client.room) return true;
   client.resp(req.type, req.pid, {
     code: ErrCode.NotInRoom,
@@ -65,18 +66,19 @@ export class Client {
   }
 
   private handle_ws_msg = (msg: RawData) => {
-    console.log(`[${Client.TAG}::handle_ws_msg] ${this.id} msg:`, '' + msg);
+    const str = '' + msg;
+    console.log(`[${Client.TAG}::handle_ws_msg] ${this.id} msg:`, str);
     try {
-      const req: TReq = JSON.parse(msg.toString());
+      const req: TReq = JSON.parse(str);
       this.handle_req(req)
     } catch (error) {
-      console.error('解析消息失败:', error);
+      console.error(`[${Client.TAG}::handle_ws_msg] 解析消息失败: ${error}`);
       this.resp(MsgEnum.Error, '', { code: ErrCode.ParseFailed, error: '消息格式错误' }).catch(() => void 0);
     }
   }
 
   private handle_ws_close = (code: number, reason: Buffer) => {
-    console.log(`[${Client.TAG}::handle_ws_close] ${this.id} code: ${code} reason: ${reason})`);
+    console.log(`[${Client.TAG}::handle_ws_close] ${this.id} code: ${code}, reason: ${reason}`);
     const { ctx } = this
     this.ctx.client_mgr.all.delete(this);
     const { room } = this
@@ -186,6 +188,11 @@ export class Client {
           if (!room.players.size)
             ctx.room_mgr.all.delete(room)
         }
+        break;
+      }
+      case MsgEnum.Chat: {
+        handle_req_chat(this, req)
+        break;
       }
     }
   }

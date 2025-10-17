@@ -5,6 +5,7 @@ export type TResp = IMsgRespMap[keyof IMsgRespMap]
 export type TInfo<T> = Omit<T, 'pid' | 'type'>
 export * from "./_Base";
 export * from "./ErrCode";
+export * from "./IMsg_Chat";
 export * from "./IMsg_CloseRoom";
 export * from "./IMsg_CreateRoom";
 export * from "./IMsg_ExitRoom";

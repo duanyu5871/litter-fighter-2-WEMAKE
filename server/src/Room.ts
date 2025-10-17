@@ -1,10 +1,11 @@
 import {
   ErrCode,
+  IMsgRespMap,
   IReqCloseRoom, IReqCreateRoom,
   IReqExitRoom,
-  IReqJoinRoom, IReqKick, IReqPlayerReady, IReqRoomStart, IRespCloseRoom,
+  IReqJoinRoom, IReqKick, IReqPlayerReady, IReqRoomStart, IResp, IRespCloseRoom,
   IRespExitRoom,
-  IRespJoinRoom, IRespKick, IRoomInfo, MsgEnum, TInfo
+  IRespJoinRoom, IRespKick, IRespPlayerReady, IRoomInfo, MsgEnum, TInfo
 } from "../../src/Net/index";
 import type { Client } from './Client';
 import type { Context } from "./Context";
@@ -58,8 +59,9 @@ export class Room {
     if (room !== this) return false;
 
     client.ready = req.ready ?? client.ready;
-    for (const pl of players)
-      pl.resp(MsgEnum.PlayerReady, '', { player: player_info, ready: client.ready }).catch(() => void 0)
+    const resp: TInfo<IRespPlayerReady> = { player: player_info, ready: client.ready }
+    this.broadcast(req.type, resp, client)
+    client.resp(req.type, req.pid, resp)
     return true;
   }
   kick(req: IReqKick = { type: MsgEnum.Kick, pid: '' }) {
@@ -85,9 +87,7 @@ export class Room {
       player: player_info,
       room: room_info
     }
-    for (const pl of players)
-      pl.resp(MsgEnum.Kick, '', resp).catch(() => void 0)
-
+    this.broadcast(req.type, resp, client)
     client.resp(req.type, req.pid, resp).catch(() => void 0)
   }
   exit(client: Client, req: IReqExitRoom = { type: MsgEnum.ExitRoom, pid: '' }) {
@@ -108,9 +108,7 @@ export class Room {
       player: player_info,
       room: room_info
     }
-    for (const pl of players)
-      pl.resp(MsgEnum.ExitRoom, '', resp).catch(() => void 0)
-
+    this.broadcast(req.type, resp, client)
     client.resp(req.type, req.pid, resp).catch(() => void 0)
 
     return true;
@@ -137,9 +135,10 @@ export class Room {
       player: player_info,
       room: room_info
     }
+    this.broadcast(req.type, resp, client)
     client.resp(req.type, req.pid, resp).catch(() => void 0)
-    for (const pl of players) if (pl != client)
-      pl.resp(MsgEnum.JoinRoom, '', resp).catch(() => void 0)
+
+
     return true;
   }
 
@@ -155,10 +154,7 @@ export class Room {
     const resp: TInfo<IRespCloseRoom> = {
       room: room_info
     }
-    for (const pl of players)
-      if (pl != client)
-        pl.resp(MsgEnum.CloseRoom, '', resp).catch(() => void 0)
-
+    this.broadcast(req.type, resp, client)
     client.resp(req.type, req.pid, resp).catch(() => void 0)
     for (const pl of players)
       delete pl.room
@@ -172,8 +168,14 @@ export class Room {
       client.resp(req.type, req.pid, { code: ErrCode.PlayersTooFew, error: 'players are too few' }).catch(() => void 0)
       return;
     }
-    for (const pl of players)
-      if (pl != client) pl.resp(MsgEnum.RoomStart, '', {}).catch(() => void 0)
+
+    this.broadcast(req.type, {}, client)
     client.resp(req.type, req.pid, {}).catch(() => void 0)
+  }
+
+  broadcast<T extends MsgEnum, Resp extends IResp = IMsgRespMap[T]>(type: T, resp: TInfo<Resp>, ...excludes: Client[]) {
+    for (const c of this.players)
+      if (!excludes.some(v => v === c))
+        c.resp(type, '', resp).catch(e => { })
   }
 }

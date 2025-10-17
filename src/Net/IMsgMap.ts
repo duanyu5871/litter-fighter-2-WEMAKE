@@ -6,6 +6,7 @@ import type { IReqListRooms, IRespListRooms } from "./IMsg_ListRooms";
 import type { IReqPlayerReady, IRespPlayerReady } from "./IMsg_PlayerReady";
 import type { IReqPlayerInfo, IRespPlayerInfo } from "./IMsg_PlayerInfo";
 import type { IReqRoomStart, IRespRoomStart } from "./IMsg_RoomStart";
+import type { IReqChat, IRespChat } from "./IMsg_Chat";
 import type { MsgEnum } from "./MsgEnum";
 import { IReq, IResp } from "./_Base";
 export interface IMsgReqMap {
@@ -19,6 +20,7 @@ export interface IMsgReqMap {
   [MsgEnum.ListRooms]: IReqListRooms,
   [MsgEnum.Error]: IReq<MsgEnum.Error>,
   [MsgEnum.Kick]: IReqKick,
+  [MsgEnum.Chat]: IReqChat
 }
 export interface IMsgRespMap {
   [MsgEnum.PlayerInfo]: IRespPlayerInfo,
@@ -32,4 +34,5 @@ export interface IMsgRespMap {
   [MsgEnum.ListRooms]: IRespListRooms,
   [MsgEnum.Error]: IResp<MsgEnum.Error>,
   [MsgEnum.Kick]: IRespKick,
+  [MsgEnum.Chat]: IRespChat,
 }

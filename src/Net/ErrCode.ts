@@ -12,4 +12,7 @@ export const enum ErrCode {
   InvalidRoomParameters = 1008,
   ParseFailed = 1009,
   RoomIsFull = 1010,
+  ChatMsgEmpty,
+  ChatTargetEmpty,
+  ChatTargetIncorrect,
 }

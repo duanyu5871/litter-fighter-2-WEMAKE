@@ -1,6 +1,6 @@
 
 import List from "rc-virtual-list";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import { Divider } from "../../Component/Divider";
 import { Flex } from "../../Component/Flex";
@@ -11,6 +11,9 @@ import { Strong, Text } from "../../Component/Text";
 import { useStateRef } from "../../hooks/useStateRef";
 import { IRoomInfo, MsgEnum } from "../../Net";
 import { Connection } from "./Connection";
+import { Input } from "../../Component/Input";
+import Combine from "../../Component/Combine";
+import Select from "../../Component/Select";
 
 
 indexedDB.databases().then((r) => console.log(r))
@@ -21,7 +24,15 @@ enum TriState {
   True = 1
 }
 
+type TChatTarget = 'global' | 'room'
+const chat_targets: [TChatTarget, ReactNode][] = [
+  ['global', '全局'],
+  ['room', '房间']
+]
 function Player() {
+  const [chat_target, set_chat_target] = useStateRef<TChatTarget>('global');
+  const [chat_msg_text, set_chat_msg_text] = useStateRef<string>('');
+  const [chat_msg_sending, set_chat_msg_sending] = useStateRef<boolean>(false);
   const [connected, set_connected] = useState<TriState>(TriState.False);
   const [room_creating, set_room_creating, ref_room_creating] = useStateRef<boolean>(false);
   const [room_joining, set_room_joining, ref_room_joining] = useStateRef<boolean>(false);
@@ -29,7 +40,6 @@ function Player() {
   const [rooms_loading, set_rooms_loading] = useState(false)
   const [rooms, set_rooms] = useState<IRoomInfo[]>([])
   const ref_room_id = useRef<string>('')
-
   const [conn, set_conn, ref_conn] = useStateRef<Connection | null>(null)
   const [countdown, set_countdown] = useState(5)
   const { players, me, owner, all_ready, is_owner } = useMemo(() => {
@@ -202,43 +212,40 @@ function Player() {
         <Show show={room_joining}>
           <Text>room joining...</Text>
         </Show>
-        <Show show={!room}>
-          <Frame style={{ padding: 0 }}>
-
-            <Flex direction='column' align='stretch' gap={5}>
-              <Flex gap={10} align='center' justify='space-between' style={{ margin: 5 }}>
-                <Strong>{`房间列表`}</Strong>
-                <Button
-                  variants={['no_border', 'no_round', 'no_shadow']}
-                  onClick={() => update_rooms()} >
-                  刷新
-                </Button>
-              </Flex>
-              <Divider />
+        <Frame style={{ padding: 0 }}>
+          <Flex direction='column' align='stretch' gap={5}>
+            <Flex gap={10} align='center' justify='space-between' style={{ margin: 5 }}>
+              <Strong>{`房间列表`}</Strong>
+              <Button
+                variants={['no_border', 'no_round', 'no_shadow']}
+                onClick={() => update_rooms()} >
+                刷新
+              </Button>
             </Flex>
-            <List data={rooms} itemKey={r => r.id!}>
-              {(r) => (
-                <Flex direction='column' align='stretch' gap={5}>
-                  <Flex gap={10} direction='column' align='stretch' justify='space-between' style={{ margin: 5 }}>
-                    <Flex gap={10}>
-                      <Strong> 房名: {r.title} </Strong>
-                      <Text> 人数: {r.players?.length}/{r.max_players} </Text>
-                    </Flex>
-                    <Flex gap={10}>
-                      <Text style={{ flex: 1 }}> 房主: {r.owner?.name} </Text>
-                      <Button
-                        variants={['no_border', 'no_round', 'no_shadow']}
-                        onClick={() => join_room(r.id)}>
-                        加入
-                      </Button>
-                    </Flex>
+            <Divider />
+          </Flex>
+          <List data={rooms} itemKey={r => r.id!}>
+            {(r) => (
+              <Flex direction='column' align='stretch' gap={5}>
+                <Flex gap={10} direction='column' align='stretch' justify='space-between' style={{ margin: 5 }}>
+                  <Flex gap={10}>
+                    <Strong> 房名: {r.title} </Strong>
+                    <Text> 人数: {r.players?.length}/{r.max_players} </Text>
                   </Flex>
-                  <Divider />
+                  <Flex gap={10}>
+                    <Text style={{ flex: 1 }}> 房主: {r.owner?.name} </Text>
+                    <Button
+                      variants={['no_border', 'no_round', 'no_shadow']}
+                      onClick={() => join_room(r.id)}>
+                      加入
+                    </Button>
+                  </Flex>
                 </Flex>
-              )}
-            </List>
-          </Frame>
-        </Show>
+                <Divider />
+              </Flex>
+            )}
+          </List>
+        </Frame>
         <Show show={room}>
           <Frame style={{ padding: 0 }}>
             <Flex direction='column' align='stretch' gap={5}>
@@ -300,8 +307,42 @@ function Player() {
         <Show show={!room && connected && !room_joining && !room_creating}>
           <Button size='s' onClick={create_room}>create room</Button>
         </Show>
+
+        <Flex direction='column'>
+          <Combine>
+            <Select
+              items={chat_targets}
+              parse={i => i}
+              value={chat_target}
+              onChange={v => set_chat_target(v ?? 'global')} />
+            <Input
+              disabled={chat_msg_sending}
+              maxLength={100}
+              style={{ width: 100 }}
+              placeholder="输入消息"
+              value={chat_msg_text}
+              onChange={set_chat_msg_text} />
+            <Button disabled={chat_msg_sending || !chat_msg_text.trim()} onClick={() => {
+              const conn = ref_conn.current;
+              if (!conn) return;
+              set_chat_msg_sending(true)
+              conn.send(MsgEnum.Chat, {
+                target: chat_target,
+                text: chat_msg_text.trim()
+              }).then(r => {
+                set_chat_msg_text('');
+              }).catch(e => {
+
+              }).finally(() => {
+                set_chat_msg_sending(false)
+              })
+            }}>
+              发送
+            </Button>
+          </Combine>
+        </Flex>
       </Show>
-    </Space >
+    </Space>
   )
 }
 

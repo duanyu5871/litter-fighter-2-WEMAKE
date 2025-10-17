@@ -9,4 +9,5 @@ export enum MsgEnum {
   RoomStart = 'RoomStart',
   ListRooms = "ListRooms",
   Error = "Error",
+  Chat = "Chat",
 }
