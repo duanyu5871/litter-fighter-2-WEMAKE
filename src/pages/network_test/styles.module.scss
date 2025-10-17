@@ -2,6 +2,26 @@ $msg_item_height      : 24px;
 $msg_item_color_global: white;
 $msg_item_color_room  : rgba(255, 123, 0, 1);
 
+
+.chat_box {
+  position: fixed;
+  left    : 0px;
+  bottom  : 0px;
+  width   : 375px;
+  overflow: hidden;
+
+  .input_row {
+    display: flex;
+  }
+}
+
+:global(html.mobile) {
+  .chat_box {
+    width : 100vw;
+    bottom: 15px;
+  }
+}
+
 .msg_item {
   padding-left : 5px;
   padding-right: 5px;

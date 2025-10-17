@@ -74,8 +74,8 @@ export class Connection {
     this.send(MsgEnum.PlayerInfo, {}, {
       timeout: 1000
     }).then((resp) => {
-      this.callbacks.emit('on_register')(resp, this)
       this.player = resp.player;
+      this.callbacks.emit('on_register')(resp, this)
     }).catch((e) => {
       this.close();
       throw e;

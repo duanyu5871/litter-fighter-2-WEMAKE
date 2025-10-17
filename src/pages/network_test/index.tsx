@@ -2,35 +2,31 @@
 import List from "rc-virtual-list";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
+import Combine from "../../Component/Combine";
 import { Divider } from "../../Component/Divider";
 import { Flex } from "../../Component/Flex";
 import Frame from "../../Component/Frame";
+import { Input } from "../../Component/Input";
 import Show from "../../Component/Show";
 import { Space } from "../../Component/Space";
 import { Strong, Text } from "../../Component/Text";
 import { useStateRef } from "../../hooks/useStateRef";
-import { IRespChat, IRoomInfo, MsgEnum } from "../../Net";
-import { Connection } from "./Connection";
+import { IRoomInfo, MsgEnum } from "../../Net";
 import { ChatBox } from "./ChatBox";
+import { Connection } from "./Connection";
+import { TriState } from "./TriState";
+import { RoomsBox } from "./RoomsBox";
+import styles from "./styles.module.scss"
 
 
 indexedDB.databases().then((r) => console.log(r))
 
-enum TriState {
-  False = 0,
-  Pending = '',
-  True = 1
-}
 function Player() {
-  const [connected, set_connected] = useState<TriState>(TriState.False);
-  const [room_creating, set_room_creating, ref_room_creating] = useStateRef<boolean>(false);
-  const [room_joining, set_room_joining, ref_room_joining] = useStateRef<boolean>(false);
-  const [room, set_room, ref_room] = useStateRef<IRoomInfo | undefined>(void 0);
-  const [rooms_loading, set_rooms_loading] = useState(false)
-  const [rooms, set_rooms] = useState<IRoomInfo[]>([])
-  const ref_room_id = useRef<string>('')
+  const [conn_state, set_connected] = useState<TriState>(TriState.False);
+  const [room, set_room, ref_room] = useStateRef<IRoomInfo | null | undefined>(void 0);
   const [conn, set_conn, ref_conn] = useStateRef<Connection | null>(null)
-  const [countdown, set_countdown] = useState(5)
+  const [countdown, set_countdown] = useState(5);
+  const [address, set_address] = useStateRef('localhost:8080')
   const { players, me, owner, all_ready, is_owner } = useMemo(() => {
     const players = room?.players ?? []
     const me = players.find(v => v.id == conn?.player?.id) || null;
@@ -60,17 +56,6 @@ function Player() {
     return () => clearInterval(tid)
   }, [all_ready, is_owner])
 
-  const update_rooms = useCallback(() => {
-    const conn = ref_conn.current;
-    if (!conn) return;
-    set_rooms_loading(true)
-    conn.send(MsgEnum.ListRooms, {}).then((r) => {
-      set_rooms(r.rooms ?? [])
-    }).finally(() => {
-      set_rooms_loading(false)
-    })
-  }, [])
-
   function disconnect() {
     const conn = ref_conn.current
     if (!conn) return;
@@ -83,42 +68,20 @@ function Player() {
     if (ref_conn.current) return;
     const conn = new Connection();
     set_conn(conn);
-
   }
 
   useEffect(() => {
     if (!conn) return;
-    conn.open('ws://localhost:8080')
+    conn.open(`ws://${address}`)
     set_connected(TriState.Pending);
     conn.callbacks.once('on_close', (e) => {
       set_connected(TriState.False)
       set_room(void 0)
     })
-    conn.callbacks.once('on_register', (resp) => {
-      console.log('on_register:', resp);
-      set_connected(TriState.True);
-      update_rooms()
-    })
+    conn.callbacks.once('on_register', () => set_connected(TriState.True))
     conn.callbacks.add({
       on_message: (resp) => {
         switch (resp.type) {
-          case MsgEnum.JoinRoom:
-          case MsgEnum.CreateRoom:
-            set_room(resp.room);
-            break;
-          case MsgEnum.ExitRoom:
-          case MsgEnum.Kick:
-            if (resp.player?.id === conn.player?.id) {
-              set_room(void 0)
-              update_rooms();
-            } else {
-              set_room(resp.room);
-            }
-            break;
-          case MsgEnum.CloseRoom:
-            set_room(void 0);
-            update_rooms();
-            break;
           case MsgEnum.PlayerReady:
             set_room(prev => {
               if (!prev) return prev;
@@ -144,98 +107,40 @@ function Player() {
             })
             break;
           case MsgEnum.RoomStart: break;
-          case MsgEnum.ListRooms: break;
         }
       }
     })
     return () => conn?.close()
   }, [conn])
 
-  function create_room() {
-    if (
-      ref_room_joining.current ||
-      ref_room_creating.current
-    ) return;
-    const conn = ref_conn.current
-    if (!conn) return;
-    set_room_creating(true)
-    conn.send(MsgEnum.CreateRoom, {
-      min_players: 2,
-      max_players: 4,
-    }).then((resp) => {
-      set_room(resp.room)
-      update_rooms()
-    }).catch(e => {
-      console.log(e)
-    }).finally(() => {
-      set_room_creating(false)
-    })
-  }
-  function join_room(roomid = ref_room_id.current) {
-    if (
-      ref_room_joining.current ||
-      ref_room_creating.current
-    ) return;
-    const conn = ref_conn.current;
-    if (!conn) return;
-    set_room_joining(true)
-    conn.send(MsgEnum.JoinRoom, { roomid }).then((resp) => {
-      set_room(resp.room)
-    }).catch(e => {
-      console.log(e)
-    }).finally(() => {
-      set_room_joining(false)
-    })
-  }
+
   return <>
     <Space>
-      <Button size='s' disabled={connected === TriState.Pending} onClick={connected ? disconnect : connect}>
-        {connected === TriState.Pending ? 'connecting...' : connected === TriState.False ? 'connect' : 'disconnect'}
-      </Button>
-      <Show show={connected === TriState.True}>
+      <Flex direction='column' gap={5}>
+        <Combine style={{ alignSelf: 'flex-start' }}>
+          <Input
+            style={{ minWidth: 300, maxWidth: 300 }}
+            value={address}
+            onChange={set_address}
+            disabled={conn_state !== TriState.False}
+            prefix='服务地址:'
+          />
+          <Button
+            disabled={conn_state === TriState.Pending || !address.trim()}
+            onClick={conn_state ? disconnect : connect}>
+            {{
+              [TriState.False]: 'connect',
+              [TriState.Pending]: 'connecting...',
+              [TriState.True]: 'disconnect',
+            }[conn_state]}
+          </Button>
+        </Combine>
+        <RoomsBox conn={conn} conn_state={conn_state} room={room} set_room={set_room} />
+      </Flex>
+      <Show show={conn_state === TriState.True}>
         <Show show={me}>
           <Text>{me?.name}</Text>
         </Show>
-        <Show show={room_creating}>
-          <Text>room creating...</Text>
-        </Show>
-        <Show show={room_joining}>
-          <Text>room joining...</Text>
-        </Show>
-        <Frame style={{ padding: 0 }}>
-          <Flex direction='column' align='stretch' gap={5}>
-            <Flex gap={10} align='center' justify='space-between' style={{ margin: 5 }}>
-              <Strong>{`房间列表`}</Strong>
-              <Button
-                variants={['no_border', 'no_round', 'no_shadow']}
-                onClick={() => update_rooms()} >
-                刷新
-              </Button>
-            </Flex>
-            <Divider />
-          </Flex>
-          <List data={rooms} itemKey={r => r.id!}>
-            {(r) => (
-              <Flex direction='column' align='stretch' gap={5}>
-                <Flex gap={10} direction='column' align='stretch' justify='space-between' style={{ margin: 5 }}>
-                  <Flex gap={10}>
-                    <Strong> 房名: {r.title} </Strong>
-                    <Text> 人数: {r.players?.length}/{r.max_players} </Text>
-                  </Flex>
-                  <Flex gap={10}>
-                    <Text style={{ flex: 1 }}> 房主: {r.owner?.name} </Text>
-                    <Button
-                      variants={['no_border', 'no_round', 'no_shadow']}
-                      onClick={() => join_room(r.id)}>
-                      加入
-                    </Button>
-                  </Flex>
-                </Flex>
-                <Divider />
-              </Flex>
-            )}
-          </List>
-        </Frame>
         <Show show={room}>
           <Frame style={{ padding: 0 }}>
             <Flex direction='column' align='stretch' gap={5}>
@@ -260,7 +165,6 @@ function Player() {
                       <Flex align='center'>
                         <Show show={owner?.id === me?.id && !is_self}>
                           <Button
-                            size='s'
                             variants={['no_border', 'no_round', 'no_shadow']}
                             onClick={() => ref_conn.current?.send(MsgEnum.Kick, { playerid: other.id })}>
                             踢出
@@ -294,12 +198,16 @@ function Player() {
             </Flex>
           </Frame>
         </Show>
-        <Show show={!room && connected && !room_joining && !room_creating}>
-          <Button size='s' onClick={create_room}>create room</Button>
-        </Show>
       </Show>
     </Space>
-    <ChatBox conn={conn} room={room} style={{ position: 'fixed', left: 0, bottom: 0 }} />
+    <ChatBox
+      conn={conn}
+      room={room}
+      className={styles.chat_box}
+      style={{
+        display: conn_state === TriState.True ? void 0 : 'none'
+      }}
+    />
   </>
 }
 

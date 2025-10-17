@@ -26,7 +26,7 @@ export const all_chat_targets: [ChatTarget, ReactNode][] = [
 ]
 export interface IChatBoxProps extends IFlexProps {
   conn?: Connection | null;
-  room?: IRoomInfo | undefined
+  room?: IRoomInfo | null
 }
 const msg_item_height = parseInt(styles.msg_item_height);
 const msg_list_height = 240;
@@ -109,7 +109,7 @@ function _ChatBox(props: IChatBoxProps, ref: ForwardedRef<HTMLDivElement>) {
     case "room": input_prefix_classname = styles.color_room; break;
   }
   return (
-    <Flex direction='column' {..._p} ref={ref}>
+    <Flex direction='column' align='stretch' {..._p} ref={ref}>
       <List
         virtual
         style={{
@@ -137,7 +137,7 @@ function _ChatBox(props: IChatBoxProps, ref: ForwardedRef<HTMLDivElement>) {
           )
         }}
       </List>
-      <Combine style={{ alignSelf: 'start' }}>
+      <Combine className={styles.input_row}>
         <Input
           ref={ref_input}
           disabled={chat_msg_sending}
@@ -153,7 +153,6 @@ function _ChatBox(props: IChatBoxProps, ref: ForwardedRef<HTMLDivElement>) {
               </span>
             </Button>
           }
-          style={{ minWidth: 350, maxWidth: 350 }}
           placeholder="输入消息"
           onKeyUp={e => {
             if ('enter' === e.key?.toLowerCase())
