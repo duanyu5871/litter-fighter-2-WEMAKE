@@ -2,10 +2,6 @@
 
 .lfui_hoverable_border {
   @extend .lfui_border;
-  transition:
-    color 200ms,
-    border-color 200ms,
-    border-radius 500ms;
   border       : 2px #5a73d6 solid;
   border-radius: 3px;
 

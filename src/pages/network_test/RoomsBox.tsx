@@ -33,7 +33,7 @@ function _RoomsBox(props: IRoomsBoxProps, f_ref: ForwardedRef<HTMLDivElement>) {
   const [room_joining, set_room_joining, ref_room_joining] = useStateRef<boolean>(false);
   const { room } = useRoom(conn)
   const { rooms } = useRooms(conn)
-  const cls_name = classNames(styles.room_box, className)
+  const cls_name = classNames(styles.rooms_box, className)
   const update_rooms = useCallback(() => {
     if (!conn) return;
     conn.send(MsgEnum.ListRooms, {}, { loose: true }).catch(e => { })

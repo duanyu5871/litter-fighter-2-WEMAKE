@@ -155,7 +155,7 @@ export class GameOverlay {
     this.ele_loading.style.opacity = '1'
     window.clearTimeout(this.ele_loading_tid)
     this.ele_loading_tid = window.setTimeout(() => {
-      this.ele_loading.style.transition = 'opacity 500ms'
+      this.ele_loading.style.transition = 'opacity 150ms'
       this.ele_loading.style.opacity = '0'
     }, 1000)
   }

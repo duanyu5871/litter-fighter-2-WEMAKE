@@ -192,7 +192,8 @@ function Player() {
       conn={conn}
       conn_state={conn_state}
       style={{
-        display: conn_state === TriState.True ? void 0 : 'none'
+        opacity: conn_state ? 1 : 0,
+        pointerEvents: conn_state ? void 0 : 'none',
       }} />
   </>
 }
