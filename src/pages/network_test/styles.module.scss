@@ -2,13 +2,34 @@ $msg_item_height      : 24px;
 $msg_item_color_global: white;
 $msg_item_color_room  : rgba(255, 123, 0, 1);
 
+.room_box {
+  position: fixed;
+  padding : 0px;
+  left    : 0;
+  top     : 0;
+  width   : 375px;
+}
 
 .chat_box {
-  position: fixed;
-  left    : 0px;
-  bottom  : 0px;
-  width   : 375px;
-  overflow: hidden;
+  position      : fixed;
+  left          : 0;
+  bottom        : 0;
+  width         : 375px;
+  overflow      : hidden;
+  pointer-events: none;
+
+  &>* {
+    pointer-events: all;
+  }
+
+  .msg_list {
+    background-color   : rgba(0, 0, 0, 0.5);
+    opacity            : 0;
+    transition-property: opacity;
+    transition-duration: 500ms;
+    pointer-events     : none;
+  }
+
 
   .input_row {
     display: flex;

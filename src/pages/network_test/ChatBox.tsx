@@ -1,6 +1,6 @@
 
 import List, { ListRef } from "rc-virtual-list";
-import { ForwardedRef, forwardRef, ReactNode, useEffect, useMemo, useRef } from "react";
+import { CSSProperties, ForwardedRef, forwardRef, ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "../../Component/Buttons/Button";
 import Combine from "../../Component/Combine";
 import { Flex, IFlexProps } from "../../Component/Flex";
@@ -10,6 +10,8 @@ import { useStateRef } from "../../hooks/useStateRef";
 import { IRespChat, IRoomInfo, MsgEnum } from "../../Net";
 import { Connection } from "./Connection";
 import styles from "./styles.module.scss";
+import { useFloating } from "./useFloating";
+import { useForwardedRef } from "./useForwardedRef";
 export const enum ChatTarget {
   Global = 'global',
   Room = 'room',
@@ -28,9 +30,10 @@ export interface IChatBoxProps extends IFlexProps {
   conn?: Connection | null;
   room?: IRoomInfo | null
 }
+const list_styles = { verticalScrollBarThumb: { backgroundColor: 'rgba(255,255,255,0.3)' } }
 const msg_item_height = parseInt(styles.msg_item_height);
 const msg_list_height = 240;
-function _ChatBox(props: IChatBoxProps, ref: ForwardedRef<HTMLDivElement>) {
+function _ChatBox(props: IChatBoxProps, fref: ForwardedRef<HTMLDivElement>) {
   const { conn = null, room = null, ..._p } = props;
 
   const chat_targets = useMemo(() => {
@@ -108,16 +111,34 @@ function _ChatBox(props: IChatBoxProps, ref: ForwardedRef<HTMLDivElement>) {
     case "global": input_prefix_classname = styles.color_global; break;
     case "room": input_prefix_classname = styles.color_room; break;
   }
+  const [ipt_focus, set_ipt_focus] = useState(false)
+  const [msg_list_style, set_msg_list_style] = useState<CSSProperties>()
+
+  useEffect(() => {
+    set_msg_list_style({ opacity: 1, pointerEvents: 'all' })
+    if (ipt_focus) return;
+    const tid = setTimeout(() => set_msg_list_style(void 0), 3000)
+    return () => clearTimeout(tid)
+  }, [msgs, ipt_focus])
+
+
+  const [ref_floating_view, on_ref] = useForwardedRef(fref)
+  useFloating({
+    responser: ref_floating_view.current,
+    is_excluded: e => {
+      return e.tagName === 'INPUT' || e.classList.contains(`rc-virtual-list-scrollbar-thumb`)
+    }
+  })
   return (
-    <Flex direction='column' align='stretch' {..._p} ref={ref}>
+    <Flex direction='column' align='stretch' {..._p} ref={on_ref}>
       <List
         virtual
-        style={{
-          background: 'rgba(0, 0, 0, 0.5)',
-        }}
+        className={styles.msg_list}
+        style={msg_list_style}
         data={msgs}
         ref={ref_list}
         height={Math.min(msg_list_height, msg_item_height * msgs.length)}
+        styles={list_styles}
         itemHeight={msg_item_height}
         itemKey={i => '' + i.seq}>
         {i => {
@@ -143,6 +164,8 @@ function _ChatBox(props: IChatBoxProps, ref: ForwardedRef<HTMLDivElement>) {
           disabled={chat_msg_sending}
           maxLength={100}
           data-flex={1}
+          onFocus={e => set_ipt_focus(true)}
+          onBlur={e => set_ipt_focus(false)}
           prefix={
             <Button
               variants={['no_border', 'no_round', 'no_shadow']}

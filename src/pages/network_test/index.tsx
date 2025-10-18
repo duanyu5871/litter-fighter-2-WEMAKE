@@ -130,7 +130,7 @@ function Player() {
               </Flex>
               <Divider />
             </Flex>
-            <List data={players} itemKey={r => r.id!}>
+            <List data={players} itemKey={r => r.id!} styles={{ verticalScrollBarThumb: { backgroundColor: 'rgba(255,255,255,0.3)' } }}>
               {(other, index) => {
                 const is_self = other.id === conn?.player?.id
                 return (
@@ -186,7 +186,8 @@ function Player() {
       room={room}
       className={styles.chat_box}
       style={{
-        display: conn_state === TriState.True ? void 0 : 'none'
+        opacity: conn_state ? 1 : 0,
+        pointerEvents: conn_state ? void 0 : 'none',
       }}
     />
   </>

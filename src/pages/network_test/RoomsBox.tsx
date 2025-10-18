@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import List from "rc-virtual-list";
 import { ForwardedRef, forwardRef, useCallback, useEffect, useRef } from "react";
 import { Button } from "../../Component/Buttons/Button";
@@ -9,7 +10,10 @@ import { Strong, Text } from "../../Component/Text";
 import { useStateRef } from "../../hooks/useStateRef";
 import { MsgEnum } from "../../Net";
 import { Connection } from "./Connection";
+import styles from "./styles.module.scss";
 import { TriState } from "./TriState";
+import { useFloating } from "./useFloating";
+import { useForwardedRef } from "./useForwardedRef";
 import { useRoom } from "./useRoom";
 import { useRooms } from "./useRooms";
 
@@ -17,11 +21,11 @@ export interface IRoomsBoxProps extends IFrameProps {
   conn?: Connection | null;
   conn_state?: TriState;
 }
-function _RoomsBox(props: IRoomsBoxProps, ref: ForwardedRef<HTMLDivElement>) {
+function _RoomsBox(props: IRoomsBoxProps, f_ref: ForwardedRef<HTMLDivElement>) {
   const {
-    style,
     conn = null,
     conn_state = TriState.False,
+    className,
     ..._p
   } = props;
 
@@ -29,7 +33,7 @@ function _RoomsBox(props: IRoomsBoxProps, ref: ForwardedRef<HTMLDivElement>) {
   const [room_joining, set_room_joining, ref_room_joining] = useStateRef<boolean>(false);
   const { room } = useRoom(conn)
   const { rooms } = useRooms(conn)
-
+  const cls_name = classNames(styles.room_box, className)
   const update_rooms = useCallback(() => {
     if (!conn) return;
     conn.send(MsgEnum.ListRooms, {}, { loose: true }).catch(e => { })
@@ -88,28 +92,17 @@ function _RoomsBox(props: IRoomsBoxProps, ref: ForwardedRef<HTMLDivElement>) {
       set_room_joining(false)
     })
   }
-  const ref_head = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    const ele_responser = ref_head.current;
-    if (!ele_responser) return;
-
-    const pointerdown = (e: PointerEvent) => {
-      alert('' + [
-        e.clientX,
-        e.clientY
-      ])
-    }
-    ele_responser.addEventListener('pointerdown', pointerdown)
-    return () => {
-      ele_responser.removeEventListener('pointerdown', pointerdown)
-    }
-  }, [])
-
+  const ref_responser = useRef<HTMLDivElement | null>(null)
+  const [ref_floating_view, on_ref] = useForwardedRef(f_ref)
+  useFloating({
+    responser: ref_responser.current,
+    target: ref_floating_view.current
+  })
   return (
-    <Frame style={{ padding: 0, ...style }} {..._p} ref={ref}>
-      <Flex direction='column' align='stretch' gap={5} >
+    <Frame {..._p} className={cls_name} ref={on_ref}>
+      <Flex ref={ref_responser} direction='column' align='stretch' gap={5} >
         <Flex gap={10} align='stretch' justify='space-between' >
-          <Flex ref={ref_head} align='center'>
+          <Flex align='center' style={{ flex: 1 }}>
             <Strong >{`房间列表`}</Strong>
           </Flex>
           <Flex>
@@ -154,3 +147,4 @@ function _RoomsBox(props: IRoomsBoxProps, ref: ForwardedRef<HTMLDivElement>) {
 }
 
 export const RoomsBox = forwardRef<HTMLDivElement, IRoomsBoxProps>(_RoomsBox)
+
