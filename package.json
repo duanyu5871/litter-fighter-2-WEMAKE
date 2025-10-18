@@ -120,7 +120,7 @@
   "devDependencies": {
     "@babel/core": "^7.28.0",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@fimagine/frontend_deployer": "1.1.0",
+    "@fimagine/frontend_deployer": "^1.0.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.6.1",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/jest-dom": "^6.6.3",

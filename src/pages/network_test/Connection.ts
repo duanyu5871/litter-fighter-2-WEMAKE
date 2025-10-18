@@ -1,5 +1,5 @@
 import { Callbacks } from "../../LF2/base";
-import { ErrCode, IMsgReqMap, IMsgRespMap, IPlayerInfo, IReq, IResp, IRespPlayerInfo, MsgEnum, TResp } from "../../Net";
+import { ErrCode, IMsgReqMap, IMsgRespMap, IPlayerInfo, IReq, IResp, IRespPlayerInfo, IRoomInfo, MsgEnum, TResp } from "../../Net";
 import { IJob } from "./IJob";
 
 export interface IConnectionCallbacks {
@@ -8,11 +8,13 @@ export interface IConnectionCallbacks {
   on_close?(e: CloseEvent, conn: Connection): void;
   on_register?(resp: IRespPlayerInfo, conn: Connection): void;
   on_error?(error: ConnError, conn: Connection): void;
-  on_message(resp: TResp, conn: Connection): void;
+  on_message?(resp: TResp, conn: Connection): void;
+  on_room_change?(room: IRoomInfo | undefined, conn: Connection): void;
+  on_rooms_change?(rooms: IRoomInfo[], conn: Connection): void;
 }
 
 export interface ISendOpts {
-  ignoreCode?: boolean;
+  loose?: boolean;
   timeout?: number;
 }
 export type ConnError = Error & {
@@ -67,7 +69,8 @@ export class Connection {
   protected _jobs = new Map<string, IJob>();
   protected _ws: WebSocket | null = null;
   player?: IPlayerInfo;
-
+  room?: IRoomInfo;
+  rooms: IRoomInfo[] = [];
 
   protected _on_open = () => {
     this.callbacks.emit('on_open')(this)
@@ -87,13 +90,15 @@ export class Connection {
     const { pid, code, error } = resp;
     const job = this._jobs.get(pid);
     const err = code ? resp_error(resp) : void 0
-    if (err) this.callbacks.emit('on_error')(err, this)
-    else this.callbacks.emit('on_message')(resp, this)
-
+    if (err) {
+      this.callbacks.emit('on_error')(err, this)
+    } else {
+      this.handle_resp(resp)
+    }
     if (!job) return;
     this._jobs.delete(pid);
     if (job.timerId) clearTimeout(job.timerId);
-    if (code && !job.ignoreCode) {
+    if (code && !job.loose) {
       job.reject(err);
     } else {
       job.resolve(resp);
@@ -101,6 +106,10 @@ export class Connection {
   }
 
   protected _on_close = (e: CloseEvent) => {
+    if (this.room)
+      this.callbacks.emit('on_room_change')(this.room = void 0, this)
+    if (this.rooms.length)
+      this.callbacks.emit('on_rooms_change')(this.rooms = [], this)
     this.callbacks.emit('on_close')(e, this)
     this._ws = null;
   }
@@ -136,7 +145,6 @@ export class Connection {
     this._ws = null
   }
 
-
   send<
     T extends MsgEnum,
     Req extends IReq = IMsgReqMap[T],
@@ -166,4 +174,53 @@ export class Connection {
       }
     });
   }
+
+  handle_resp(resp: TResp) {
+    this.callbacks.emit('on_message')(resp, this)
+    switch (resp.type) {
+      case MsgEnum.JoinRoom:
+      case MsgEnum.CreateRoom:
+        this.callbacks.emit('on_room_change')(this.room = resp.room, this)
+        break;
+      case MsgEnum.CloseRoom:
+        this.callbacks.emit('on_room_change')(this.room = void 0, this)
+        break;
+      case MsgEnum.ExitRoom:
+      case MsgEnum.Kick:
+        const room = resp.player?.id === this.player?.id ? void 0 : resp.room
+        this.callbacks.emit('on_room_change')(this.room = room, this)
+        break;
+      case MsgEnum.PlayerReady: {
+        const prev = this.room
+        if (prev) {
+          const room = { ...prev }
+          if (room.players)
+            for (const p of room.players)
+              if (p.id === resp.player?.id)
+                p.ready = !!resp.ready;
+          if (room.players) room.players = [...room.players]
+          this.callbacks.emit('on_room_change')(this.room = room, this)
+        }
+        break;
+      }
+      case MsgEnum.PlayerInfo: {
+        const prev = this.room
+        if (prev) {
+          const room = { ...prev }
+          if (room.players)
+            for (const p of room.players)
+              if (p.id === resp.player?.id)
+                Object.assign(p, resp.player)
+          if (room.players) room.players = [...room.players]
+          this.callbacks.emit('on_room_change')(this.room = room, this)
+        }
+        break;
+      }
+      case MsgEnum.ListRooms: {
+        this.callbacks.emit('on_rooms_change')(this.rooms = resp.rooms ?? [], this)
+        break;
+      }
+    }
+  }
 }
+

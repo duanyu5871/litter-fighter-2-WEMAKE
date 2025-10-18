@@ -14,6 +14,7 @@ import { useStateRef } from "../../hooks/useStateRef";
 import { IRoomInfo, MsgEnum } from "../../Net";
 import { ChatBox } from "./ChatBox";
 import { Connection } from "./Connection";
+import { useRoom } from "./useRoom";
 import { TriState } from "./TriState";
 import { RoomsBox } from "./RoomsBox";
 import styles from "./styles.module.scss"
@@ -23,8 +24,8 @@ indexedDB.databases().then((r) => console.log(r))
 
 function Player() {
   const [conn_state, set_connected] = useState<TriState>(TriState.False);
-  const [room, set_room, ref_room] = useStateRef<IRoomInfo | null | undefined>(void 0);
   const [conn, set_conn, ref_conn] = useStateRef<Connection | null>(null)
+  const { room } = useRoom(conn)
   const [countdown, set_countdown] = useState(5);
   const [address, set_address] = useStateRef('localhost:8080')
   const { players, me, owner, all_ready, is_owner } = useMemo(() => {
@@ -61,7 +62,6 @@ function Player() {
     if (!conn) return;
     conn.close();
     set_connected(0);
-    set_room(void 0);
     set_conn(null);
   }
   function connect() {
@@ -76,36 +76,12 @@ function Player() {
     set_connected(TriState.Pending);
     conn.callbacks.once('on_close', (e) => {
       set_connected(TriState.False)
-      set_room(void 0)
+      set_conn(null)
     })
     conn.callbacks.once('on_register', () => set_connected(TriState.True))
     conn.callbacks.add({
       on_message: (resp) => {
         switch (resp.type) {
-          case MsgEnum.PlayerReady:
-            set_room(prev => {
-              if (!prev) return prev;
-              const { players } = prev;
-              const ret = { ...prev }
-              if (players?.length) {
-                for (const p of players)
-                  if (p.id === resp.player?.id)
-                    p.ready = !!resp.ready;
-                ret.players = [...players]
-              }
-              return ret
-            })
-            break;
-          case MsgEnum.PlayerInfo:
-            set_room(prev => {
-              if (!prev) return prev;
-              if (prev.players)
-                for (const p of prev.players)
-                  if (p.id === resp.player?.id)
-                    Object.assign(p, resp.player)
-              return { ...prev }
-            })
-            break;
           case MsgEnum.RoomStart: break;
         }
       }
@@ -135,7 +111,12 @@ function Player() {
             }[conn_state]}
           </Button>
         </Combine>
-        <RoomsBox conn={conn} conn_state={conn_state} room={room} set_room={set_room} />
+        <RoomsBox
+          conn={conn}
+          conn_state={conn_state}
+          style={{
+            display: conn_state === TriState.True ? void 0 : 'none'
+          }} />
       </Flex>
       <Show show={conn_state === TriState.True}>
         <Show show={me}>
