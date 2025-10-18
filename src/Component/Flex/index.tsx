@@ -23,8 +23,8 @@ function _Flex(props: IFlexProps, ref: ForwardedRef<HTMLDivElement>) {
     flexDirection: direction,
     alignItems: align,
     justifyContent: justify,
+    gap,
     ...style,
-    gap
   }
   return <div {..._p} style={_style} ref={ref} />
 }

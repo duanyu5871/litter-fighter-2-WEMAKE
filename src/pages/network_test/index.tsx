@@ -27,7 +27,9 @@ function Player() {
   const [conn, set_conn, ref_conn] = useStateRef<Connection | null>(null)
   const { room } = useRoom(conn)
   const [countdown, set_countdown] = useState(5);
-  const [address, set_address] = useStateRef('localhost:8080')
+  const [address, set_address] = useStateRef('ws://localhost:8080')
+  const [nickname, set_nickname] = useStateRef('')
+
   const { players, me, owner, all_ready, is_owner } = useMemo(() => {
     const players = room?.players ?? []
     const me = players.find(v => v.id == conn?.player?.id) || null;
@@ -57,22 +59,15 @@ function Player() {
     return () => clearInterval(tid)
   }, [all_ready, is_owner])
 
-  function disconnect() {
-    const conn = ref_conn.current
-    if (!conn) return;
-    conn.close();
-    set_connected(0);
-    set_conn(null);
-  }
   function connect() {
     if (ref_conn.current) return;
-    const conn = new Connection();
+    const conn = new Connection(nickname);
     set_conn(conn);
   }
 
   useEffect(() => {
     if (!conn) return;
-    conn.open(`ws://${address}`)
+    conn.open(`${address}`)
     set_connected(TriState.Pending);
     conn.callbacks.once('on_close', (e) => {
       set_connected(TriState.False)
@@ -93,35 +88,38 @@ function Player() {
   return <>
     <Space>
       <Flex direction='column' gap={5}>
-        <Combine style={{ alignSelf: 'flex-start' }}>
-          <Input
-            style={{ minWidth: 300, maxWidth: 300 }}
-            value={address}
-            onChange={set_address}
-            disabled={conn_state !== TriState.False}
-            prefix='服务地址:'
-          />
-          <Button
-            disabled={conn_state === TriState.Pending || !address.trim()}
-            onClick={conn_state ? disconnect : connect}>
-            {{
-              [TriState.False]: 'connect',
-              [TriState.Pending]: 'connecting...',
-              [TriState.True]: 'disconnect',
-            }[conn_state]}
-          </Button>
-        </Combine>
-        <RoomsBox
-          conn={conn}
-          conn_state={conn_state}
-          style={{
-            display: conn_state === TriState.True ? void 0 : 'none'
-          }} />
+        {
+          conn_state ? null :
+            <Combine style={{ alignSelf: 'flex-start' }} direction='column'>
+              <Input
+                style={{ minWidth: 300, maxWidth: 300 }}
+                value={address}
+                onChange={set_address}
+                disabled={!!conn_state}
+                prefix={<Text size='s'>地址:</Text>}
+              />
+              <Combine>
+                <Input
+                  value={nickname}
+                  onChange={set_nickname}
+                  disabled={!!conn_state}
+                  data-flex={1}
+                  prefix={<Text size='s'>昵称:</Text>}
+                />
+                <Button
+                  disabled={conn_state === TriState.Pending || !address.trim()}
+                  onClick={connect}>
+                  {{
+                    [TriState.False]: 'connect',
+                    [TriState.Pending]: 'connecting...',
+                    [TriState.True]: 'disconnect',
+                  }[conn_state]}
+                </Button>
+              </Combine>
+            </Combine>
+        }
       </Flex>
       <Show show={conn_state === TriState.True}>
-        <Show show={me}>
-          <Text>{me?.name}</Text>
-        </Show>
         <Show show={room}>
           <Frame style={{ padding: 0 }}>
             <Flex direction='column' align='stretch' gap={5}>
@@ -181,15 +179,21 @@ function Player() {
         </Show>
       </Show>
     </Space>
+
     <ChatBox
       conn={conn}
-      room={room}
       className={styles.chat_box}
       style={{
         opacity: conn_state ? 1 : 0,
         pointerEvents: conn_state ? void 0 : 'none',
       }}
     />
+    <RoomsBox
+      conn={conn}
+      conn_state={conn_state}
+      style={{
+        display: conn_state === TriState.True ? void 0 : 'none'
+      }} />
   </>
 }
 

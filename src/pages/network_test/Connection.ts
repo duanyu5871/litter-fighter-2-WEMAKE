@@ -71,10 +71,17 @@ export class Connection {
   player?: IPlayerInfo;
   room?: IRoomInfo;
   rooms: IRoomInfo[] = [];
+  nickname: string;
+  get url() { return this._ws?.url }
 
+  constructor(nickname: string = '') {
+    this.nickname = nickname;
+  }
   protected _on_open = () => {
     this.callbacks.emit('on_open')(this)
-    this.send(MsgEnum.PlayerInfo, {}, {
+    this.send(MsgEnum.PlayerInfo, {
+      name: this.nickname
+    }, {
       timeout: 1000
     }).then((resp) => {
       this.player = resp.player;
@@ -104,7 +111,6 @@ export class Connection {
       job.resolve(resp);
     }
   }
-
   protected _on_close = (e: CloseEvent) => {
     if (this.room)
       this.callbacks.emit('on_room_change')(this.room = void 0, this)
@@ -134,14 +140,7 @@ export class Connection {
   }
 
   close() {
-    if (this._reopen) {
-      this._ws?.removeEventListener('close', this._reopen);
-      this._reopen = void 0
-    }
     this._ws?.close()
-    this._ws?.removeEventListener('message', this._on_message);
-    this._ws?.removeEventListener('open', this._on_open);
-    this._ws?.removeEventListener('close', this._on_close);
     this._ws = null
   }
 

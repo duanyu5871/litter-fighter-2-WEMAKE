@@ -12,6 +12,7 @@ import { Connection } from "./Connection";
 import styles from "./styles.module.scss";
 import { useFloating } from "./useFloating";
 import { useForwardedRef } from "./useForwardedRef";
+import { useRoom } from "./useRoom";
 export const enum ChatTarget {
   Global = 'global',
   Room = 'room',
@@ -28,14 +29,13 @@ export const all_chat_targets: [ChatTarget, ReactNode][] = [
 ]
 export interface IChatBoxProps extends IFlexProps {
   conn?: Connection | null;
-  room?: IRoomInfo | null
 }
 const list_styles = { verticalScrollBarThumb: { backgroundColor: 'rgba(255,255,255,0.3)' } }
 const msg_item_height = parseInt(styles.msg_item_height);
 const msg_list_height = 240;
 function _ChatBox(props: IChatBoxProps, fref: ForwardedRef<HTMLDivElement>) {
-  const { conn = null, room = null, ..._p } = props;
-
+  const { conn = null, ..._p } = props;
+  const { room } = useRoom(conn)
   const chat_targets = useMemo(() => {
     if (room) return all_chat_targets;
     return all_chat_targets.filter(v => v[0] !== 'room')

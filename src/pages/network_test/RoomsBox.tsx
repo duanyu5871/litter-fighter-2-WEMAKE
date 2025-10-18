@@ -102,8 +102,9 @@ function _RoomsBox(props: IRoomsBoxProps, f_ref: ForwardedRef<HTMLDivElement>) {
     <Frame {..._p} className={cls_name} ref={on_ref}>
       <Flex ref={ref_responser} direction='column' align='stretch' gap={5} >
         <Flex gap={10} align='stretch' justify='space-between' >
-          <Flex align='center' style={{ flex: 1 }}>
-            <Strong >{`房间列表`}</Strong>
+          <Flex align='center' style={{ flex: 1, paddingLeft: 5 }} gap={5}>
+            <Strong>房间列表</Strong>
+            <Text>{conn?.url}</Text>
           </Flex>
           <Flex>
             <Show show={!room && conn_state && !room_joining && !room_creating}>
@@ -117,6 +118,11 @@ function _RoomsBox(props: IRoomsBoxProps, f_ref: ForwardedRef<HTMLDivElement>) {
               variants={['no_border', 'no_round', 'no_shadow']}
               onClick={() => update_rooms()} >
               刷新
+            </Button>
+            <Button
+              variants={['no_border', 'no_round', 'no_shadow']}
+              onClick={() => conn?.close()} >
+              关闭
             </Button>
           </Flex>
         </Flex>
